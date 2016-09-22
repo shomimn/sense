@@ -23,5 +23,6 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:22.1.1'
-    compile project(':funflib')
+    compile project(':funf-0.4.2')
+    compile project(':gson-2.1.funf')
 }

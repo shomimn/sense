@@ -1,2 +1,1 @@
-include ':app'
-include ':funflib'
+include ':app', ':funf-0.4.2', ':gson-2.1.funf'

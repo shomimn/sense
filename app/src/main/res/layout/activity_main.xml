@@ -3,6 +3,19 @@
               android:orientation="vertical"
               android:layout_width="fill_parent"
               android:layout_height="fill_parent">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.3"
+        android:layout_margin="5dp">
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/barChart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    </android.support.v7.widget.CardView>
+
+    <LinearLayout android:orientation="vertical" android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="0.7">
     <TextView android:text="Wifi Scanner periodically scans your location and surrounding wifi access points, and saves that information."
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"/>
@@ -28,4 +41,25 @@
             android:text="Scan Now"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"/>
+    <TextView android:id="@+id/activityText"
+              android:text="None"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+    <TextView android:id="@+id/detectorText"
+              android:text="None"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+    <TextView android:id="@+id/stepCounterText"
+              android:text="None"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+    <TextView android:id="@+id/humidityText"
+              android:text="None"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+    <TextView android:id="@+id/temperatureText"
+              android:text="None"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"/>
+    </LinearLayout>
 </LinearLayout>

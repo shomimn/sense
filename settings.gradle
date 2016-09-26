@@ -1,1 +1,2 @@
-include ':app', ':funf-0.4.2', ':gson-2.1.funf'
+include ':app', ':SensingKitLib-release'
+include ':funflib'

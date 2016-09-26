@@ -1,4 +1,0 @@
-configurations.maybeCreate("default")
-artifacts.add("default", file('funf-0.4.2.jar'))
-dependencies {
-}

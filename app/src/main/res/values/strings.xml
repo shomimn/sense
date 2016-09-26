@@ -5,8 +5,7 @@
          "name":"default",
          "version":1,
          "data":[
-            "edu.mit.media.funf.probe.builtin.WifiProbe",
-            "edu.mit.media.funf.probe.builtin.LocationProbe"
+            {"@type": "edu.mit.media.funf.probe.builtin.ScreenProbe", "@schedule": {"interval": 60 } }
          ]
         }
     </string>

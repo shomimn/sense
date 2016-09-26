@@ -1,21 +1,31 @@
 package com.mnm.sense;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,6 +35,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.gson.Gson;
@@ -58,72 +69,120 @@ import org.sensingkit.sensingkitlib.data.SKStepDetectorData;
 
 import com.github.mikephil.charting.charts.*;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import android.support.v7.widget.GridLayout;
 
 public class MainActivity extends AppCompatActivity implements Probe.DataListener
 {
+    public abstract class ViewInitializer<T, U>
+    {
+        protected Class viewClass;
+
+        public ViewInitializer(Class aClass)
+        {
+            viewClass = aClass;
+        }
+
+        public T construct(Context context, U data)
+        {
+            T view = null;
+
+            try
+            {
+                Constructor constructor = viewClass.getConstructor(Context.class);
+                view = (T) constructor.newInstance(context);
+                init(view, data);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+            return view;
+        }
+
+        public abstract void init(T view, U data);
+    }
+
+    public class BarChartInitializer extends ViewInitializer<BarChart, BarData>
+    {
+        public BarChartInitializer()
+        {
+            super(BarChart.class);
+        }
+
+        @Override
+        public void init(BarChart barChart, BarData data)
+        {
+            barChart.setData(data);
+            barChart.fitScreen();
+            barChart.setDescription(null);
+            barChart.setDrawBorders(false);
+
+            XAxis xAxis = barChart.getXAxis();
+            xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+            xAxis.setDrawGridLines(false);
+            xAxis.setDrawAxisLine(false);
+
+            YAxis leftYAxis = barChart.getAxisLeft();
+            leftYAxis.setDrawGridLines(false);
+            leftYAxis.setDrawLabels(false);
+            leftYAxis.setDrawAxisLine(false);
+
+            YAxis rightYAxis = barChart.getAxisRight();
+            rightYAxis.setDrawGridLines(false);
+            rightYAxis.setDrawLabels(false);
+            rightYAxis.setDrawAxisLine(false);
+        }
+    }
+
+    public class ImageViewInitializer extends ViewInitializer<ImageView, Integer>
+    {
+        public ImageViewInitializer()
+        {
+            super(ImageView.class);
+        }
+
+        @Override
+        public void init(ImageView view, Integer data)
+        {
+            view.setImageResource(data);
+        }
+    }
+
+    public class DashboardItem
+    {
+        public int columnSpan;
+        ViewInitializer initializer;
+        Object data;
+
+        public DashboardItem(int span, ViewInitializer init, Object d)
+        {
+            columnSpan = span;
+            initializer = init;
+            data = d;
+        }
+    }
+
+    int dp(int pixels)
+    {
+        return (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, pixels, getResources().getDisplayMetrics());
+    }
+
     public static final String PIPELINE_NAME = "default";
-    private static final String TOTAL_COUNT_SQL = "SELECT count(*) FROM " + NameValueDatabaseHelper.DATA_TABLE.name;
-    private FunfManager funfManager;
-    private BasicPipeline pipeline;
-    private WifiProbe wifiProbe;
-    private BatteryProbe locationProbe;
-    private CheckBox enabledCheckbox;
-    private Button archiveButton, scanNowButton;
-    private TextView dataCountView;
-    private Handler handler;
-    private ServiceConnection funfManagerConn = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            funfManager = ((FunfManager.LocalBinder)service).getManager();
 
-            Gson gson = funfManager.getGson();
-            wifiProbe = gson.fromJson(new JsonObject(), WifiProbe.class);
-            locationProbe = gson.fromJson(new JsonObject(), BatteryProbe.class);
-            pipeline = (BasicPipeline) funfManager.getRegisteredPipeline(PIPELINE_NAME);
-//            pipeline.getDb().delete(NameValueDatabaseHelper.DATA_TABLE.name, null, null);
-//            wifiProbe.registerPassiveListener(MainActivity.this);
-            locationProbe.registerPassiveListener(MainActivity.this);
+    List<BarEntry> entries = new ArrayList<>(25);
+    List<String> vals = new ArrayList<>(25);
+    Random random = new Random();
 
-            // This checkbox enables or disables the pipeline
-            enabledCheckbox.setChecked(pipeline.isEnabled());
-            enabledCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (funfManager != null) {
-                        if (isChecked) {
-                            funfManager.enablePipeline(PIPELINE_NAME);
-                            pipeline = (BasicPipeline) funfManager.getRegisteredPipeline(PIPELINE_NAME);
-                        } else {
-                            funfManager.disablePipeline(PIPELINE_NAME);
-                        }
-                    }
-                }
-            });
+    GridLayout gridLayout;
 
-            // Set UI ready to use, by enabling buttons
-            enabledCheckbox.setEnabled(true);
-            archiveButton.setEnabled(true);
-            scanNowButton.setEnabled(true);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            funfManager = null;
-        }
-    };
-
-    SensingKitLibInterface mSensingKitLib;
-    int stepCounter = 0;
-    TextView activityText;
-    TextView detectorText;
-    TextView stepCounterText;
-    TextView humidityText;
-    TextView temperatureText;
-
-    BarChart barChart;
+    ArrayList<DashboardItem> items;
+    BarChartInitializer barChartInitializer = new BarChartInitializer();
+    ImageViewInitializer imageViewInitializer = new ImageViewInitializer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -134,145 +193,107 @@ public class MainActivity extends AppCompatActivity implements Probe.DataListene
 
         setContentView(R.layout.activity_main);
 
-        activityText = (TextView) findViewById(R.id.activityText);
-        detectorText = (TextView) findViewById(R.id.detectorText);
-        stepCounterText = (TextView) findViewById(R.id.stepCounterText);
-        humidityText = (TextView) findViewById(R.id.humidityText);
-        temperatureText = (TextView) findViewById(R.id.temperatureText);
-        barChart = (BarChart) findViewById(R.id.barChart);
-
-        barChart.getRootView().setBackgroundColor(Color.parseColor("#EEEEEE"));
-
-        List<BarEntry> entries = new ArrayList<>(25);
-        List<String> vals = new ArrayList<>(25);
-        Random random = new Random();
         for (int i = 0; i < 25; ++i)
         {
             entries.add(new BarEntry(i, random.nextFloat()));
             vals.add(String.valueOf(i));
         }
+
         BarDataSet dataSet = new BarDataSet(entries, "Steps");
         dataSet.setColor(Color.parseColor("#43A047"));
-//        BarData data = new BarData(vals, dataSet);
-        BarData data = new BarData(dataSet);
+        final BarData data = new BarData(dataSet);
         data.setBarWidth(0.2f);
-        barChart.setData(data);
-        barChart.fitScreen();
-        barChart.setDescription(null);
-        barChart.setDrawBorders(false);
 
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(false);
-        xAxis.setDrawAxisLine(false);
+        items = new ArrayList<>();
+        items.add(new DashboardItem(3, barChartInitializer, data));
+        items.add(new DashboardItem(1, imageViewInitializer, R.mipmap.ic_launcher));
+        items.add(new DashboardItem(1, imageViewInitializer, R.mipmap.ic_launcher));
+        items.add(new DashboardItem(1, imageViewInitializer, R.mipmap.ic_launcher));
+        items.add(new DashboardItem(1, imageViewInitializer, R.mipmap.ic_launcher));
+        items.add(new DashboardItem(1, imageViewInitializer, R.mipmap.ic_launcher));
+        items.add(new DashboardItem(1, imageViewInitializer, R.mipmap.ic_launcher));
+        items.add(new DashboardItem(1, imageViewInitializer, R.mipmap.ic_launcher));
+        items.add(new DashboardItem(1, imageViewInitializer, R.mipmap.ic_launcher));
+        items.add(new DashboardItem(1, imageViewInitializer, R.mipmap.ic_launcher));
+        items.add(new DashboardItem(1, imageViewInitializer, R.mipmap.ic_launcher));
+        items.add(new DashboardItem(1, imageViewInitializer, R.mipmap.ic_launcher));
+        items.add(new DashboardItem(1, imageViewInitializer, R.mipmap.ic_launcher));
+        items.add(new DashboardItem(3, barChartInitializer, data));
+        items.add(new DashboardItem(2, barChartInitializer, data));
+        items.add(new DashboardItem(1, imageViewInitializer, R.mipmap.ic_launcher));
 
-        YAxis leftYAxis = barChart.getAxisLeft();
-        leftYAxis.setDrawGridLines(false);
-        leftYAxis.setDrawLabels(false);
-        leftYAxis.setDrawAxisLine(false);
+        gridLayout = (GridLayout) findViewById(R.id.gridLayout);
+        gridLayout.getRootView().setBackgroundColor(Color.parseColor("#EEEEEE"));
 
-        YAxis rightYAxis = barChart.getAxisRight();
-        rightYAxis.setDrawGridLines(false);
-        rightYAxis.setDrawLabels(false);
-        rightYAxis.setDrawAxisLine(false);
 
-        try
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        int row = 0;
+        int col = 0;
+        for (DashboardItem item : items)
         {
-            mSensingKitLib = SensingKitLib.getSensingKitLib(this);
-            mSensingKitLib.registerSensor(SKSensorType.STEP_DETECTOR);
-            mSensingKitLib.registerSensor(SKSensorType.STEP_COUNTER);
-            mSensingKitLib.registerSensor(SKSensorType.MOTION_ACTIVITY);
+            CardView card = (CardView) inflater.inflate(R.layout.card_item, null);
+            View view = null;
 
-            mSensingKitLib.subscribeSensorDataListener(SKSensorType.STEP_DETECTOR, new SKSensorDataListener()
-            {
-                @Override
-                public void onDataReceived(SKSensorType skSensorModuleType, SKSensorData skSensorData)
-                {
-                    SKStepDetectorData data = (SKStepDetectorData) skSensorData;
-//                    Toast.makeText(MainActivity.this, "Step detected", Toast.LENGTH_SHORT).show();
-                    ++stepCounter;
-                    detectorText.setText("Detected steps: " + String.valueOf(stepCounter));
-                }
-            });
+            view = (View) item.initializer.construct(this, item.data);
 
-            mSensingKitLib.subscribeSensorDataListener(SKSensorType.STEP_COUNTER, new SKSensorDataListener()
-            {
-                @Override
-                public void onDataReceived(SKSensorType skSensorModuleType, SKSensorData skSensorData)
-                {
-                    SKStepCounterData data = (SKStepCounterData) skSensorData;
-//                    Toast.makeText(MainActivity.this, String.valueOf(data.getSteps()), Toast.LENGTH_SHORT).show();
-                    stepCounterText.setText("Steps counted: " + String.valueOf(data.getSteps()));
-                }
-            });
+            if (view == null)
+                continue;
 
-            mSensingKitLib.subscribeSensorDataListener(SKSensorType.MOTION_ACTIVITY, new SKSensorDataListener()
-            {
-                @Override
-                public void onDataReceived(SKSensorType skSensorType, SKSensorData skSensorData)
-                {
-                    SKMotionActivityData data = (SKMotionActivityData) skSensorData;
-                    activityText.setText(data.getActivityString() + " : " + String.valueOf(data.getConfidence()));
-                }
-            });
+            card.addView(view);
 
-            mSensingKitLib.startContinuousSensingWithAllRegisteredSensors();
-        }
-        catch (SKException e)
-        {
-            e.printStackTrace();
+            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+            params.height = dp(150);
+            int margin = dp(5);
+            params.setMargins(margin, margin, margin, margin);
+            GridLayout.Spec rowSpec = GridLayout.spec(row);
+            GridLayout.Spec columnSpec = GridLayout.spec(col, item.columnSpan, 1);
+            params.rowSpec = rowSpec;
+            params.columnSpec = columnSpec;
+
+            gridLayout.addView(card, params);
+
+            col = (col + item.columnSpan) % gridLayout.getColumnCount();
+            row = col == 0 ? row + 1 : row;
         }
 
-        // Displays the count of rows in the data
-        dataCountView = (TextView) findViewById(R.id.dataCountText);
+//        barChart = (BarChart) findViewById(R.id.barChart);
 
-        // Used to make interface changes on main thread
-        handler = new Handler();
+//        barChart.getRootView().setBackgroundColor(Color.parseColor("#EEEEEE"));
 
-        enabledCheckbox = (CheckBox) findViewById(R.id.enabledCheckbox);
-        enabledCheckbox.setEnabled(false);
+//        List<BarEntry> entries = new ArrayList<>(25);
+//        List<String> vals = new ArrayList<>(25);
+//        Random random = new Random();
+//        for (int i = 0; i < 25; ++i)
+//        {
+//            entries.add(new BarEntry(i, random.nextFloat()));
+//            vals.add(String.valueOf(i));
+//        }
+//        BarDataSet dataSet = new BarDataSet(entries, "Steps");
+//        dataSet.setColor(Color.parseColor("#43A047"));
+////        BarData data = new BarData(vals, dataSet);
+//        BarData data = new BarData(dataSet);
+//        data.setBarWidth(0.2f);
+//        barChart.setData(data);
+//        barChart.fitScreen();
+//        barChart.setDescription(null);
+//        barChart.setDrawBorders(false);
+//
+//        XAxis xAxis = barChart.getXAxis();
+//        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+//        xAxis.setDrawGridLines(false);
+//        xAxis.setDrawAxisLine(false);
+//
+//        YAxis leftYAxis = barChart.getAxisLeft();
+//        leftYAxis.setDrawGridLines(false);
+//        leftYAxis.setDrawLabels(false);
+//        leftYAxis.setDrawAxisLine(false);
+//
+//        YAxis rightYAxis = barChart.getAxisRight();
+//        rightYAxis.setDrawGridLines(false);
+//        rightYAxis.setDrawLabels(false);
+//        rightYAxis.setDrawAxisLine(false);
 
-        // Runs an archive if pipeline is enabled
-        archiveButton = (Button) findViewById(R.id.archiveButton);
-        archiveButton.setEnabled(false);
-        archiveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (pipeline.isEnabled()) {
-                    pipeline.onRun(BasicPipeline.ACTION_ARCHIVE, null);
-
-                    // Wait 1 second for archive to finish, then refresh the UI
-                    // (Note: this is kind of a hack since archiving is seamless and there are no messages when it occurs)
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getBaseContext(), "Archived!", Toast.LENGTH_SHORT).show();
-                            updateScanCount();
-                        }
-                    }, 1000L);
-                } else {
-                    Toast.makeText(getBaseContext(), "Pipeline is not enabled.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        // Bind to the service, to create the connection with FunfManager
-        bindService(new Intent(this, FunfManager.class), funfManagerConn, BIND_AUTO_CREATE);
-
-        scanNowButton = (Button) findViewById(R.id.scanNowButton);
-        scanNowButton.setEnabled(false);
-        scanNowButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (pipeline.isEnabled()) {
-                    // Manually register the pipeline
-//                    wifiProbe.registerListener(pipeline);
-                    locationProbe.registerListener(pipeline);
-                } else {
-                    Toast.makeText(getBaseContext(), "Pipeline is not enabled.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
     }
 
     @Override
@@ -287,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements Probe.DataListene
         updateScanCount();
         // Re-register to keep listening after probe completes.
 //        wifiProbe.registerPassiveListener(this);
-        locationProbe.registerPassiveListener(this);
+//        locationProbe.registerPassiveListener(this);
     }
 
     private void updateScanCount() {

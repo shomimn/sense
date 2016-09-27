@@ -2,11 +2,12 @@
     <string name="app_name">Sense</string>
     <string name="default_pipeline">
         {"@type":"edu.mit.media.funf.pipeline.BasicPipeline",
-         "name":"default",
-         "version":1,
-         "data":[
-            {"@type": "edu.mit.media.funf.probe.builtin.ScreenProbe", "@schedule": {"interval": 60 } }
-         ]
+        "name":"default",
+        "version":1,
+        "data":[
+        {"@type": "edu.mit.media.funf.probe.builtin.ScreenProbe", "@schedule": {"interval": 60 } }
+        ]
         }
     </string>
+    <string name="title_activity_second">SecondActivity</string>
 </resources>

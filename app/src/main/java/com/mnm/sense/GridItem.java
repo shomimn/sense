@@ -3,13 +3,15 @@ package com.mnm.sense;
 
 public class GridItem
 {
-    public int columnSpan;
+    int rowSpan;
+    int columnSpan;
     ViewInitializer initializer;
     Object data;
 
-    public GridItem(int span, ViewInitializer init, Object d)
+    public GridItem(int rows, int cols, ViewInitializer init, Object d)
     {
-        columnSpan = span;
+        rowSpan = rows;
+        columnSpan = cols;
         initializer = init;
         data = d;
     }

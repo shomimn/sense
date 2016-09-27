@@ -34,4 +34,5 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
     compile project(':SensingKitLib-release')
     compile 'com.android.support:gridlayout-v7:22.1.1'
+    compile 'com.android.support:design:22.2.0'
 }

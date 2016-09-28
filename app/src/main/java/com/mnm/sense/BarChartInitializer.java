@@ -1,6 +1,8 @@
 package com.mnm.sense;
 
 
+import android.content.Context;
+
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -14,7 +16,7 @@ public class BarChartInitializer extends ViewInitializer<BarChart, BarData>
     }
 
     @Override
-    public void init(BarChart barChart, BarData data)
+    public void init(Context context, BarChart barChart, BarData data)
     {
         barChart.setData(data);
         barChart.fitScreen();

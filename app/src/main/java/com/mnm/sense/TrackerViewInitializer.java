@@ -1,5 +1,7 @@
 package com.mnm.sense;
 
+import android.content.Context;
+
 public class TrackerViewInitializer extends ViewInitializer<TrackerView, TrackerData>
 {
     public TrackerViewInitializer()
@@ -8,11 +10,11 @@ public class TrackerViewInitializer extends ViewInitializer<TrackerView, Tracker
     }
 
     @Override
-    public void init(TrackerView view, TrackerData data)
+    public void init(Context context, TrackerView view, TrackerData data)
     {
         view.text.setText(data.text);
         view.image.setImageResource(data.resource);
-        view.image.setColorFilter(SenseApp.context().getResources().getColor(R.color.colorAccent));
+        view.image.setColorFilter(context.getResources().getColor(R.color.colorAccent));
         view.switch_.setChecked(data.on);
     }
 }

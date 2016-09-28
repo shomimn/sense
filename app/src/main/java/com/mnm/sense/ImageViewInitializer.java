@@ -1,6 +1,7 @@
 package com.mnm.sense;
 
 
+import android.content.Context;
 import android.widget.ImageView;
 
 public class ImageViewInitializer extends ViewInitializer<ImageView, Integer>
@@ -11,9 +12,8 @@ public class ImageViewInitializer extends ViewInitializer<ImageView, Integer>
     }
 
     @Override
-    public void init(ImageView view, Integer data)
+    public void init(Context context, ImageView view, Integer data)
     {
         view.setImageResource(data);
-        view.setColorFilter(SenseApp.context().getResources().getColor(R.color.colorAccent));
     }
 }

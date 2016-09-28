@@ -24,17 +24,6 @@ public class MainActivity extends AppCompatActivity implements Probe.DataListene
 
     public static final String PIPELINE_NAME = "default";
 
-    List<BarEntry> entries = new ArrayList<>(25);
-    List<String> vals = new ArrayList<>(25);
-    Random random = new Random();
-
-    GridLayout gridLayout;
-
-    ArrayList<GridItem> items;
-    BarChartInitializer barChartInitializer = new BarChartInitializer();
-    ImageViewInitializer imageViewInitializer = new ImageViewInitializer();
-    TrackerViewInitializer trackerViewInitializer = new TrackerViewInitializer();
-
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -73,7 +62,6 @@ public class MainActivity extends AppCompatActivity implements Probe.DataListene
     @Override
     public void onDataReceived(IJsonObject probeConfig, IJsonObject data)
     {
-        int x = 5;
     }
 
     @Override
@@ -85,7 +73,8 @@ public class MainActivity extends AppCompatActivity implements Probe.DataListene
 //        locationProbe.registerPassiveListener(this);
     }
 
-    private void updateScanCount() {
+    private void updateScanCount()
+    {
         // Query the pipeline db for the count of rows in the data table
 //        SQLiteDatabase db = pipeline.getDb();
 //        Cursor cursor = db.rawQuery("select * from " + NameValueDatabaseHelper.DATA_TABLE.name, null);

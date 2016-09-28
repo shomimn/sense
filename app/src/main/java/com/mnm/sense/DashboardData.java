@@ -4,8 +4,8 @@ package com.mnm.sense;
 public class DashboardData
 {
     public static final int BAR_CHART = 0;
-    public static final int COUNT = 1;
-    public static final int PIE_CHART = 2;
+    public static final int TEXT = 1;
+    public static final int MAP = 2;
 
     int type;
     Object data;

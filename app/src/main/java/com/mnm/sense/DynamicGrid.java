@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DynamicGrid
 {
     GridLayout layout;
     ArrayList<GridItem> items = new ArrayList<>();
+    HashMap<Class, ViewInitializer> initializers = new HashMap<>();
 
     public DynamicGrid(GridLayout grid)
     {
@@ -31,8 +33,9 @@ public class DynamicGrid
         {
             CardView card = (CardView) inflater.inflate(R.layout.card_item, null);
             View view = null;
+            ViewInitializer initializer = InitializerRepository.get(item.data.getClass());
 
-            view = (View) item.initializer.construct(layout.getContext(), item.data);
+            view = (View) initializer.construct(layout.getContext(), item.data);
 
             if (view == null)
                 continue;

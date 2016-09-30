@@ -1,11 +1,14 @@
 package com.mnm.sense;
 
 
+import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -13,7 +16,6 @@ public class DynamicGrid
 {
     GridLayout layout;
     ArrayList<GridItem> items = new ArrayList<>();
-    HashMap<Class, ViewInitializer> initializers = new HashMap<>();
 
     public DynamicGrid(GridLayout grid)
     {
@@ -32,10 +34,9 @@ public class DynamicGrid
         for (GridItem item : items)
         {
             CardView card = (CardView) inflater.inflate(R.layout.card_item, null);
-            View view = null;
-            ViewInitializer initializer = InitializerRepository.get(item.data.getClass());
+            ViewInitializer initializer = Initializer.get(item.data.getClass());
 
-            view = (View) initializer.construct(layout.getContext(), item.data);
+            View view = (View) initializer.construct(layout.getContext(), item.data);
 
             if (view == null)
                 continue;
@@ -46,8 +47,8 @@ public class DynamicGrid
             params.height = item.rowSpan * Util.dp(150);
             int margin = Util.dp(5);
             params.setMargins(margin, margin, margin, margin);
-            GridLayout.Spec rowSpec = GridLayout.spec(row, item.rowSpan, 1);
-            GridLayout.Spec columnSpec = GridLayout.spec(col, item.columnSpan, 1);
+            GridLayout.Spec rowSpec = GridLayout.spec(GridLayout.UNDEFINED, item.rowSpan, 1);
+            GridLayout.Spec columnSpec = GridLayout.spec(GridLayout.UNDEFINED, item.columnSpan, 1);
             params.rowSpec = rowSpec;
             params.columnSpec = columnSpec;
 

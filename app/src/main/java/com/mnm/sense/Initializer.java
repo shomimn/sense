@@ -5,13 +5,13 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
 
-public class InitializerRepository
+public class Initializer
 {
     private static HashMap<Class, ViewInitializer> byData = new HashMap<>();
     private static HashMap<Integer, ViewInitializer> byVisualization = new HashMap<>();
-    private static InitializerRepository instance = new InitializerRepository();
+    private static Initializer instance = new Initializer();
 
-    private InitializerRepository()
+    private Initializer()
     {
         byData.put(String.class, new TextViewInitializer());
         byData.put(Integer.class, new ImageViewInitializer());

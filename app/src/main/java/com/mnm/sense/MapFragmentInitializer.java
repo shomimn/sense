@@ -50,6 +50,8 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
     {
         View parentView = (View) parent;
         LinearLayout viewGroup = (LinearLayout) parentView.findViewById(R.id.layout);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewGroup.getLayoutParams();
+        params.setMargins(Util.dp(5), 0, Util.dp(5), 0);
 
         SupportMapFragment mapFragment = construct(context, data);
         AppCompatActivity activity = (AppCompatActivity) context;
@@ -57,7 +59,6 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(viewGroup.getId(), mapFragment);
-        transaction.addToBackStack(null);
         transaction.commit();
     }
 }

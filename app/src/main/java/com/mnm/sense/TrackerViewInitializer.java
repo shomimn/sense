@@ -2,6 +2,20 @@ package com.mnm.sense;
 
 import android.content.Context;
 
+class TrackerData
+{
+    String text;
+    int resource;
+    boolean on;
+
+    TrackerData(String t, int r, boolean b)
+    {
+        text = t;
+        resource = r;
+        on = b;
+    }
+}
+
 public class TrackerViewInitializer extends ViewInitializer<TrackerView, TrackerData>
 {
     public TrackerViewInitializer()

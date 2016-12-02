@@ -20,7 +20,7 @@ public class TrackerViewInitializer extends ViewInitializer<TrackerView, Tracker
 {
     public TrackerViewInitializer()
     {
-        super(TrackerView.class);
+        super(TrackerView.class, TrackerData.class);
     }
 
     @Override

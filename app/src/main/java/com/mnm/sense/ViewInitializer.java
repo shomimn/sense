@@ -12,11 +12,22 @@ import java.lang.reflect.Constructor;
 
 public abstract class ViewInitializer<T, U>
 {
+    protected int visualization;
     protected Class viewClass;
+    protected Class dataClass;
 
-    public ViewInitializer(Class aClass)
+    public ViewInitializer(Class aClass, Class dClass)
     {
         viewClass = aClass;
+        dataClass = dClass;
+        visualization = DashboardData.NULL;
+    }
+
+    public ViewInitializer(Class aClass, Class dClass, int v)
+    {
+        viewClass = aClass;
+        dataClass = dClass;
+        visualization = v;
     }
 
     public T construct(Context context, U data)
@@ -39,6 +50,7 @@ public abstract class ViewInitializer<T, U>
 
     public View construct(Context context, int layout, U data)
     {
+
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(layout, null, false);
         init(context, (T) view, data);

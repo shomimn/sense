@@ -12,7 +12,7 @@ public class BarChartInitializer extends ViewInitializer<BarChart, BarData>
 {
     public BarChartInitializer()
     {
-        super(BarChart.class);
+        super(BarChart.class, BarData.class, DashboardData.BAR_CHART);
     }
 
     @Override

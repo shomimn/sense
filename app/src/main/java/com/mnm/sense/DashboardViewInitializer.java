@@ -11,9 +11,10 @@ import java.lang.ref.WeakReference;
 
 class DashboardData
 {
-    public static final int BAR_CHART = 0;
-    public static final int TEXT = 1;
-    public static final int MAP = 2;
+    public static final int NULL = 0;
+    public static final int BAR_CHART = 1;
+    public static final int TEXT = 2;
+    public static final int MAP = 3;
 
     int type;
     Object data;
@@ -31,7 +32,7 @@ public class DashboardViewInitializer extends ViewInitializer<DashboardView, Das
 {
     public DashboardViewInitializer()
     {
-        super(DashboardView.class);
+        super(DashboardView.class, DashboardData.class);
     }
 
     @Override

@@ -9,7 +9,7 @@ public class TextViewInitializer extends ViewInitializer<TextView, String>
 {
     public TextViewInitializer()
     {
-        super(TextView.class);
+        super(TextView.class, String.class, DashboardData.TEXT);
     }
 
     @Override

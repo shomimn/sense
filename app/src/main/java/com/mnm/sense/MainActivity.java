@@ -8,18 +8,12 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
 
-import com.github.mikephil.charting.data.BarEntry;
-import com.google.gson.JsonElement;
-
-import edu.mit.media.funf.json.IJsonObject;
-import edu.mit.media.funf.probe.Probe;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import android.support.v7.widget.GridLayout;
 
-public class MainActivity extends AppCompatActivity implements Probe.DataListener
+public class MainActivity extends AppCompatActivity
 {
 
     public static final String PIPELINE_NAME = "default";
@@ -57,35 +51,5 @@ public class MainActivity extends AppCompatActivity implements Probe.DataListene
 
         viewPager.setOffscreenPageLimit(3);
         viewPager.setPageTransformer(true, new DepthPageTransformer());
-    }
-
-    @Override
-    public void onDataReceived(IJsonObject probeConfig, IJsonObject data)
-    {
-    }
-
-    @Override
-    public void onDataCompleted(IJsonObject probeConfig, JsonElement checkpoint)
-    {
-        updateScanCount();
-        // Re-register to keep listening after probe completes.
-//        wifiProbe.registerPassiveListener(this);
-//        locationProbe.registerPassiveListener(this);
-    }
-
-    private void updateScanCount()
-    {
-        // Query the pipeline db for the count of rows in the data table
-//        SQLiteDatabase db = pipeline.getDb();
-//        Cursor cursor = db.rawQuery("select * from " + NameValueDatabaseHelper.DATA_TABLE.name, null);
-//        while (cursor.moveToNext())
-//        {
-//            String id = cursor.getString(0);
-//            String device = cursor.getString(1);
-//            long timestamp = cursor.getLong(2);
-//            String value = cursor.getString(3);
-//
-//            int x = 5;
-//        }
     }
 }

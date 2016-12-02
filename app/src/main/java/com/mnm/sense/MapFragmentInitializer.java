@@ -19,7 +19,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
 {
     MapFragmentInitializer()
     {
-        super(SupportMapFragment.class);
+        super(SupportMapFragment.class, LatLng.class, DashboardData.MAP);
     }
 
     @Override

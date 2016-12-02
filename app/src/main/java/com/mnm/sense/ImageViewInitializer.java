@@ -8,7 +8,7 @@ public class ImageViewInitializer extends ViewInitializer<ImageView, Integer>
 {
     public ImageViewInitializer()
     {
-        super(ImageView.class);
+        super(ImageView.class, Integer.class);
     }
 
     @Override

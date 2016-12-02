@@ -6,12 +6,13 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.WindowManager;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import android.support.v7.widget.GridLayout;
+import com.ubhave.sensormanager.sensors.*;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -40,6 +41,12 @@ public class MainActivity extends AppCompatActivity
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        for (SensorEnum s : SensorEnum.values())
+        {
+            Log.d("toString", s.toString());
+            Log.d("SENSORENUM", s.getName());
+        }
     }
 
     private void setupViewPager(ViewPager viewPager)

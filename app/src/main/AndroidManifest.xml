@@ -37,24 +37,6 @@
             </intent-filter>
         </activity>
 
-        <service android:name="edu.mit.media.funf.FunfManager">
-            <meta-data
-                android:name="default"
-                android:value="@string/default_pipeline"/>
-        </service>
-
-        <receiver
-            android:name="edu.mit.media.funf.Launcher"
-            android:enabled="true">
-            <intent-filter>
-                <action android:name="android.intent.action.BATTERY_CHANGED"/>
-                <action android:name="android.intent.action.BOOT_COMPLETED"/>
-                <action android:name="android.intent.action.DOCK_EVENT"/>
-                <action android:name="android.intent.action.ACTION_SCREEN_ON"/>
-                <action android:name="android.intent.action.USER_PRESENT"/>
-            </intent-filter>
-        </receiver>
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDSvPNdlAUlfQlnRSoNquhA_CZkx23zXH8"/>

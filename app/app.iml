@@ -132,5 +132,12 @@
     <orderEntry type="library" exported="" name="support-annotations-23.0.0" level="project" />
     <orderEntry type="library" exported="" name="cardview-v7-22.2.1" level="project" />
     <orderEntry type="library" exported="" name="design-22.2.0" level="project" />
+    <orderEntry type="module" module-name="SensorDataManager" exported="" />
+    <orderEntry type="module" module-name="SensorManager" exported="" />
+    <orderEntry type="library" exported="" name="httpmime-4.1.2" level="project" />
+    <orderEntry type="library" exported="" name="sqlcipher" level="project" />
+    <orderEntry type="library" exported="" name="support-v4-22.2.1" level="project" />
+    <orderEntry type="library" exported="" name="support-annotations-22.2.1" level="project" />
+    <orderEntry type="library" exported="" name="ziputils-1.1" level="project" />
   </component>
 </module>

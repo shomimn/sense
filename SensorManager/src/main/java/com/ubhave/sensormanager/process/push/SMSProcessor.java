@@ -37,7 +37,7 @@ public class SMSProcessor extends CommunicationProcessor
 		{
 			data.setNumberOfWords(words.length);
 			data.setContentLength(content.length());
-			data.setAddress(hashPhoneNumber(address));
+			data.setAddress(address);
 			data.setMessageType(mesgType);
 			data.setEventType(event);
 		}

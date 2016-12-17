@@ -76,7 +76,8 @@ public class SMSContentReaderSensor extends AbstractContentReaderSensor
 	@Override
 	protected String[] getContentKeysArray()
 	{
-		return new String[] {ContentReaderConfig.SMS_CONTENT_ADDRESS_KEY,
+		return new String[] {
+				ContentReaderConfig.SMS_CONTENT_ADDRESS_KEY,
 				ContentReaderConfig.SMS_CONTENT_TYPE_KEY,
 				ContentReaderConfig.SMS_CONTENT_DATE_KEY,
 				ContentReaderConfig.SMS_CONTENT_BODY_KEY};

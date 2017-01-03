@@ -2,6 +2,7 @@ package com.mnm.sense;
 
 import com.github.mikephil.charting.data.BarData;
 import com.google.android.gms.maps.model.LatLng;
+import com.mnm.sense.trackers.Tracker;
 
 import java.util.HashMap;
 
@@ -16,7 +17,7 @@ public class Initializer
         byData.put(String.class, new TextViewInitializer());
         byData.put(Integer.class, new ImageViewInitializer());
         byData.put(BarData.class, new BarChartInitializer());
-        byData.put(TrackerData.class, new TrackerViewInitializer());
+        byData.put(Tracker.class, new TrackerViewInitializer());
         byData.put(DashboardData.class, new DashboardViewInitializer());
         byData.put(LatLng.class, new MapFragmentInitializer());
 
@@ -27,7 +28,14 @@ public class Initializer
 
     public static ViewInitializer get(Class key)
     {
-        return instance.byData.get(key);
+        ViewInitializer initializer = instance.byData.get(key);
+
+        if (initializer == null)
+        {
+            initializer = instance.byData.get(key.getSuperclass());
+        }
+
+        return initializer;
     }
 
     public static ViewInitializer get(Integer key)

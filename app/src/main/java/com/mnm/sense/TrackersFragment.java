@@ -12,9 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.data.BarEntry;
+import com.mnm.sense.trackers.Tracker;
+import com.ubhave.sensormanager.sensors.SensorUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class TrackersFragment extends Fragment
@@ -52,16 +55,19 @@ public class TrackersFragment extends Fragment
 
         grid = new DynamicGrid(gridLayout);
 
-        grid.addItem(new GridItem(1, 1, new TrackerData("Steps", R.drawable.ic_directions_walk, true)));
-        grid.addItem(new GridItem(1, 1, new TrackerData("Location", R.drawable.ic_my_location_black_48dp, true)));
-        grid.addItem(new GridItem(1, 1, new TrackerData("WiFi", R.drawable.ic_wifi_black_48dp, false)));
-        grid.addItem(new GridItem(1, 1, new TrackerData("Battery", R.drawable.ic_battery_full_black_48dp, false)));
-        grid.addItem(new GridItem(1, 1, new TrackerData("Calls", R.drawable.ic_phone_in_talk_black_48dp, false)));
-        grid.addItem(new GridItem(1, 1, new TrackerData("SMS", R.drawable.ic_sms_black_48dp, false)));
-        grid.addItem(new GridItem(1, 1, new TrackerData("Pie Chart", R.drawable.ic_pie_chart_black_48dp, true)));
-        grid.addItem(new GridItem(1, 1, new TrackerData("Visualize", R.drawable.ic_show_chart_black_48dp, true)));
+//        grid.addItem(new GridItem(1, 1, new TrackerData("Steps", R.drawable.ic_directions_walk, true)));
+//        grid.addItem(new GridItem(1, 1, new TrackerData("Location", R.drawable.ic_my_location_black_48dp, true)));
+//        grid.addItem(new GridItem(1, 1, new TrackerData("WiFi", R.drawable.ic_wifi_black_48dp, false)));
+//        grid.addItem(new GridItem(1, 1, new TrackerData("Battery", R.drawable.ic_battery_full_black_48dp, false)));
+//        grid.addItem(new GridItem(1, 1, new TrackerData("Calls", R.drawable.ic_phone_in_talk_black_48dp, false)));
+//        grid.addItem(new GridItem(1, 1, new TrackerData("SMS", R.drawable.ic_sms_black_48dp, false)));
+//        grid.addItem(new GridItem(1, 1, new TrackerData("Pie Chart", R.drawable.ic_pie_chart_black_48dp, true)));
+//        grid.addItem(new GridItem(1, 1, new TrackerData("Visualize", R.drawable.ic_show_chart_black_48dp, true)));
 
-        grid.layoutItems(inflater);
+        for (Tracker tracker : MainActivity.trackers.values())
+            grid.addItem(new GridItem(1, 1, tracker));
+
+         grid.layoutItems(inflater);
 
         return scrollView;
     }

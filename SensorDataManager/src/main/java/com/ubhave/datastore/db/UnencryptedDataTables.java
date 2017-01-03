@@ -94,7 +94,7 @@ public class UnencryptedDataTables extends SQLiteOpenHelper implements DataTable
 		{
 			database.endTransaction();
 			database.close();
-			close();
+//			close();
 		}
 	}
 

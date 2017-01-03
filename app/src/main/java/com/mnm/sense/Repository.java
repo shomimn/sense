@@ -56,7 +56,7 @@ public class Repository extends AbstractAsyncTransferLogger implements DataUploa
     @Override
     protected String getDataPostURL()
     {
-        return "http://192.168.0.104/api/test";
+        return "http://192.168.0.11/api/test";
     }
 
     @Override

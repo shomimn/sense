@@ -4,6 +4,8 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
+              android:foreground="?android:attr/selectableItemBackground"
+              android:background="?android:selectableItemBackground"
               android:weightSum="5">
     <ImageView
         android:id="@+id/image"
@@ -14,25 +16,25 @@
         android:layout_marginTop="5dp"
         android:tint="@color/colorAccent"
     ></ImageView>
-    <LinearLayout android:id="@+id/layout"
+    <com.mnm.sense.views.InterceptingLinearLayout android:id="@+id/layout"
                   android:layout_width="match_parent"
                   android:layout_height="0dp"
-                  android:layout_weight="3.5"
+                  android:layout_weight="4.2"
                   android:orientation="vertical"
     >
 
-    </LinearLayout>
-    <ImageButton
-        android:id="@+id/button"
-        android:layout_height="0dp"
-        android:layout_width="50dp"
-        android:layout_weight="0.7"
-        android:layout_gravity="bottom|right"
-        android:src="@drawable/ic_show_chart_black_48dp"
-        android:gravity="bottom|right"
-        android:theme="@style/MyButton"
-        android:tint="@color/colorAccent"
-        style="@style/Widget.AppCompat.Button.Borderless"
-    ></ImageButton>
+    </com.mnm.sense.views.InterceptingLinearLayout>
+    <!--<ImageButton-->
+        <!--android:id="@+id/button"-->
+        <!--android:layout_height="0dp"-->
+        <!--android:layout_width="50dp"-->
+        <!--android:layout_weight="0.7"-->
+        <!--android:layout_gravity="bottom|right"-->
+        <!--android:src="@drawable/ic_show_chart_black_48dp"-->
+        <!--android:gravity="bottom|right"-->
+        <!--android:theme="@style/MyButton"-->
+        <!--android:tint="@color/colorAccent"-->
+        <!--style="@style/Widget.AppCompat.Button.Borderless"-->
+    <!--&gt;</ImageButton>-->
 
 </LinearLayout>

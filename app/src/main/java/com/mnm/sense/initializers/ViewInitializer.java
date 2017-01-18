@@ -1,4 +1,4 @@
-package com.mnm.sense;
+package com.mnm.sense.initializers;
 
 
 import android.content.Context;
@@ -8,11 +8,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.mnm.sense.R;
+import com.mnm.sense.Visualization;
+
 import java.lang.reflect.Constructor;
 
 public abstract class ViewInitializer<T, U>
 {
-    protected int visualization;
+    protected String visualization;
     protected Class viewClass;
     protected Class dataClass;
 
@@ -20,17 +23,17 @@ public abstract class ViewInitializer<T, U>
     {
         viewClass = aClass;
         dataClass = dClass;
-        visualization = DashboardData.NULL;
+        visualization = Visualization.NONE;
     }
 
-    public ViewInitializer(Class aClass, Class dClass, int v)
+    public ViewInitializer(Class aClass, Class dClass, String v)
     {
         viewClass = aClass;
         dataClass = dClass;
         visualization = v;
     }
 
-    public T construct(Context context, U data)
+    public T construct(Context context, U model)
     {
         T view = null;
 
@@ -38,7 +41,7 @@ public abstract class ViewInitializer<T, U>
         {
             Constructor constructor = viewClass.getConstructor(Context.class);
             view = (T) constructor.newInstance(context);
-            init(context, view, data);
+            init(context, view, model);
         }
         catch (Exception e)
         {
@@ -48,22 +51,21 @@ public abstract class ViewInitializer<T, U>
         return view;
     }
 
-    public View construct(Context context, int layout, U data)
+    public View construct(Context context, int layout, U model)
     {
-
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = inflater.inflate(layout, null, false);
-        init(context, (T) view, data);
+        init(context, (T) view, model);
 
         return view;
     }
 
-    public <Y> void injectIn(Context context, Y parent, U data)
+    public <Y> void injectIn(Context context, Y parent, U model)
     {
         View parentView = (View) parent;
         LinearLayout viewGroup = (LinearLayout) parentView.findViewById(R.id.layout);
 
-        T view = construct(context, data);
+        T view = construct(context, model);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams
                 (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         params.gravity = Gravity.CENTER;
@@ -71,5 +73,5 @@ public abstract class ViewInitializer<T, U>
         viewGroup.addView((View) view, params);
     }
 
-    public abstract void init(Context context, T view, U data);
+    public abstract void init(Context context, T view, U model);
 }

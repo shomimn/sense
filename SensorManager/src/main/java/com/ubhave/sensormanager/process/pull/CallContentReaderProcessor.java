@@ -48,7 +48,13 @@ public class CallContentReaderProcessor extends ContentReaderProcessor
 				
 				if (key.equals(ContentReaderConfig.CONTENT_MAP_NUMBER_KEY) || key.equals(ContentReaderConfig.CONTENT_MAP_ADDRESS_KEY))
 				{
-					value = hashPhoneNumber(value);
+//					value = hashPhoneNumber(value);
+					String person = getContactName(appContext, value);
+
+					if (person == null)
+						person = value;
+
+                    entry.set("person", person);
 				}
 				else if (key.equals(CallLog.Calls.TYPE))
 				{

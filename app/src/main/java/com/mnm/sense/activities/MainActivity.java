@@ -1,13 +1,11 @@
-package com.mnm.sense;
+package com.mnm.sense.activities;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
+import android.content.Intent;
 import android.graphics.Color;
-import android.hardware.Sensor;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,38 +13,38 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.WindowManager;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.mnm.sense.trackers.BatteryTracker;
-import com.mnm.sense.trackers.BluetoothTracker;
-import com.mnm.sense.trackers.CallLogTracker;
-import com.mnm.sense.trackers.LightTracker;
-import com.mnm.sense.trackers.PassiveLocationTracker;
-import com.mnm.sense.trackers.ProximityTracker;
-import com.mnm.sense.trackers.SMSContentTracker;
-import com.mnm.sense.trackers.ScreenTracker;
-import com.mnm.sense.trackers.StepsTracker;
+import com.github.mikephil.charting.utils.Utils;
+import com.mnm.sense.DepthPageTransformer;
+import com.mnm.sense.GridItem;
+import com.mnm.sense.R;
+import com.mnm.sense.SenseApp;
+import com.mnm.sense.ViewPagerAdapter;
+import com.mnm.sense.Visualization;
+import com.mnm.sense.models.DashboardModel;
+import com.mnm.sense.fragments.DashboardFragment;
+import com.mnm.sense.fragments.TrackersFragment;
+import com.mnm.sense.initializers.TrackerViewInitializer;
 import com.mnm.sense.trackers.Tracker;
-import com.mnm.sense.trackers.WifiTracker;
-import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.sensors.*;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class MainActivity extends AppCompatActivity
-                          implements PermissionHandler
 {
-
-    public static final String PIPELINE_NAME = "default";
-
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    public static HashMap<Integer, Tracker> trackers = new HashMap<>();
+
+    public DashboardFragment dashboardFragment;
+    public TrackersFragment trackersFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        Utils.init(this);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -67,33 +65,6 @@ public class MainActivity extends AppCompatActivity
             Log.d("toString", s.toString());
             Log.d("SENSORENUM", s.getName());
         }
-
-        try
-        {
-            trackers.put(SensorUtils.SENSOR_TYPE_STEP_COUNTER, new StepsTracker(this));
-            trackers.put(SensorUtils.SENSOR_TYPE_WIFI, new WifiTracker(this));
-            trackers.put(SensorUtils.SENSOR_TYPE_BATTERY, new BatteryTracker(this));
-            trackers.put(SensorUtils.SENSOR_TYPE_PASSIVE_LOCATION, new PassiveLocationTracker(this));
-            trackers.put(SensorUtils.SENSOR_TYPE_SMS_CONTENT_READER, new SMSContentTracker(this));
-            trackers.put(SensorUtils.SENSOR_TYPE_BLUETOOTH, new BluetoothTracker(this));
-            trackers.put(SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER, new CallLogTracker(this));
-            trackers.put(SensorUtils.SENSOR_TYPE_LIGHT, new LightTracker(this));
-            trackers.put(SensorUtils.SENSOR_TYPE_PROXIMITY, new ProximityTracker(this));
-            trackers.put(SensorUtils.SENSOR_TYPE_SCREEN, new ScreenTracker(this));
-        }
-        catch (ESException e)
-        {
-            e.printStackTrace();
-        }
-
-//        addTracker(SensorUtils.SENSOR_TYPE_SMS_CONTENT_READER);
-//        addTracker(SensorUtils.SENSOR_TYPE_BATTERY);
-//        addTracker(SensorUtils.SENSOR_TYPE_PASSIVE_LOCATION);
-//        addTracker(SensorUtils.SENSOR_TYPE_SCREEN);
-//        addTracker(SensorUtils.SENSOR_TYPE_ACCELEROMETER);
-//        addTracker(SensorUtils.SENSOR_TYPE_BLUETOOTH);
-//        addTracker(SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER);
-//        addTracker(SensorUtils.SENSOR_TYPE_SMS);
 
         ActivityCompat.requestPermissions(MainActivity.this,
                 new String[] {
@@ -133,30 +104,55 @@ public class MainActivity extends AppCompatActivity
 
     private void setupViewPager(ViewPager viewPager)
     {
+        dashboardFragment = new DashboardFragment();
+        trackersFragment = new TrackersFragment();
+
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new DashboardFragment(), "Dashboard");
-        adapter.addFragment(new TrackersFragment(), "Trackers");
+        adapter.addFragment(dashboardFragment, "Dashboard");
+        adapter.addFragment(trackersFragment, "Trackers");
         viewPager.setAdapter(adapter);
 
         viewPager.setOffscreenPageLimit(3);
         viewPager.setPageTransformer(true, new DepthPageTransformer());
     }
 
-    private void addTracker(Tracker type)
-    {
-//        try
-//        {
-//            trackers.put(type, new Tracker(, type));
-//        }
-//        catch (ESException e)
-//        {
-//            e.printStackTrace();
-//        }
-    }
-
     @Override
-    public void request(int requestCode, String[] permissions)
+    protected void onActivityResult(int requestCode, int resultCode, Intent result)
     {
-        ActivityCompat.requestPermissions(MainActivity.this, permissions, requestCode);
+        super.onActivityResult(requestCode, resultCode, result);
+
+        if (requestCode == TrackerViewInitializer.REQUEST_CODE && resultCode == RESULT_OK)
+        {
+            Bundle bundle = result.getExtras();
+
+            Tracker tracker = SenseApp.instance().tracker(bundle.getInt("tracker"));
+            ArrayList<String> forInsertion = bundle.getStringArrayList("insert");
+            ArrayList<String> forRemoval = bundle.getStringArrayList("remove");
+
+            Iterator<GridItem> iterator = dashboardFragment.grid.items.iterator();
+
+            while(iterator.hasNext())
+            {
+                GridItem item = iterator.next();
+                DashboardModel data = (DashboardModel) item.data;
+
+                if (data.tracker.type == tracker.type && forRemoval.contains(data.visualization))
+                {
+                    tracker.updateCallbacks.remove(data.visualization);
+                    dashboardFragment.grid.removeItem(item);
+                    iterator.remove();
+                }
+            }
+
+            for (String key : forInsertion)
+            {
+                Visualization visualization = tracker.visualizations.get(key);
+
+                dashboardFragment.addDashboardView(visualization.rows, visualization.cols,
+                        new DashboardModel(tracker, key, tracker.getModel(key)));
+            }
+
+            dashboardFragment.layoutDashboard();
+        }
     }
 }

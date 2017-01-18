@@ -52,6 +52,12 @@ public class SMSContentReaderProcessor extends ContentReaderProcessor
 				if (key.equals(ContentReaderConfig.SMS_CONTENT_ADDRESS_KEY))
 				{
 //					value = hashPhoneNumber(value);
+					String person = getContactName(appContext, value);
+
+					if (person == null)
+						person = value;
+
+					entry.set("person", person);
 				}
 				else if (key.equals(ContentReaderConfig.SMS_CONTENT_BODY_KEY))
 				{

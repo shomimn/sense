@@ -15,9 +15,10 @@ import com.ubhave.sensormanager.data.SensorData;
 
 public class UnencryptedDataTable extends AbstractDataTable
 {	
-	public UnencryptedDataTable(final String tableName)
+	public UnencryptedDataTable(final String tableName, final SQLiteDatabase db)
 	{
 		super(tableName);
+		createTable(db);
 	}
 	
 	public void createTable(final SQLiteDatabase database)

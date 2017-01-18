@@ -54,7 +54,7 @@ public class UnencryptedDataTables extends SQLiteOpenHelper implements DataTable
 		return dataTableMap.keySet();
 	}
 
-	private UnencryptedDataTable getTable(final String tableName)
+	private UnencryptedDataTable getTable(final String tableName, final SQLiteDatabase db)
 	{
 		UnencryptedDataTable table = dataTableMap.get(tableName);
 		if (table == null)
@@ -63,7 +63,7 @@ public class UnencryptedDataTables extends SQLiteOpenHelper implements DataTable
 			{
 				Log.d(DatabaseStorage.TAG, "Adding: "+tableName+" to table map.");
 			}
-			table = new UnencryptedDataTable(tableName);
+			table = new UnencryptedDataTable(tableName, db);
 			dataTableMap.put(tableName, table);
 		}
 		return table;
@@ -76,9 +76,9 @@ public class UnencryptedDataTables extends SQLiteOpenHelper implements DataTable
 		{
 			Log.d(DatabaseStorage.TAG, "Writing to table: "+tableName+".");
 		}
-		
-		UnencryptedDataTable table = getTable(tableName);
+
 		SQLiteDatabase database = getWritableDatabase();
+		UnencryptedDataTable table = getTable(tableName, database);
 		database.beginTransaction();
 		try
 		{
@@ -104,8 +104,8 @@ public class UnencryptedDataTables extends SQLiteOpenHelper implements DataTable
 		synchronized (lock)
 		{
 			List<SensorData> data = null;
-			UnencryptedDataTable table = getTable(tableName);
 			SQLiteDatabase database = getReadableDatabase();
+			UnencryptedDataTable table = getTable(tableName, database);
 			database.beginTransaction();
 			try
 			{
@@ -135,8 +135,8 @@ public class UnencryptedDataTables extends SQLiteOpenHelper implements DataTable
 		synchronized (lock)
 		{
 			List<JSONObject> data = null;
-			UnencryptedDataTable table = getTable(tableName);
 			SQLiteDatabase database = getReadableDatabase();
+			UnencryptedDataTable table = getTable(tableName, database);
 			database.beginTransaction();
 			try
 			{
@@ -162,8 +162,8 @@ public class UnencryptedDataTables extends SQLiteOpenHelper implements DataTable
 	{
 		synchronized (lock)
 		{
-			UnencryptedDataTable table = getTable(tableName);
 			SQLiteDatabase database = getWritableDatabase();
+			UnencryptedDataTable table = getTable(tableName, database);
 			database.beginTransaction();
 			try
 			{

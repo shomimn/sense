@@ -1,4 +1,4 @@
-package com.mnm.sense;
+package com.mnm.sense.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.mnm.sense.R;
+
 
 public class TrackerView extends LinearLayout
 {
@@ -18,10 +20,10 @@ public class TrackerView extends LinearLayout
     public Switch switch_;
 
     public TrackerView(Context context)
-    {
-        super(context);
-        init();
-    }
+{
+    super(context);
+    init();
+}
 
     public TrackerView(Context context, AttributeSet attrs)
     {

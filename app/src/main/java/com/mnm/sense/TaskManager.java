@@ -2,6 +2,7 @@ package com.mnm.sense;
 
 
 import android.os.Handler;
+import android.os.Looper;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -37,6 +38,7 @@ public class TaskManager
         threadPools[Task.SERVER] = Executors.newFixedThreadPool(1);
         threadPools[Task.GENERAL] = Executors.newFixedThreadPool(CORE_POOL_SIZE - 1);
 
+        Looper.prepare();
         mainHandler = new Handler();
     }
 

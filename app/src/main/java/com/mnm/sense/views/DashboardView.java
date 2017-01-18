@@ -1,4 +1,4 @@
-package com.mnm.sense;
+package com.mnm.sense.views;
 
 
 import android.content.Context;
@@ -9,10 +9,12 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.mnm.sense.R;
+
 public class DashboardView extends LinearLayout
 {
-    ImageView image;
-    ImageButton button;
+    public ImageView image;
+    public ImageButton button;
 
     public DashboardView(Context context)
     {

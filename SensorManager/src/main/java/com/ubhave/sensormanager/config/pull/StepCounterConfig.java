@@ -37,7 +37,7 @@ public class StepCounterConfig
 	 * Default values
 	 */
 	private static final long DEFAULT_SAMPLING_WINDOW_SIZE_MILLIS = 10 * 1000L;
-	private static final long DEFAULT_SLEEP_INTERVAL = 2 * 60 * 1000L;
+	private static final long DEFAULT_SLEEP_INTERVAL = 1 * 1000L;
 	private static final int DEFAULT_SAMPLING_DELAY = SensorManager.SENSOR_DELAY_GAME;
 	
 	public static SensorConfig getDefault()

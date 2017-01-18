@@ -112,7 +112,7 @@ public class SmsSensor extends AbstractPushSensor
 									else
 									{
 										prevMessageId = messageId;
-										logDataSensed(System.currentTimeMillis(), content, sentTo, messageType, 
+										logDataSensed(System.currentTimeMillis(), content, sentTo, messageType,
 												SmsData.SMS_CONTENT_CHANGED);
 									}
 								}

@@ -38,6 +38,7 @@ public class SmsData extends SensorData
 	private String address;
 	private String messageType;
 	private String eventType;
+	private String person;
 	private final HashMap<String, Integer> wordCategories;
 	
 	public SmsData(long recvTimestamp, SensorConfig config)
@@ -114,5 +115,15 @@ public class SmsData extends SensorData
 	public int getSensorType()
 	{
 		return SensorUtils.SENSOR_TYPE_SMS;
+	}
+
+	public String getPerson()
+	{
+		return person;
+	}
+
+	public void setPerson(String person)
+	{
+		this.person = person;
 	}
 }

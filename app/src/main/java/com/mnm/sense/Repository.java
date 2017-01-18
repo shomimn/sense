@@ -4,17 +4,22 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.ubhave.datahandler.ESDataManager;
 import com.ubhave.datahandler.config.DataStorageConfig;
 import com.ubhave.datahandler.except.DataHandlerException;
 import com.ubhave.datahandler.loggertypes.AbstractAsyncTransferLogger;
 import com.ubhave.datahandler.transfer.DataUploadCallback;
 import com.ubhave.sensormanager.ESException;
 
+import java.util.Date;
 import java.util.HashMap;
 
 public class Repository extends AbstractAsyncTransferLogger implements DataUploadCallback
 {
     private static Repository _instance;
+
+    private int updateInterval = 10 * 60000;
+    private long prev = 0;
 
     protected Repository(Context context) throws DataHandlerException, ESException
     {
@@ -44,7 +49,7 @@ public class Repository extends AbstractAsyncTransferLogger implements DataUploa
     @Override
     protected long getTransferAlarmLengthMillis()
     {
-        return 30000;
+        return updateInterval;
     }
 
     @Override
@@ -56,7 +61,7 @@ public class Repository extends AbstractAsyncTransferLogger implements DataUploa
     @Override
     protected String getDataPostURL()
     {
-        return "http://192.168.0.11/api/test";
+        return "http://192.168.0.10/api/test";
     }
 
     @Override
@@ -109,12 +114,22 @@ public class Repository extends AbstractAsyncTransferLogger implements DataUploa
     @Override
     public void onDataUploaded()
     {
-
     }
 
     @Override
     public void onDataUploadFailed()
     {
         Log.d("UPLOAD", "upload failed");
+    }
+
+    public void setUpdateInterval(int millis) throws DataHandlerException
+    {
+        updateInterval = millis;
+        configureDataStorage();
+    }
+
+    public int getUpdateInterval()
+    {
+        return updateInterval / 1000;
     }
 }

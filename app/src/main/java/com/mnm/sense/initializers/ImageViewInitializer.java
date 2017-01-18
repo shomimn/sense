@@ -1,4 +1,4 @@
-package com.mnm.sense;
+package com.mnm.sense.initializers;
 
 
 import android.content.Context;
@@ -12,8 +12,8 @@ public class ImageViewInitializer extends ViewInitializer<ImageView, Integer>
     }
 
     @Override
-    public void init(Context context, ImageView view, Integer data)
+    public void init(Context context, ImageView view, Integer model)
     {
-        view.setImageResource(data);
+        view.setImageResource(model);
     }
 }

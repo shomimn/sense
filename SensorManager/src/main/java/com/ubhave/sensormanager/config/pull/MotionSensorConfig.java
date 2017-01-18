@@ -36,8 +36,8 @@ public class MotionSensorConfig
 	/*
 	 * Default values
 	 */
-	private static final long DEFAULT_SAMPLING_WINDOW_SIZE_MILLIS = 8000L;
-	private static final long DEFAULT_SLEEP_INTERVAL = 2 * 60 * 1000L;
+	private static final long DEFAULT_SAMPLING_WINDOW_SIZE_MILLIS = 10000L;
+	private static final long DEFAULT_SLEEP_INTERVAL = 1 * 1000L;
 	private static final int DEFAULT_SAMPLING_DELAY = SensorManager.SENSOR_DELAY_GAME;
 	private static final float DEFAULT_LOW_PASS_ALPHA = 0.25f;
 	private static final int DEFAULT_MOVEMENT_THRESHOLD = 25;

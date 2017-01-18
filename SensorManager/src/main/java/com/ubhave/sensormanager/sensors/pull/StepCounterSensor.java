@@ -48,7 +48,7 @@ public class StepCounterSensor extends AbstractPullSensor
 	private final SensorManager sensorManager; // Controls the hardware sensor
 
 	private StepCounterData data;
-	private float numSteps;
+	private float numSteps = 0;
 	private long lastBoot;
 
 	public static StepCounterSensor getSensor(final Context context) throws ESException
@@ -114,6 +114,7 @@ public class StepCounterSensor extends AbstractPullSensor
 							if (isSensing)
 							{
 								numSteps = event.values[0];
+//								++numSteps;
 								long millisSinceSystemBoot = SystemClock.elapsedRealtime();
 								lastBoot = System.currentTimeMillis() - millisSinceSystemBoot;
 								

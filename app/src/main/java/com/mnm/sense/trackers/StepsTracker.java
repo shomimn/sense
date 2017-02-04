@@ -1,5 +1,7 @@
 package com.mnm.sense.trackers;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.DashPathEffect;
 import android.util.Log;
 import android.widget.TextView;
@@ -14,7 +16,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+import com.mnm.sense.NotificationCreator;
 import com.mnm.sense.R;
+import com.mnm.sense.SenseApp;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.VisualizationAdapter;
 import com.mnm.sense.models.BarChartModel;
@@ -24,13 +28,19 @@ import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.StepCounterData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 public class StepsTracker extends Tracker
 {
+    float firstCount = 0;
+    float steps = 0;
+
     public StepsTracker() throws ESException
     {
         super(SensorUtils.SENSOR_TYPE_STEP_COUNTER);
@@ -39,11 +49,15 @@ public class StepsTracker extends Tracker
         resource = R.drawable.ic_directions_walk;
         isOn = false;
 
+        limit = new Limit("Daily goal", 1000, 20000);
+
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
         visualizations.put(Visualization.BAR_CHART, new Visualization(1, 3, false));
 
         adapters.put(Visualization.TEXT, new StepsTextAdapter());
         adapters.put(Visualization.BAR_CHART, new StepsDailyBarAdapter());
+
+        getConfig().edit().clear().commit();
     }
 
     @Override
@@ -55,6 +69,46 @@ public class StepsTracker extends Tracker
             return new BarChartModel(this, (BarData) super.getModel(visualizationType));
 
         return null;
+    }
+
+    @Override
+    public void limitNotification(SensorData data)
+    {
+        SharedPreferences prefs = getConfig();
+
+        Calendar calendar = Calendar.getInstance();
+        Date date = calendar.getTime();
+        DateFormat dateFormat = DateFormat.getDateInstance();
+        String stringDate = dateFormat.format(date);
+
+        if (prefs.getBoolean(stringDate, false))
+            return;
+
+        StepCounterData stepsData = (StepCounterData) data;
+        if (stepsData.getNumSteps() >= limit.value)
+        {
+            NotificationCreator.create(resource, "Sense", "Well done, you've reached your daily steps goal!");
+
+            prefs.edit().putBoolean(stringDate, true).commit();
+        }
+    }
+
+    @Override
+    public void correctData(SensorData data)
+    {
+        StepCounterData stepsData = (StepCounterData) data;
+        float lastCount = stepsData.getNumSteps();
+
+        if (firstCount == 0)
+        {
+            firstCount = lastCount;
+            stepsData.setNumSteps(0);
+
+            return;
+        }
+
+        steps = lastCount - firstCount;
+        stepsData.setNumSteps(steps);
     }
 }
 
@@ -91,13 +145,12 @@ class StepsTextAdapter implements VisualizationAdapter<TextView, String>
 
 class StepsDailyBarAdapter implements VisualizationAdapter<BarChart, BarData>
 {
-    float prevSteps = 0;
-    HashMap<Integer, Float> counter = new HashMap<>();
+    float[] counter = new float[24];
 
     public StepsDailyBarAdapter()
     {
-        for (int i = 1; i < 25; ++i)
-            counter.put(i, 0f);
+        for (int i = 0; i < 24; ++i)
+            counter[i] = 0f;
     }
 
     @Override
@@ -116,24 +169,15 @@ class StepsDailyBarAdapter implements VisualizationAdapter<BarChart, BarData>
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(stepsData.getTimestamp());
-        int hour = cal.get(Calendar.HOUR);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
 
-        if (prevSteps != 0)
-        {
-            float diff = steps - prevSteps;
-            Log.d("DIFF: ", String.valueOf(diff));
-            updateCounter(hour, diff);
-        }
-        else
-            updateCounter(hour, 0f);
-
-        prevSteps = steps;
+        counter[hour] = steps;
 
         BarData barData = new BarData();
         ArrayList<BarEntry> entries = new ArrayList<>();
 
-        for (Map.Entry<Integer, Float> entry : counter.entrySet())
-            entries.add(new BarEntry(entry.getKey(), entry.getValue()));
+        for (int i = 0; i < 24; ++i)
+            entries.add(new BarEntry(i, counter[i]));
 
         BarDataSet dataSet = new BarDataSet(entries, "Steps");
         dataSet.setValueFormatter(new IValueFormatter()
@@ -169,24 +213,18 @@ class StepsDailyBarAdapter implements VisualizationAdapter<BarChart, BarData>
         xAxis.setDrawAxisLine(true);
         xAxis.setAvoidFirstLastClipping(true);
         xAxis.setDrawLabels(true);
+        xAxis.setGranularity(1f);
+        xAxis.setGranularityEnabled(true);
         xAxis.setValueFormatter(new IAxisValueFormatter()
         {
             @Override
             public String getFormattedValue(float value, AxisBase axis)
             {
-                if (value % 4.0 == 0)
+                if (value % 4.0 == 0 || value == 23)
                     return String.valueOf((int)value);
 
-                return ".";
+                return "";
             }
         });
-    }
-
-    void updateCounter(Integer key, Float increment)
-    {
-        if (counter.containsKey(key))
-            counter.put(key, counter.get(key) + increment);
-        else
-            counter.put(key, increment);
     }
 }

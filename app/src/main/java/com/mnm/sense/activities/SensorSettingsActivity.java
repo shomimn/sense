@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.mnm.sense.R;
@@ -21,6 +23,7 @@ import com.mnm.sense.SenseApp;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.trackers.Tracker;
 import com.mnm.sense.views.BottomBorderedLinearLayout;
+import com.mnm.sense.views.LimitView;
 import com.mnm.sense.views.UpdateView;
 
 import java.util.ArrayList;
@@ -32,6 +35,9 @@ public class SensorSettingsActivity extends AppCompatActivity
     ImageView trackerImage;
     LinearLayout visualizationLayout;
     UpdateView updateView;
+    CardView limitCard;
+    LimitView limitView;
+
     Tracker tracker;
     ArrayList<String> forRemoval = new ArrayList<>();
     ArrayList<String> forInsertion = new ArrayList<>();
@@ -47,6 +53,8 @@ public class SensorSettingsActivity extends AppCompatActivity
         trackerImage = (ImageView) findViewById(R.id.tracker_img);
         visualizationLayout = (LinearLayout) findViewById(R.id.visualization_layout);
         updateView = (UpdateView) findViewById(R.id.update_view);
+        limitCard = (CardView) findViewById(R.id.limit_card);
+        limitView = (LimitView) findViewById(R.id.limit_view);
 
         trackerTitle.getRootView().setBackgroundColor(Color.parseColor("#EEEEEE"));
 
@@ -62,6 +70,7 @@ public class SensorSettingsActivity extends AppCompatActivity
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         addVisualizations();
+        setupLimits();
         setupUpdateView();
     }
 
@@ -156,6 +165,40 @@ public class SensorSettingsActivity extends AppCompatActivity
                 tracker.setSenseInterval(updateView.intervalSlider.getProgress() * 1000);
                 tracker.restart();
                 updateView.hideButtons();
+            }
+        });
+    }
+
+    public void setupLimits()
+    {
+        if (!tracker.hasLimit())
+        {
+            limitCard.setVisibility(View.GONE);
+            return;
+        }
+
+        limitView.viewTitle.setText(tracker.limit.title);
+
+        limitView.intervalSlider.setMax(tracker.limit.maxValue);
+        limitView.intervalSlider.setProgress(tracker.limit.value);
+
+        limitView.cancel.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                limitView.animateSlider(tracker.limit.value);
+                limitView.hideButtons();
+            }
+        });
+
+        limitView.confirm.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                tracker.limit.value = limitView.intervalSlider.getProgress();
+                limitView.hideButtons();
             }
         });
     }

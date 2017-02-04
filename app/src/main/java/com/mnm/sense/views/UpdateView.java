@@ -64,18 +64,7 @@ public class UpdateView extends LinearLayout
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b)
             {
-                if (i < 60)
-                {
-                    intervalSlider.setProgress(60);
-                    return;
-                }
-
-                int mins = i / 60;
-                int hours = mins / 60;
-                mins %= 60;
-
-//                intervalValue.setText(String.valueOf(i) + " seconds");
-                intervalValue.setText(String.format("%d h : %d m", hours, mins));
+                displayProgress(i);
             }
 
             @Override
@@ -109,5 +98,20 @@ public class UpdateView extends LinearLayout
         anim.setDuration(500);
         anim.setInterpolator(new DecelerateInterpolator());
         anim.start();
+    }
+
+    public void displayProgress(int progress)
+    {
+        if (progress < 60)
+        {
+            intervalSlider.setProgress(60);
+            return;
+        }
+
+        int mins = progress / 60;
+        int hours = mins / 60;
+        mins %= 60;
+
+        intervalValue.setText(String.format("%d h : %d m", hours, mins));
     }
 }

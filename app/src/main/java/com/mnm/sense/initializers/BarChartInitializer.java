@@ -65,7 +65,7 @@ public class BarChartInitializer extends ViewInitializer<BarChart, BarChartModel
         xAxis.setDrawGridLines(false);
         xAxis.setDrawAxisLine(false);
         xAxis.setAvoidFirstLastClipping(true);
-        xAxis.setCenterAxisLabels(true);
+//        xAxis.setCenterAxisLabels(true);
 
         final YAxis leftYAxis = barChart.getAxisLeft();
 //        leftYAxis.setAxisMaximum(barChart.getData().getYMax());

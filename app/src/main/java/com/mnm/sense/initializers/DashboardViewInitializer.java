@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.mnm.sense.activities.SecondActivity;
 import com.mnm.sense.models.DashboardModel;

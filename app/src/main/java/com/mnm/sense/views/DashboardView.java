@@ -8,12 +8,14 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.mnm.sense.R;
 
 public class DashboardView extends LinearLayout
 {
     public ImageView image;
+    public TextView text;
     public ImageButton button;
 
     public DashboardView(Context context)
@@ -46,5 +48,6 @@ public class DashboardView extends LinearLayout
 
         image = (ImageView) findViewById(R.id.image);
         button = (ImageButton) findViewById(R.id.button);
+        text = (TextView) findViewById(R.id.text);
     }
 }

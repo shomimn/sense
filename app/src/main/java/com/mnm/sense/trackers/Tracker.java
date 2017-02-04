@@ -1,6 +1,9 @@
 package com.mnm.sense.trackers;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.mnm.sense.Repository;
 import com.mnm.sense.SenseApp;
 import com.mnm.sense.Visualization;
@@ -16,6 +19,20 @@ import java.util.HashMap;
 
 public abstract class Tracker implements SensorDataListener
 {
+    public class Limit
+    {
+        public String title;
+        public int value;
+        public int maxValue;
+
+        public Limit(String text, int val, int max)
+        {
+            title = text;
+            value = val;
+            maxValue = max;
+        }
+    }
+
     public interface UpdateCallback
     {
         void update(ArrayList<SensorData> with);
@@ -27,6 +44,8 @@ public abstract class Tracker implements SensorDataListener
 
     public int type;
     public int id = -1;
+
+    public Limit limit = null;
 
     public HashMap<String, Visualization> visualizations = new HashMap<>();
     public HashMap<String, VisualizationAdapter> adapters = new HashMap<>();
@@ -41,8 +60,13 @@ public abstract class Tracker implements SensorDataListener
     @Override
     public void onDataSensed(SensorData data)
     {
+        correctData(data);
+
         sensorData.add(data);
         updateViews();
+
+        if (hasLimit())
+            limitNotification(data);
 
         try
         {
@@ -151,5 +175,23 @@ public abstract class Tracker implements SensorDataListener
 
             callback.update(sensorData);
         }
+    }
+
+    public boolean hasLimit()
+    {
+        return limit != null;
+    }
+
+    public void limitNotification(SensorData data)
+    {
+    }
+
+    public void correctData(SensorData data)
+    {
+    }
+
+    public SharedPreferences getConfig()
+    {
+        return SenseApp.context().getSharedPreferences("com.mnm.sense." + text, Context.MODE_PRIVATE);
     }
 }

@@ -127,7 +127,7 @@ class StepsTextAdapter implements VisualizationAdapter<TextView, String>
     {
         StepCounterData stepsData = (StepCounterData) data;
 
-        return String.valueOf(stepsData.getNumSteps());
+        return String.valueOf((int)stepsData.getNumSteps());
     }
 
     @Override
@@ -215,15 +215,20 @@ class StepsDailyBarAdapter implements VisualizationAdapter<BarChart, BarData>
         xAxis.setDrawLabels(true);
         xAxis.setGranularity(1f);
         xAxis.setGranularityEnabled(true);
+        xAxis.setLabelCount(24, true);
+        xAxis.setAxisMinimum(0f);
+        xAxis.setAxisMaximum(23f);
+
         xAxis.setValueFormatter(new IAxisValueFormatter()
         {
             @Override
             public String getFormattedValue(float value, AxisBase axis)
             {
-                if (value % 4.0 == 0 || value == 23)
-                    return String.valueOf((int)value);
+                int val = (int) value;
+                if (val % 4 == 0)
+                    return String.valueOf(val);
 
-                return "";
+                return ".";
             }
         });
     }

@@ -7,15 +7,19 @@
               android:foreground="?android:attr/selectableItemBackground"
               android:background="?android:selectableItemBackground"
               android:weightSum="5">
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="wrap_content"
+    <LinearLayout android:id="@+id/top_layout"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_gravity="center"
         android:layout_weight="0.8"
-        android:layout_marginTop="5dp"
-        android:tint="@color/colorAccent"
-    ></ImageView>
+        android:layout_marginTop="5dp">
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:tint="@color/colorAccent"
+        />
+    </LinearLayout>
     <com.mnm.sense.views.InterceptingLinearLayout android:id="@+id/layout"
                   android:layout_width="match_parent"
                   android:layout_height="0dp"

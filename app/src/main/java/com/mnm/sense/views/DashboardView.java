@@ -16,7 +16,7 @@ public class DashboardView extends LinearLayout
 {
     public ImageView image;
     public TextView text;
-    public ImageButton button;
+    public LinearLayout topLayout;
 
     public DashboardView(Context context)
     {
@@ -47,7 +47,7 @@ public class DashboardView extends LinearLayout
         inflate(getContext(), R.layout.dashboard_card, this);
 
         image = (ImageView) findViewById(R.id.image);
-        button = (ImageButton) findViewById(R.id.button);
         text = (TextView) findViewById(R.id.text);
+        topLayout = (LinearLayout) findViewById(R.id.top_layout);
     }
 }

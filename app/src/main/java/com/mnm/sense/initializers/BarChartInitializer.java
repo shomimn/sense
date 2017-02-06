@@ -72,12 +72,16 @@ public class BarChartInitializer extends ViewInitializer<BarChart, BarChartModel
         leftYAxis.setDrawGridLines(false);
         leftYAxis.setDrawLabels(false);
         leftYAxis.setDrawAxisLine(false);
+        leftYAxis.setGranularity(1);
+        leftYAxis.setGranularityEnabled(true);
 
         final YAxis rightYAxis = barChart.getAxisRight();
 //        rightYAxis.setAxisMaximum(barChart.getData().getYMax());
         rightYAxis.setDrawGridLines(false);
         rightYAxis.setDrawLabels(false);
         rightYAxis.setDrawAxisLine(false);
+        rightYAxis.setGranularity(1);
+        rightYAxis.setGranularityEnabled(true);
 
         adapter.prepareView(barChart);
 

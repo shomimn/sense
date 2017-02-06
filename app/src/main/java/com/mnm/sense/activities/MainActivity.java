@@ -138,7 +138,10 @@ public class MainActivity extends AppCompatActivity
 
                 if (data.tracker.type == tracker.type && forRemoval.contains(data.visualization))
                 {
+                    String dashboardKey = data.tracker.text + data.visualization + "Dashboard";
+
                     tracker.updateCallbacks.remove(data.visualization);
+                    tracker.updateCallbacks.remove(dashboardKey);
                     dashboardFragment.grid.removeItem(item);
                     iterator.remove();
                 }

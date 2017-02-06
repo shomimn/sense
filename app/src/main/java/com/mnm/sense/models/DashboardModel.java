@@ -11,5 +11,8 @@ public class DashboardModel extends BaseModel<Object>
         super(tracker, data);
 
         this.visualization = visualization;
+
+        if (!tracker.text.equals("Steps"))
+            this.shouldUpdate = false;
     }
 }

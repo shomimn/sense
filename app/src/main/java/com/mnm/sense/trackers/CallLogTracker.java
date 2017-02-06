@@ -25,6 +25,9 @@ import java.util.HashMap;
 
 public class CallLogTracker extends Tracker
 {
+    public static final String ATTRIBUTE_TYPE = "Type";
+    public static final String ATTRIBUTE_PERSON = "Person";
+
     public CallLogTracker() throws ESException
     {
         super(SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER);
@@ -33,7 +36,7 @@ public class CallLogTracker extends Tracker
         resource = R.drawable.ic_phone_in_talk_black_48dp;
         isOn = false;
 
-        attributes = new String[]{ "Type", "Person" };
+        attributes = new String[]{ ATTRIBUTE_TYPE, ATTRIBUTE_PERSON };
 
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
         visualizations.put(Visualization.PIE_CHART, new Visualization(2, 3, false));
@@ -49,8 +52,8 @@ public class CallLogTracker extends Tracker
         personAdapters.put(Visualization.PIE_CHART, new CallsPieAdapter("person"));
         personAdapters.put(Visualization.BAR_CHART, new CallsBarAdapter("person"));
 
-        adapters.put("Type", typeAdapters);
-        adapters.put("Person", personAdapters);
+        adapters.put(ATTRIBUTE_TYPE, typeAdapters);
+        adapters.put(ATTRIBUTE_PERSON, personAdapters);
     }
 
     @Override
@@ -65,32 +68,6 @@ public class CallLogTracker extends Tracker
         sensorManager().setSensorConfig(type, ContentReaderConfig.TIME_LIMIT_MILLIS, cal.getTimeInMillis());
 
         super.start();
-    }
-
-    @Override
-    public Object getModel(String visualizationType)
-    {
-        if (visualizationType.equals(Visualization.TEXT))
-            return new TextModel(this, (String) super.getModel(visualizationType));
-        else if (visualizationType.equals(Visualization.PIE_CHART))
-            return new PieChartModel(this, (PieData) super.getModel(visualizationType));
-        else if (visualizationType.equals(Visualization.BAR_CHART))
-            return new BarChartModel(this, (BarData) super.getModel(visualizationType));
-
-        return null;
-    }
-
-    @Override
-    public Object getModel(String attribute, String visualizationType)
-    {
-        if (visualizationType.equals(Visualization.TEXT))
-            return new TextModel(this, (String) super.getModel(attribute, visualizationType));
-        else if (visualizationType.equals(Visualization.PIE_CHART))
-            return new PieChartModel(this, (PieData) super.getModel(attribute, visualizationType));
-        else if (visualizationType.equals(Visualization.BAR_CHART))
-            return new BarChartModel(this, (BarData) super.getModel(attribute, visualizationType));
-
-        return null;
     }
 }
 

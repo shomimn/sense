@@ -14,6 +14,9 @@ public class LocationLatLngAdapter implements VisualizationAdapter<SupportMapFra
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {
+        if (data.size() == 0)
+            return null;
+
         return adaptAll(data);
     }
 

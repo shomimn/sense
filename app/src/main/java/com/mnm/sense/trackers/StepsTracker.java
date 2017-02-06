@@ -38,6 +38,8 @@ import java.util.Map;
 
 public class StepsTracker extends Tracker
 {
+    public static final String ATTRIBUTE_DAILY = "Daily";
+
     float firstCount = 0;
     float steps = 0;
 
@@ -51,7 +53,7 @@ public class StepsTracker extends Tracker
 
         limit = new Limit("Daily goal", 1000, 100, 20000);
 
-        attributes = new String[] { "Daily" };
+        attributes = new String[] { ATTRIBUTE_DAILY };
 
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
         visualizations.put(Visualization.BAR_CHART, new Visualization(1, 3, false));
@@ -60,31 +62,9 @@ public class StepsTracker extends Tracker
         dailyAdapters.put(Visualization.TEXT, new StepsTextAdapter());
         dailyAdapters.put(Visualization.BAR_CHART, new StepsDailyBarAdapter());
 
-        adapters.put("Daily", dailyAdapters);
+        adapters.put(ATTRIBUTE_DAILY, dailyAdapters);
 
         getConfig().edit().clear().commit();
-    }
-
-    @Override
-    public Object getModel(String visualizationType)
-    {
-        if (visualizationType.equals(Visualization.TEXT))
-            return new TextModel(this, (String) super.getModel(visualizationType));
-        else if (visualizationType.equals(Visualization.BAR_CHART))
-            return new BarChartModel(this, (BarData) super.getModel(visualizationType));
-
-        return null;
-    }
-
-    @Override
-    public Object getModel(String attribute, String visualizationType)
-    {
-        if (visualizationType.equals(Visualization.TEXT))
-            return new TextModel(this, (String) super.getModel(attribute, visualizationType));
-        else if (visualizationType.equals(Visualization.BAR_CHART))
-            return new BarChartModel(this, (BarData) super.getModel(attribute, visualizationType));
-
-        return null;
     }
 
     @Override
@@ -133,6 +113,9 @@ class StepsTextAdapter implements VisualizationAdapter<TextView, String>
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {
+        if (data.size() == 0)
+            return null;
+
         int count = data.size();
 
         return adaptOne(data.get(count - 1));
@@ -172,6 +155,9 @@ class StepsDailyBarAdapter implements VisualizationAdapter<BarChart, BarData>
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {
+        if (data.size() == 0)
+            return null;
+
         int count = data.size();
 
         return adaptOne(data.get(count - 1));

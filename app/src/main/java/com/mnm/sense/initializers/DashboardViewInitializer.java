@@ -70,7 +70,7 @@ public class DashboardViewInitializer extends ViewInitializer<DashboardView, Das
                 @Override
                 public void update(ArrayList<SensorData> with)
                 {
-                    final String value = (String) tracker.adapter(tracker.attributes[0], Visualization.TEXT).adapt(with);
+                    final String value = (String) tracker.defaultAdapter(Visualization.TEXT).adapt(with);
 
                     activity.runOnUiThread(new Runnable()
                     {

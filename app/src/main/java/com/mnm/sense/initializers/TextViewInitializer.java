@@ -40,7 +40,7 @@ public class TextViewInitializer extends ViewInitializer<TextView, TextModel>
                 {
                     AppCompatActivity activity = (AppCompatActivity) context;
                     SensorData sensorData = with.get(with.size() - 1);
-                    final String text = (String) tracker.adapter(tracker.attributes[0], visualization).adaptOne(sensorData);
+                    final String text = (String) tracker.defaultAdapter(visualization).adaptOne(sensorData);
 
                     activity.runOnUiThread(new Runnable()
                     {

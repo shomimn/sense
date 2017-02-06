@@ -50,7 +50,7 @@ public class PieChartInitializer extends ViewInitializer<PieChart, PieChartModel
                 @Override
                 public void update(ArrayList<SensorData> with)
                 {
-                    final PieData pieData = (PieData) model.tracker.adapter(model.tracker.attributes[0], visualization).adapt(with);
+                    final PieData pieData = (PieData) model.tracker.defaultAdapter(visualization).adapt(with);
 
                     activity.runOnUiThread(new Runnable()
                     {

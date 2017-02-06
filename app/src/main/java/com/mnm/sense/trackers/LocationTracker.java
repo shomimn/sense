@@ -16,6 +16,8 @@ import java.util.HashMap;
 
 public class LocationTracker extends Tracker
 {
+    public static final String ATTRIBUTE_MARKER = "Marker";
+
     public LocationTracker() throws ESException
     {
         super(SensorUtils.SENSOR_TYPE_LOCATION);
@@ -24,7 +26,7 @@ public class LocationTracker extends Tracker
         resource = R.drawable.ic_my_location_black_48dp;
         isOn = false;
 
-        attributes = new String[] { "LatLng" };
+        attributes = new String[] { ATTRIBUTE_MARKER };
 
         visualizations.put(Visualization.MAP, new Visualization(2, 3, false));
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
@@ -33,15 +35,6 @@ public class LocationTracker extends Tracker
         latLngAdapters.put(Visualization.MAP, new LocationLatLngAdapter());
         latLngAdapters.put(Visualization.TEXT, new LocationTextAdapter());
 
-        adapters.put("LatLng", latLngAdapters);
-    }
-
-    @Override
-    public Object getModel(String visualizationType)
-    {
-        if (visualizationType.equals(Visualization.MAP))
-            return new MapModel(this, (ArrayList<LatLng>) super.getModel(visualizationType));
-        else
-            return new TextModel(this, (String) super.getModel(visualizationType));
+        adapters.put(ATTRIBUTE_MARKER, latLngAdapters);
     }
 }

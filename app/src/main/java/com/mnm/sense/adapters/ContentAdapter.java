@@ -18,6 +18,9 @@ public abstract class ContentAdapter<T, U> implements VisualizationAdapter<T, U>
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {
+        if (data.size() == 0)
+            return null;
+
         int last = data.size() - 1;
 
         return adaptOne(data.get(last));

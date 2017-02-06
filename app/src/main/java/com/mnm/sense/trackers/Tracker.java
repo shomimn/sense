@@ -4,11 +4,18 @@ package com.mnm.sense.trackers;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.PieData;
+import com.google.android.gms.maps.model.LatLng;
 import com.mnm.sense.R;
 import com.mnm.sense.Repository;
 import com.mnm.sense.SenseApp;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.VisualizationAdapter;
+import com.mnm.sense.models.BarChartModel;
+import com.mnm.sense.models.MapModel;
+import com.mnm.sense.models.PieChartModel;
+import com.mnm.sense.models.TextModel;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.ESSensorManager;
 import com.ubhave.sensormanager.SensorDataListener;
@@ -166,17 +173,27 @@ public abstract class Tracker implements SensorDataListener
 
     public Object getModel(String visualizationType)
     {
-        if (sensorData.size() > 0)
-//            return adapters.get(visualizationType).adapt(sensorData);
-            return adapter(attributes[0], visualizationType).adapt(sensorData);
-
-        return null;
+        return getModel(attributes[0], visualizationType);
     }
 
     public Object getModel(String attribute, String visualizationType)
     {
-        if (sensorData.size() > 0)
-            return adapter(attribute, visualizationType).adapt(sensorData);
+        HashMap<String, VisualizationAdapter> attributeAdapters = adapters.get(attribute);
+        VisualizationAdapter adapter = attributeAdapters.get(visualizationType);
+        Object adaptedData = adapter.adapt(sensorData);
+
+        switch (visualizationType)
+        {
+            case Visualization.TEXT:
+                return new TextModel(this, (String) adaptedData);
+            case Visualization.BAR_CHART:
+                return new BarChartModel(this, (BarData) adaptedData);
+            case Visualization.PIE_CHART:
+                return new PieChartModel(this, (PieData) adaptedData);
+            case Visualization.MAP:
+                return new MapModel(this, (ArrayList<LatLng>) adaptedData);
+
+        }
 
         return null;
     }
@@ -184,6 +201,11 @@ public abstract class Tracker implements SensorDataListener
     public VisualizationAdapter adapter(String attribute, String visualization)
     {
         return adapters.get(attribute).get(visualization);
+    }
+
+    public VisualizationAdapter defaultAdapter(String visualization)
+    {
+        return adapter(attributes[0], visualization);
     }
 
     public void updateViews()

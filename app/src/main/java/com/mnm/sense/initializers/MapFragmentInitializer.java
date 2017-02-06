@@ -80,7 +80,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                         public void update(ArrayList<SensorData> with)
                         {
                             final AppCompatActivity activity = (AppCompatActivity) context;
-                            final LatLng latLng = (LatLng) tracker.adapter(tracker.attributes[0], visualization).adaptOne(with.get(with.size() - 1));
+                            final LatLng latLng = (LatLng) tracker.defaultAdapter(visualization).adaptOne(with.get(with.size() - 1));
 
                             activity.runOnUiThread(new Runnable()
                             {

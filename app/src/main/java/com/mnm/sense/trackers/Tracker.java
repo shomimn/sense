@@ -56,6 +56,7 @@ public abstract class Tracker implements SensorDataListener
     public HashMap<String, VisualizationAdapter> adapters = new HashMap<>();
     public HashMap<String, UpdateCallback> updateCallbacks = new HashMap<>();
     public ArrayList<SensorData> sensorData = new ArrayList<>();
+    public String[] attributes = { };
 
     public Tracker(int t) throws ESException
     {

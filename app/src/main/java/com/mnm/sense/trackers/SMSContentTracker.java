@@ -5,8 +5,10 @@ import com.github.mikephil.charting.data.PieData;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.SMSBarAdapter;
+import com.mnm.sense.adapters.SMSPersonTextAdapter;
 import com.mnm.sense.adapters.SMSPieAdapter;
 import com.mnm.sense.adapters.SMSTypeTextAdapter;
+import com.mnm.sense.adapters.VisualizationAdapter;
 import com.mnm.sense.models.BarChartModel;
 import com.mnm.sense.models.PieChartModel;
 import com.mnm.sense.models.TextModel;
@@ -15,6 +17,7 @@ import com.ubhave.sensormanager.config.pull.ContentReaderConfig;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class SMSContentTracker extends Tracker
 {
@@ -26,13 +29,28 @@ public class SMSContentTracker extends Tracker
         resource = R.drawable.ic_sms_black_48dp;
         isOn = false;
 
+        attributes = new String[]{ "Type", "Person" };
+
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
         visualizations.put(Visualization.BAR_CHART, new Visualization(1, 3, false));
         visualizations.put(Visualization.PIE_CHART, new Visualization(2, 3, false));
 
+        HashMap<String, VisualizationAdapter> typeAdapters = new HashMap<>();
+        typeAdapters.put(Visualization.TEXT, new SMSTypeTextAdapter());
+        typeAdapters.put(Visualization.BAR_CHART, new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
+        typeAdapters.put(Visualization.PIE_CHART, new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
+
+        HashMap<String, VisualizationAdapter> personAdapters = new HashMap<>();
+        personAdapters.put(Visualization.TEXT, new SMSPersonTextAdapter());
+        personAdapters.put(Visualization.BAR_CHART, new SMSBarAdapter("person"));
+        personAdapters.put(Visualization.PIE_CHART, new SMSPieAdapter("person"));
+
         adapters.put(Visualization.TEXT, new SMSTypeTextAdapter());
         adapters.put(Visualization.BAR_CHART, new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
         adapters.put(Visualization.PIE_CHART, new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
+        
+//        adapters.put("Type", typeAdapters);
+//        adapters.put("Person", personAdapters);
     }
 
     @Override

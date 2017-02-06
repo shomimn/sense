@@ -31,6 +31,8 @@ public class CallLogTracker extends Tracker
         resource = R.drawable.ic_phone_in_talk_black_48dp;
         isOn = false;
 
+        attributes = new String[]{ "Type", "Person" };
+
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
         visualizations.put(Visualization.PIE_CHART, new Visualization(2, 3, false));
         visualizations.put(Visualization.BAR_CHART, new Visualization(1, 3, false));

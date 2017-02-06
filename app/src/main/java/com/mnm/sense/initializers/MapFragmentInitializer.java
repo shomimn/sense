@@ -17,6 +17,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.mnm.sense.R;
 import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
@@ -56,11 +58,16 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                 final ArrayList<Marker> markers = new ArrayList<>();
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
+                PolylineOptions polylineOptions = new PolylineOptions();
+
                 for (LatLng location : model.data)
                 {
                     builder.include(location);
                     markers.add(googleMap.addMarker(new MarkerOptions().position(location)));
+//                    polylineOptions.add(location);
                 }
+
+//                googleMap.addPolyline(polylineOptions);
 
                 if (model.data.size() > 0)
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));

@@ -18,17 +18,36 @@
             app:titleTextAppearance="@style/MyTheme.ActionBarStyle.Title"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-            <ImageView
-                android:id="@+id/tracker_img"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:tint="@color/colorAccent"
-                android:transitionName="imageTransition"/>
-            <TextView
-                android:id="@+id/tracker_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/colorAccent"/>
+                android:orientation="horizontal">
+                <ImageView
+                    android:id="@+id/tracker_img"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:tint="@color/colorAccent"
+                    android:layout_weight="0.1"
+                    android:transitionName="imageTransition"/>
+                <TextView
+                    android:id="@+id/tracker_title"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.5"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/colorAccent"/>
+                <Spinner
+                    android:id="@+id/type_spinner"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:spinnerMode="dropdown"
+                    android:backgroundTint="@color/colorAccent"
+                    >
+                </Spinner>
+            </LinearLayout>
 
         </android.support.v7.widget.Toolbar>
 
@@ -42,10 +61,51 @@
             app:tabGravity="fill"/>
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
+        <com.sothree.slidinguppanel.SlidingUpPanelLayout
+            xmlns:sothree="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/sliding_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="bottom"
+            sothree:umanoPanelHeight="68dp"
+            sothree:umanoShadowHeight="4dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewpager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+            />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="2">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:layout_weight="0.2"
+                android:text="Date range"
+                android:textSize="16sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.8"
+                android:weightSum="2">
+                <DatePicker
+                    android:id="@+id/start_date"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+                <DatePicker
+                    android:id="@+id/end_date"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"/>
+
+            </LinearLayout>
+            </LinearLayout>
+        </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 </android.support.design.widget.CoordinatorLayout>

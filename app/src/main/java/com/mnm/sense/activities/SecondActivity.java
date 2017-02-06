@@ -8,8 +8,11 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.mnm.sense.DepthPageTransformer;
@@ -21,6 +24,7 @@ import com.mnm.sense.fragments.VisualizationFragment;
 import com.mnm.sense.initializers.Initializer;
 import com.mnm.sense.models.BaseModel;
 import com.mnm.sense.trackers.Tracker;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class SecondActivity extends AppCompatActivity
 {
@@ -29,6 +33,11 @@ public class SecondActivity extends AppCompatActivity
     ImageView trackerImage;
     ViewPager viewPager;
     TabLayout tabLayout;
+    SlidingUpPanelLayout slidingLayout;
+    DatePicker startDate;
+    DatePicker endDate;
+    Spinner typeSpinner;
+    String[] types = { "Type", "Person", "This", "That" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -48,6 +57,17 @@ public class SecondActivity extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        slidingLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
+        startDate = (DatePicker) findViewById(R.id.start_date);
+        endDate = (DatePicker) findViewById(R.id.end_date);
+        typeSpinner = (Spinner) findViewById(R.id.type_spinner);
+
+        long installedDate = SenseApp.instance().installedDate();
+        startDate.setMinDate(installedDate);
+        startDate.setMaxDate(System.currentTimeMillis());
+        endDate.setMinDate(installedDate);
+        endDate.setMaxDate(System.currentTimeMillis());
+
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
@@ -58,12 +78,15 @@ public class SecondActivity extends AppCompatActivity
         trackerTitle.setText(tracker.text);
         trackerImage.setImageResource(tracker.resource);
 
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.spinner_item, tracker.attributes);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        typeSpinner.setAdapter(adapter);
+
         setupViewPager(viewPager, tracker, visualization);
 
         BaseModel model = (BaseModel) tracker.getModel(visualization);
         model.shouldUpdate = false;
-
-//        Initializer.get(viewClass).injectIn(this, coordinatorLayout, model);
     }
 
     private void setupViewPager(ViewPager viewPager, Tracker tracker, String defaultVisualization)
@@ -94,4 +117,12 @@ public class SecondActivity extends AppCompatActivity
         viewPager.setCurrentItem(pageToDisplay);
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        if (slidingLayout.getPanelState() == SlidingUpPanelLayout.PanelState.EXPANDED)
+            slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+        else
+            super.onBackPressed();
+    }
 }

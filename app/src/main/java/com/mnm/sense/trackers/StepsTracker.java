@@ -49,7 +49,7 @@ public class StepsTracker extends Tracker
         resource = R.drawable.ic_directions_walk;
         isOn = false;
 
-        limit = new Limit("Daily goal", 1000, 20000);
+        limit = new Limit("Daily goal", 1000, 100, 20000);
 
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
         visualizations.put(Visualization.BAR_CHART, new Visualization(1, 3, false));

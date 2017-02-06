@@ -244,7 +244,7 @@
     <orderEntry type="library" exported="" name="appcompat-v7-25.1.0" level="project" />
     <orderEntry type="library" exported="" name="mediarouter-v7-24.0.0" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-25.1.0" level="project" />
-    <orderEntry type="module" module-name="SensorDataManager" exported="" />
+    <orderEntry type="module" module-name="sensorDataManager" exported="" />
     <orderEntry type="module" module-name="SensorManager" exported="" />
     <orderEntry type="library" exported="" name="httpmime-4.1.2" level="project" />
     <orderEntry type="library" exported="" name="sqlcipher" level="project" />

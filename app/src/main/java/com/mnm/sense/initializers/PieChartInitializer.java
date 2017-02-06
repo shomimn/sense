@@ -39,6 +39,7 @@ public class PieChartInitializer extends ViewInitializer<PieChart, PieChartModel
         view.getLegend().setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         view.getLegend().setWordWrapEnabled(true);
 //        view.getLegend().setEnabled(false);
+        view.setRotationEnabled(false);
 
         view.animateY(500);
 

@@ -1,6 +1,7 @@
 package com.mnm.sense.activities;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 import com.mnm.sense.R;
 import com.mnm.sense.SenseApp;
+import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.trackers.Tracker;
 import com.mnm.sense.views.BottomBorderedLinearLayout;
@@ -64,6 +66,8 @@ public class SensorSettingsActivity extends AppCompatActivity
         trackerTitle.setText(tracker.text + " Tracker Settings");
         trackerImage.setImageResource(tracker.resource);
 
+//        setAccent();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -96,11 +100,15 @@ public class SensorSettingsActivity extends AppCompatActivity
             textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             textView.setGravity(Gravity.CENTER_VERTICAL);
 
+//            textView.setTextColor(getResources().getColor(tracker.accent));
+
             CheckBox checkBox = new CheckBox(this);
             checkBox.setText("Display on dashboard");
             checkBox.setTextColor(colorAccent);
             checkBox.setGravity(Gravity.CENTER_VERTICAL);
             checkBox.setChecked(isDisplayed);
+
+//            checkBox.setTextColor(getResources().getColor(tracker.accent));
 
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
             {
@@ -177,6 +185,8 @@ public class SensorSettingsActivity extends AppCompatActivity
             return;
         }
 
+        limitView.step = tracker.limit.step;
+
         limitView.viewTitle.setText(tracker.limit.title);
 
         limitView.intervalSlider.setMax(tracker.limit.maxValue);
@@ -201,6 +211,25 @@ public class SensorSettingsActivity extends AppCompatActivity
                 limitView.hideButtons();
             }
         });
+    }
+
+    public void setAccent()
+    {
+        Resources res = getResources();
+        int color = res.getColor(tracker.accent);
+
+        trackerImage.setColorFilter(color);
+        trackerTitle.setTextColor(color);
+
+        updateView.viewTitle.setTextColor(color);
+        updateView.cancel.setTextColor(color);
+        updateView.confirm.setTextColor(color);
+
+        limitView.viewTitle.setTextColor(color);
+//        limitView.cancel.setTextColor(color);
+//        limitView.confirm.setTextColor(color);
+        Util.setAccent(limitView.cancel, tracker.accent);
+        Util.setAccent(limitView.confirm, tracker.accent);
     }
 
     @Override

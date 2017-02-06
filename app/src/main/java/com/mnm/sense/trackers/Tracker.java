@@ -4,6 +4,7 @@ package com.mnm.sense.trackers;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import com.mnm.sense.R;
 import com.mnm.sense.Repository;
 import com.mnm.sense.SenseApp;
 import com.mnm.sense.Visualization;
@@ -16,6 +17,7 @@ import com.ubhave.sensormanager.data.SensorData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 public abstract class Tracker implements SensorDataListener
 {
@@ -23,12 +25,14 @@ public abstract class Tracker implements SensorDataListener
     {
         public String title;
         public int value;
+        public int step;
         public int maxValue;
 
-        public Limit(String text, int val, int max)
+        public Limit(String text, int val, int s, int max)
         {
             title = text;
             value = val;
+            step = s;
             maxValue = max;
         }
     }
@@ -41,13 +45,14 @@ public abstract class Tracker implements SensorDataListener
     public String text;
     public int resource;
     public boolean isOn;
+    public int accent = R.color.colorAccent;
 
     public int type;
     public int id = -1;
 
     public Limit limit = null;
 
-    public HashMap<String, Visualization> visualizations = new HashMap<>();
+    public TreeMap<String, Visualization> visualizations = new TreeMap<>();
     public HashMap<String, VisualizationAdapter> adapters = new HashMap<>();
     public HashMap<String, UpdateCallback> updateCallbacks = new HashMap<>();
     public ArrayList<SensorData> sensorData = new ArrayList<>();

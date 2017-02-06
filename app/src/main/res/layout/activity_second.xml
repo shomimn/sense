@@ -31,14 +31,21 @@
                 android:textColor="@color/colorAccent"/>
 
         </android.support.v7.widget.Toolbar>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tabTextColor="@color/colorAccentLight"
+            app:tabSelectedTextColor="@color/colorAccent"
+            app:tabMode="fixed"
+            app:tabGravity="fill"/>
     </android.support.design.widget.AppBarLayout>
 
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:orientation="vertical"
-                  android:id="@+id/layout"
-                  app:layout_behavior="@string/appbar_scrolling_view_behavior">>
-
-    </LinearLayout>
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
 
 </android.support.design.widget.CoordinatorLayout>

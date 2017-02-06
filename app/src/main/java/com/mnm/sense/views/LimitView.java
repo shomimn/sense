@@ -5,6 +5,8 @@ import android.util.AttributeSet;
 
 public class LimitView extends UpdateView
 {
+    public int step = 100;
+
     public LimitView(Context context)
     {
         super(context);
@@ -28,8 +30,8 @@ public class LimitView extends UpdateView
     @Override
     public void displayProgress(int progress)
     {
-        int value = progress / 100;
-        value *= 100;
+        int value = progress / step;
+        value *= step;
 
         intervalValue.setText(String.valueOf(value));
         intervalSlider.setProgress(value);

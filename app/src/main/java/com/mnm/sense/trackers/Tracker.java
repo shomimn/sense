@@ -192,7 +192,6 @@ public abstract class Tracker implements SensorDataListener
                 return new PieChartModel(this, (PieData) adaptedData);
             case Visualization.MAP:
                 return new MapModel(this, (ArrayList<LatLng>) adaptedData);
-
         }
 
         return null;

@@ -58,6 +58,8 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                 final ArrayList<Marker> markers = new ArrayList<>();
                 LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
+                googleMap.clear();
+
                 PolylineOptions polylineOptions = new PolylineOptions();
 
                 for (LatLng location : model.data)

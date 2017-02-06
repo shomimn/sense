@@ -45,12 +45,12 @@ public class SMSContentTracker extends Tracker
         personAdapters.put(Visualization.BAR_CHART, new SMSBarAdapter("person"));
         personAdapters.put(Visualization.PIE_CHART, new SMSPieAdapter("person"));
 
-        adapters.put(Visualization.TEXT, new SMSTypeTextAdapter());
-        adapters.put(Visualization.BAR_CHART, new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
-        adapters.put(Visualization.PIE_CHART, new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
-        
-//        adapters.put("Type", typeAdapters);
-//        adapters.put("Person", personAdapters);
+//        adapters.put(Visualization.TEXT, new SMSTypeTextAdapter());
+//        adapters.put(Visualization.BAR_CHART, new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
+//        adapters.put(Visualization.PIE_CHART, new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
+
+        adapters.put("Type", typeAdapters);
+        adapters.put("Person", personAdapters);
     }
 
     @Override
@@ -76,6 +76,19 @@ public class SMSContentTracker extends Tracker
             return new BarChartModel(this, (BarData) super.getModel(visualizationType));
         else if (visualizationType.equals(Visualization.PIE_CHART))
             return new PieChartModel(this, (PieData) super.getModel(visualizationType));
+
+        return null;
+    }
+
+    @Override
+    public Object getModel(String attribute, String visualizationType)
+    {
+        if (visualizationType.equals(Visualization.TEXT))
+            return new TextModel(this, (String) super.getModel(attribute, visualizationType));
+        else if (visualizationType.equals(Visualization.PIE_CHART))
+            return new PieChartModel(this, (PieData) super.getModel(attribute, visualizationType));
+        else if (visualizationType.equals(Visualization.BAR_CHART))
+            return new BarChartModel(this, (BarData) super.getModel(attribute, visualizationType));
 
         return null;
     }

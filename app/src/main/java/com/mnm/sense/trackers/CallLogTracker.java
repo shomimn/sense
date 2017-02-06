@@ -10,6 +10,7 @@ import com.mnm.sense.adapters.CallsPersonTextAdapter;
 import com.mnm.sense.adapters.CallsTypeTextAdapter;
 import com.mnm.sense.adapters.ContentBarAdapter;
 import com.mnm.sense.adapters.ContentPieAdapter;
+import com.mnm.sense.adapters.VisualizationAdapter;
 import com.mnm.sense.models.BarChartModel;
 import com.mnm.sense.models.PieChartModel;
 import com.mnm.sense.models.TextModel;
@@ -20,6 +21,7 @@ import com.ubhave.sensormanager.data.pull.CallContentListData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class CallLogTracker extends Tracker
 {
@@ -37,9 +39,18 @@ public class CallLogTracker extends Tracker
         visualizations.put(Visualization.PIE_CHART, new Visualization(2, 3, false));
         visualizations.put(Visualization.BAR_CHART, new Visualization(1, 3, false));
 
-        adapters.put(Visualization.TEXT, new CallsTypeTextAdapter());
-        adapters.put(Visualization.PIE_CHART, new CallsPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
-        adapters.put(Visualization.BAR_CHART, new CallsBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
+        HashMap<String, VisualizationAdapter> typeAdapters = new HashMap<>();
+        typeAdapters.put(Visualization.TEXT, new CallsTypeTextAdapter());
+        typeAdapters.put(Visualization.PIE_CHART, new CallsPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
+        typeAdapters.put(Visualization.BAR_CHART, new CallsBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
+
+        HashMap<String, VisualizationAdapter> personAdapters = new HashMap<>();
+        personAdapters.put(Visualization.TEXT, new CallsPersonTextAdapter());
+        personAdapters.put(Visualization.PIE_CHART, new CallsPieAdapter("person"));
+        personAdapters.put(Visualization.BAR_CHART, new CallsBarAdapter("person"));
+
+        adapters.put("Type", typeAdapters);
+        adapters.put("Person", personAdapters);
     }
 
     @Override
@@ -65,6 +76,19 @@ public class CallLogTracker extends Tracker
             return new PieChartModel(this, (PieData) super.getModel(visualizationType));
         else if (visualizationType.equals(Visualization.BAR_CHART))
             return new BarChartModel(this, (BarData) super.getModel(visualizationType));
+
+        return null;
+    }
+
+    @Override
+    public Object getModel(String attribute, String visualizationType)
+    {
+        if (visualizationType.equals(Visualization.TEXT))
+            return new TextModel(this, (String) super.getModel(attribute, visualizationType));
+        else if (visualizationType.equals(Visualization.PIE_CHART))
+            return new PieChartModel(this, (PieData) super.getModel(attribute, visualizationType));
+        else if (visualizationType.equals(Visualization.BAR_CHART))
+            return new BarChartModel(this, (BarData) super.getModel(attribute, visualizationType));
 
         return null;
     }

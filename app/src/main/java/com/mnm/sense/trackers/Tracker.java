@@ -53,7 +53,7 @@ public abstract class Tracker implements SensorDataListener
     public Limit limit = null;
 
     public TreeMap<String, Visualization> visualizations = new TreeMap<>();
-    public HashMap<String, VisualizationAdapter> adapters = new HashMap<>();
+    public HashMap<String, HashMap<String, VisualizationAdapter>> adapters = new HashMap<>();
     public HashMap<String, UpdateCallback> updateCallbacks = new HashMap<>();
     public ArrayList<SensorData> sensorData = new ArrayList<>();
     public String[] attributes = { };
@@ -167,9 +167,23 @@ public abstract class Tracker implements SensorDataListener
     public Object getModel(String visualizationType)
     {
         if (sensorData.size() > 0)
-            return adapters.get(visualizationType).adapt(sensorData);
+//            return adapters.get(visualizationType).adapt(sensorData);
+            return adapter(attributes[0], visualizationType).adapt(sensorData);
 
         return null;
+    }
+
+    public Object getModel(String attribute, String visualizationType)
+    {
+        if (sensorData.size() > 0)
+            return adapter(attribute, visualizationType).adapt(sensorData);
+
+        return null;
+    }
+
+    public VisualizationAdapter adapter(String attribute, String visualization)
+    {
+        return adapters.get(attribute).get(visualization);
     }
 
     public void updateViews()

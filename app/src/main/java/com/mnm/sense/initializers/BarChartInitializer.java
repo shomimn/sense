@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -31,12 +32,15 @@ public class BarChartInitializer extends ViewInitializer<BarChart, BarChartModel
     public void init(final Context context, final BarChart barChart, final BarChartModel model)
     {
         final AppCompatActivity activity = (AppCompatActivity) context;
-        final VisualizationAdapter adapter = model.tracker.adapters.get(visualization);
+        final VisualizationAdapter adapter = model.tracker.adapter(model.tracker.attributes[0], visualization);
 
         barChart.setData(model.data);
         barChart.fitScreen();
         barChart.setDescription(null);
         barChart.setDrawBorders(false);
+        barChart.setDoubleTapToZoomEnabled(false);
+        barChart.setPinchZoom(false);
+        barChart.getLegend().setWordWrapEnabled(true);
 
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);

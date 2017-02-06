@@ -5,9 +5,12 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.ImageView;
@@ -25,6 +28,8 @@ import com.mnm.sense.initializers.Initializer;
 import com.mnm.sense.models.BaseModel;
 import com.mnm.sense.trackers.Tracker;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+
+import java.util.ArrayList;
 
 public class SecondActivity extends AppCompatActivity
 {
@@ -84,16 +89,14 @@ public class SecondActivity extends AppCompatActivity
         typeSpinner.setAdapter(adapter);
 
         setupViewPager(viewPager, tracker, visualization);
-
-        BaseModel model = (BaseModel) tracker.getModel(visualization);
-        model.shouldUpdate = false;
     }
 
-    private void setupViewPager(ViewPager viewPager, Tracker tracker, String defaultVisualization)
+    private void setupViewPager(ViewPager viewPager, final Tracker tracker, String defaultVisualization)
     {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         int pageToDisplay = 0;
         int page = 0;
+        final ArrayList<VisualizationFragment> fragments = new ArrayList<>();
 
         for (String visualization : tracker.visualizations.keySet())
         {
@@ -102,6 +105,7 @@ public class SecondActivity extends AppCompatActivity
             fragment.visualization = visualization;
 
             adapter.addFragment(fragment, visualization);
+            fragments.add(fragment);
 
             if (visualization.equals(defaultVisualization))
                 pageToDisplay = page;
@@ -115,6 +119,30 @@ public class SecondActivity extends AppCompatActivity
         viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
 
         viewPager.setCurrentItem(pageToDisplay);
+
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+        {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                String attribute = tracker.attributes[i];
+
+                for (VisualizationFragment fragment : fragments)
+                {
+                    if (fragment.attribute == attribute)
+                        return;
+
+                    fragment.attribute = attribute;
+                    fragment.refresh();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView)
+            {
+
+            }
+        });
     }
 
     @Override

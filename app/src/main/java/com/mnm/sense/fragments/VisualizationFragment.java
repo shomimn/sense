@@ -17,6 +17,9 @@ public class VisualizationFragment extends Fragment
 {
     public Tracker tracker;
     public String visualization;
+    public String attribute;
+
+    Object injected;
 
     public VisualizationFragment()
     {
@@ -47,9 +50,19 @@ public class VisualizationFragment extends Fragment
     {
         super.onViewCreated(view, savedInstanceState);
 
+        attribute = tracker.attributes[0];
+
         BaseModel model = (BaseModel) tracker.getModel(visualization);
         model.shouldUpdate = false;
 
-        Initializer.get(visualization).injectIn(getContext(), view, model);
+        injected = Initializer.get(visualization).injectIn(getContext(), view, model);
+    }
+
+    public void refresh()
+    {
+        BaseModel model = (BaseModel) tracker.getModel(attribute, visualization);
+        model.shouldUpdate = false;
+
+        Initializer.get(visualization).init(getContext(), injected, model);
     }
 }

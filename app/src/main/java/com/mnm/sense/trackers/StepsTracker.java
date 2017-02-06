@@ -51,11 +51,16 @@ public class StepsTracker extends Tracker
 
         limit = new Limit("Daily goal", 1000, 100, 20000);
 
+        attributes = new String[] { "Daily" };
+
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
         visualizations.put(Visualization.BAR_CHART, new Visualization(1, 3, false));
 
-        adapters.put(Visualization.TEXT, new StepsTextAdapter());
-        adapters.put(Visualization.BAR_CHART, new StepsDailyBarAdapter());
+        HashMap<String, VisualizationAdapter> dailyAdapters = new HashMap<>();
+        dailyAdapters.put(Visualization.TEXT, new StepsTextAdapter());
+        dailyAdapters.put(Visualization.BAR_CHART, new StepsDailyBarAdapter());
+
+        adapters.put("Daily", dailyAdapters);
 
         getConfig().edit().clear().commit();
     }
@@ -67,6 +72,17 @@ public class StepsTracker extends Tracker
             return new TextModel(this, (String) super.getModel(visualizationType));
         else if (visualizationType.equals(Visualization.BAR_CHART))
             return new BarChartModel(this, (BarData) super.getModel(visualizationType));
+
+        return null;
+    }
+
+    @Override
+    public Object getModel(String attribute, String visualizationType)
+    {
+        if (visualizationType.equals(Visualization.TEXT))
+            return new TextModel(this, (String) super.getModel(attribute, visualizationType));
+        else if (visualizationType.equals(Visualization.BAR_CHART))
+            return new BarChartModel(this, (BarData) super.getModel(attribute, visualizationType));
 
         return null;
     }

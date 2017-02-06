@@ -80,7 +80,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                         public void update(ArrayList<SensorData> with)
                         {
                             final AppCompatActivity activity = (AppCompatActivity) context;
-                            final LatLng latLng = (LatLng) tracker.adapters.get(visualization).adaptOne(with.get(with.size() - 1));
+                            final LatLng latLng = (LatLng) tracker.adapter(tracker.attributes[0], visualization).adaptOne(with.get(with.size() - 1));
 
                             activity.runOnUiThread(new Runnable()
                             {
@@ -107,7 +107,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
     }
 
     @Override
-    public <Y> void injectIn(Context context, Y parent, MapModel model)
+    public <Y> SupportMapFragment injectIn(Context context, Y parent, MapModel model)
     {
         View parentView = (View) parent;
         LinearLayout viewGroup = (LinearLayout) parentView.findViewById(R.id.layout);
@@ -121,5 +121,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.add(viewGroup.getId(), mapFragment);
         transaction.commit();
+
+        return mapFragment;
     }
 }

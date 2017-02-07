@@ -3,6 +3,7 @@ package com.mnm.sense.trackers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.PieData;
@@ -191,7 +192,7 @@ public abstract class Tracker implements SensorDataListener
             case Visualization.PIE_CHART:
                 return new PieChartModel(this, (PieData) adaptedData);
             case Visualization.MAP:
-                return new MapModel(this, (ArrayList<LatLng>) adaptedData);
+                return new MapModel(this, (ArrayList<LatLng>) adaptedData, attribute);
         }
 
         return null;

@@ -1,23 +1,14 @@
 package com.mnm.sense.trackers;
 
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.PieData;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.adapters.CallsBarAdapter;
 import com.mnm.sense.adapters.CallsPersonTextAdapter;
+import com.mnm.sense.adapters.CallsPieAdapter;
 import com.mnm.sense.adapters.CallsTypeTextAdapter;
-import com.mnm.sense.adapters.ContentBarAdapter;
-import com.mnm.sense.adapters.ContentPieAdapter;
 import com.mnm.sense.adapters.VisualizationAdapter;
-import com.mnm.sense.models.BarChartModel;
-import com.mnm.sense.models.PieChartModel;
-import com.mnm.sense.models.TextModel;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.config.pull.ContentReaderConfig;
-import com.ubhave.sensormanager.data.SensorData;
-import com.ubhave.sensormanager.data.pull.CallContentListData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
 import java.util.Calendar;
@@ -68,50 +59,6 @@ public class CallLogTracker extends Tracker
         sensorManager().setSensorConfig(type, ContentReaderConfig.TIME_LIMIT_MILLIS, cal.getTimeInMillis());
 
         super.start();
-    }
-}
-
-class CallsPieAdapter extends ContentPieAdapter
-{
-    public CallsPieAdapter(String key)
-    {
-        super(key);
-    }
-
-    @Override
-    public PieData adaptOne(SensorData data)
-    {
-        CallContentListData callsData = (CallContentListData) data;
-
-        return adaptImpl(callsData.getContentList());
-    }
-
-    @Override
-    public void prepareView(PieChart view)
-    {
-
-    }
-}
-
-class CallsBarAdapter extends ContentBarAdapter
-{
-    public CallsBarAdapter(String key)
-    {
-        super(key);
-    }
-
-    @Override
-    public BarData adaptOne(SensorData data)
-    {
-        CallContentListData callsData = (CallContentListData) data;
-
-        return adaptImpl(callsData.getContentList());
-    }
-
-    @Override
-    public void prepareView(BarChart view)
-    {
-
     }
 }
 

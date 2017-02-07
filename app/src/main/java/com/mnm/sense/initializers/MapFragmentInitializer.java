@@ -23,6 +23,7 @@ import com.mnm.sense.R;
 import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.models.MapModel;
+import com.mnm.sense.trackers.LocationTracker;
 import com.mnm.sense.trackers.Tracker;
 import com.ubhave.sensormanager.data.SensorData;
 
@@ -56,20 +57,29 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
 
                 final Tracker tracker = model.tracker;
                 final ArrayList<Marker> markers = new ArrayList<>();
-                LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                final PolylineOptions polylineOptions = new PolylineOptions();
+                final LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
                 googleMap.clear();
 
-                PolylineOptions polylineOptions = new PolylineOptions();
-
-                for (LatLng location : model.data)
+                switch (model.attribute)
                 {
-                    builder.include(location);
-                    markers.add(googleMap.addMarker(new MarkerOptions().position(location)));
-//                    polylineOptions.add(location);
+                    case LocationTracker.ATTRIBUTE_MARKER:
+                        for (LatLng location : model.data)
+                        {
+                            builder.include(location);
+                            markers.add(googleMap.addMarker(new MarkerOptions().position(location)));
+                        }
+                        break;
+                    case LocationTracker.ATTRIBUTE_PATH:
+                        for (LatLng location : model.data)
+                        {
+                            builder.include(location);
+                            polylineOptions.add(location);
+                        }
+                        googleMap.addPolyline(polylineOptions);
+                        break;
                 }
-
-//                googleMap.addPolyline(polylineOptions);
 
                 if (model.data.size() > 0)
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
@@ -82,21 +92,28 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                         public void update(ArrayList<SensorData> with)
                         {
                             final AppCompatActivity activity = (AppCompatActivity) context;
-                            final LatLng latLng = (LatLng) tracker.defaultAdapter(visualization).adaptOne(with.get(with.size() - 1));
+                            final LatLng latLng = (LatLng) tracker.adapter(model.attribute, visualization).adaptOne(with.get(with.size() - 1));
+
+                            builder.include(latLng);
 
                             activity.runOnUiThread(new Runnable()
                             {
                                 @Override
                                 public void run()
                                 {
-                                    Log.d("SENSE", "Adding marker at " + latLng.toString());
+                                    Log.d("SENSE", "Updating map with " + latLng.toString());
 
-                                    markers.add(googleMap.addMarker(new MarkerOptions().position(latLng)));
-
-                                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
-
-                                    for (Marker marker : markers)
-                                        builder.include(marker.getPosition());
+                                    switch (model.attribute)
+                                    {
+                                        case LocationTracker.ATTRIBUTE_MARKER:
+                                            markers.add(googleMap.addMarker(new MarkerOptions().position(latLng)));
+                                            break;
+                                        case LocationTracker.ATTRIBUTE_PATH:
+                                            googleMap.clear();
+                                            polylineOptions.add(latLng);
+                                            googleMap.addPolyline(polylineOptions);
+                                            break;
+                                    }
 
                                     googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
                                 }

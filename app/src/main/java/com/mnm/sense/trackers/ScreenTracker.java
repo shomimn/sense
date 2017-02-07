@@ -1,8 +1,15 @@
 package com.mnm.sense.trackers;
 
+import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.TextView;
 
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.mnm.sense.NotificationCreator;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
@@ -14,14 +21,39 @@ import com.ubhave.sensormanager.sensors.SensorUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class ScreenTracker extends Tracker
 {
     public static final String ATTRIBUTE_TIME = "Time";
+    public static final long GUARD_SLEEP_INTERVAL = 60 * 60 * 1000;
 
+    public boolean screenOn = true;
     public long prevTimestamp = 0;
     public long timeOn = 0;
     public long timeOff = 0;
+
+    public Handler handler = new Handler();
+
+    Runnable limitGuard = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            Log.d("limitGuard", "Checking limits");
+
+            long diff = System.currentTimeMillis() - prevTimestamp;
+
+            if (!screenOn)
+                timeOff += diff;
+            else
+                timeOn += diff;
+
+            checkLimit();
+
+            handler.postDelayed(this, GUARD_SLEEP_INTERVAL);
+        }
+    };
 
     public ScreenTracker() throws ESException
     {
@@ -34,6 +66,7 @@ public class ScreenTracker extends Tracker
         attributes = new String[] { ATTRIBUTE_TIME };
 
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
+        visualizations.put(Visualization.PIE_CHART, new Visualization(1, 3, false));
 
         limit = new Limit("Daily limit", 4, 1, 12);
 
@@ -41,6 +74,7 @@ public class ScreenTracker extends Tracker
 
         HashMap<String, VisualizationAdapter> timeAdapters = new HashMap<>();
         timeAdapters.put(Visualization.TEXT, new ScreenTextAdapter());
+        timeAdapters.put(Visualization.PIE_CHART, new ScreenPieAdapter());
 
         adapters.put(ATTRIBUTE_TIME, timeAdapters);
     }
@@ -51,11 +85,15 @@ public class ScreenTracker extends Tracker
         ScreenData screenData = (ScreenData) data;
         long timestamp = screenData.getTimestamp();
         long diff = timestamp - prevTimestamp;
+        screenOn = screenData.isOn();
 
-        if (screenData.isOn())
+        if (screenOn)
             timeOff += diff;
         else
             timeOn += diff;
+
+        screenData.setTimeOff(timeOff);
+        screenData.setTimeOn(timeOn);
 
         prevTimestamp = timestamp;
     }
@@ -63,11 +101,16 @@ public class ScreenTracker extends Tracker
     @Override
     public void limitNotification(SensorData data)
     {
-        long timeOnSeconds = timeOn / 1000;
-//        long limitSeconds = limit.value * 60 * 60;
-        long limitSeconds = 60;
+        checkLimit();
+    }
 
-        if (timeOnSeconds > limitSeconds)
+    public void checkLimit()
+    {
+        long timeOnSeconds = timeOn / 1000;
+        long limitSeconds = limit.value * 60 * 60;
+//        long limitSeconds = 60;
+
+        if (timeOnSeconds >= limitSeconds)
         {
             NotificationCreator.create(resource, "Sense", "Whoa, you've been using your phone too much! You should take a walk!");
         }
@@ -78,7 +121,75 @@ public class ScreenTracker extends Tracker
     {
         prevTimestamp = System.currentTimeMillis();
 
+        handler.postDelayed(limitGuard, GUARD_SLEEP_INTERVAL);
+
         super.start();
+    }
+
+    @Override
+    public void pause() throws ESException
+    {
+        super.pause();
+
+        handler.removeCallbacks(limitGuard);
+    }
+
+    @Override
+    public void unpause() throws ESException
+    {
+        super.unpause();
+
+        handler.postDelayed(limitGuard, GUARD_SLEEP_INTERVAL);
+    }
+}
+
+class ScreenPieAdapter implements VisualizationAdapter<PieChart, PieData>
+{
+    @Override
+    public Object adapt(ArrayList<SensorData> data)
+    {
+        int size = data.size();
+
+        if (size == 0)
+            return null;
+
+        return adaptOne(data.get(size - 1));
+    }
+
+    @Override
+    public PieData adaptOne(SensorData data)
+    {
+        ScreenData screenData = (ScreenData) data;
+
+        PieData pieData = new PieData();
+        ArrayList<PieEntry> entries = new ArrayList<>();
+
+        entries.add(new PieEntry(screenData.getTimeOn() / 1000, "Time on"));
+        entries.add(new PieEntry(screenData.getTimeOff() / 1000, "Time off"));
+
+        PieDataSet pieDataSet = new PieDataSet(entries, "");
+        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        pieDataSet.setValueTextSize(10f);
+        pieDataSet.setSliceSpace(3f);
+//        pieDataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+//        pieDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+
+        pieData.addDataSet(pieDataSet);
+        pieData.setValueTextSize(10f);
+
+        return pieData;
+    }
+
+    @Override
+    public ArrayList<PieData> adaptAll(ArrayList<SensorData> data)
+    {
+        return null;
+    }
+
+    @Override
+    public void prepareView(PieChart view)
+    {
+
     }
 }
 
@@ -99,8 +210,12 @@ class ScreenTextAdapter implements VisualizationAdapter<TextView, String>
     public String adaptOne(SensorData data)
     {
         ScreenData screenData = (ScreenData) data;
+        String result = "";
 
-        return String.valueOf(screenData.isOn());
+        result += "Time on: " + String.valueOf(screenData.getTimeOn() / 1000) + "\n"
+               + "Time off: " + String.valueOf(screenData.getTimeOff() / 1000);
+
+        return result;
     }
 
     @Override

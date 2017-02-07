@@ -30,6 +30,9 @@ public class ScreenData extends SensorData
 {
 	private int screenStatus;
 
+	private long timeOn;
+	private long timeOff;
+
 	public static final int SCREEN_OFF = 0;
 	public static final int SCREEN_ON = 1;
 	public static final int SCREEN_UNKNOWN = 2;
@@ -57,5 +60,25 @@ public class ScreenData extends SensorData
 	public int getSensorType()
 	{
 		return SensorUtils.SENSOR_TYPE_SCREEN;
+	}
+
+	public long getTimeOn()
+	{
+		return timeOn;
+	}
+
+	public void setTimeOn(long timeOn)
+	{
+		this.timeOn = timeOn;
+	}
+
+	public long getTimeOff()
+	{
+		return timeOff;
+	}
+
+	public void setTimeOff(long timeOff)
+	{
+		this.timeOff = timeOff;
 	}
 }

@@ -9,6 +9,18 @@
         <item name="android:windowContentTransitions">true</item>
     </style>
 
+    <style name="BlueTheme" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@android:color/holo_blue_dark</item>
+    </style>
+
+    <style name="RedTheme" parent="AppTheme">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@android:color/holo_red_dark</item>
+    </style>
+
     <style name="MyTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:actionBarStyle">@style/MyTheme.ActionBarStyle</item>
     </style>
@@ -22,9 +34,10 @@
         <item name="android:textSize">@dimen/abc_text_size_medium_material</item>
     </style>
 
-    <style name="MyButton" parent="Theme.AppCompat.Light">
-        <item name="colorControlHighlight">@color/colorAccent</item>
+    <style name="MyButton" parent="Widget.AppCompat.Button.Borderless">
+        <item name="colorControlHighlight">?colorAccent</item>
     </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 

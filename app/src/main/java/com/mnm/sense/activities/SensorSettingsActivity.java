@@ -47,8 +47,14 @@ public class SensorSettingsActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        int trackerType = getIntent().getExtras().getInt("tracker");
+        tracker = SenseApp.instance().tracker(trackerType);
+
+        setTheme(tracker.theme);
+
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_sensor_settings);
 
         trackerTitle = (TextView) findViewById(R.id.tracker_title);
@@ -60,13 +66,8 @@ public class SensorSettingsActivity extends AppCompatActivity
 
         trackerTitle.getRootView().setBackgroundColor(Color.parseColor("#EEEEEE"));
 
-        int trackerType = getIntent().getExtras().getInt("tracker");
-
-        tracker = SenseApp.instance().tracker(trackerType);
         trackerTitle.setText(tracker.text + " Tracker Settings");
         trackerImage.setImageResource(tracker.resource);
-
-//        setAccent();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -80,7 +81,7 @@ public class SensorSettingsActivity extends AppCompatActivity
 
     public void addVisualizations()
     {
-        int colorAccent = getResources().getColor(R.color.colorAccent);
+        int colorAccent = getResources().getColor(tracker.accent);
 
         for (Map.Entry<String, Visualization> entry : tracker.visualizations.entrySet())
         {

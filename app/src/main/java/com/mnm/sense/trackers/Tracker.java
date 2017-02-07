@@ -54,6 +54,7 @@ public abstract class Tracker implements SensorDataListener
     public int resource;
     public boolean isOn;
     public int accent = R.color.colorAccent;
+    public int theme = R.style.AppTheme;
 
     public int type;
     public int id = -1;
@@ -65,6 +66,8 @@ public abstract class Tracker implements SensorDataListener
     public HashMap<String, UpdateCallback> updateCallbacks = new HashMap<>();
     public ArrayList<SensorData> sensorData = new ArrayList<>();
     public String[] attributes = { };
+
+    protected static Handler handler = new Handler();
 
     public Tracker(int t) throws ESException
     {

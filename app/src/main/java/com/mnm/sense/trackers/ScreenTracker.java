@@ -19,7 +19,11 @@ import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.push.ScreenData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
+import org.joda.time.Hours;
+import org.joda.time.Seconds;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,8 +37,6 @@ public class ScreenTracker extends Tracker
     public long timeOn = 0;
     public long timeOff = 0;
 
-    public Handler handler = new Handler();
-
     Runnable limitGuard = new Runnable()
     {
         @Override
@@ -44,12 +46,11 @@ public class ScreenTracker extends Tracker
 
             long diff = System.currentTimeMillis() - prevTimestamp;
 
-            if (!screenOn)
-                timeOff += diff;
-            else
-                timeOn += diff;
-
-            checkLimit();
+            if (screenOn)
+            {
+                long time = timeOn + diff;
+                checkLimit(time);
+            }
 
             handler.postDelayed(this, GUARD_SLEEP_INTERVAL);
         }
@@ -70,7 +71,8 @@ public class ScreenTracker extends Tracker
 
         limit = new Limit("Daily limit", 4, 1, 12);
 
-//        accent = android.R.color.black;
+        accent = android.R.color.holo_red_dark;
+        theme = R.style.RedTheme;
 
         HashMap<String, VisualizationAdapter> timeAdapters = new HashMap<>();
         timeAdapters.put(Visualization.TEXT, new ScreenTextAdapter());
@@ -101,16 +103,20 @@ public class ScreenTracker extends Tracker
     @Override
     public void limitNotification(SensorData data)
     {
-        checkLimit();
+        checkLimit(timeOn);
     }
 
-    public void checkLimit()
+    public void checkLimit(long time)
     {
-        long timeOnSeconds = timeOn / 1000;
+        long timeOnSeconds = time / 1000;
         long limitSeconds = limit.value * 60 * 60;
 //        long limitSeconds = 60;
 
+//        Seconds timeOnSeconds = Seconds.seconds((int) timeOn / 1000);
+//        Seconds limitSeconds = Hours.hours(limit.value).toStandardSeconds();
+
         if (timeOnSeconds >= limitSeconds)
+//        if (timeOnSeconds.isGreaterThan(limitSeconds))
         {
             NotificationCreator.create(resource, "Sense", "Whoa, you've been using your phone too much! You should take a walk!");
         }
@@ -164,8 +170,11 @@ class ScreenPieAdapter implements VisualizationAdapter<PieChart, PieData>
         PieData pieData = new PieData();
         ArrayList<PieEntry> entries = new ArrayList<>();
 
-        entries.add(new PieEntry(screenData.getTimeOn() / 1000, "Time on"));
-        entries.add(new PieEntry(screenData.getTimeOff() / 1000, "Time off"));
+        float timeOn = screenData.getTimeOn();
+        float timeOff = screenData.getTimeOff();
+
+        entries.add(new PieEntry(timeOn / 1000f / 60f, "Time on"));
+        entries.add(new PieEntry(timeOff / 1000f / 60f, "Time off"));
 
         PieDataSet pieDataSet = new PieDataSet(entries, "");
         pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);

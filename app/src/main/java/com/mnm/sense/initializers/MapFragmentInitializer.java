@@ -2,6 +2,15 @@ package com.mnm.sense.initializers;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -13,12 +22,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.SphericalUtil;
 import com.mnm.sense.R;
 import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
@@ -68,14 +79,35 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                         for (LatLng location : model.data)
                         {
                             builder.include(location);
-                            markers.add(googleMap.addMarker(new MarkerOptions().position(location)));
+                            Marker marker = googleMap.addMarker(
+                                    new MarkerOptions()
+                                            .position(location)
+                            );
+
+                            markers.add(marker);
                         }
                         break;
                     case LocationTracker.ATTRIBUTE_PATH:
-                        for (LatLng location : model.data)
+                        Bitmap arrow = Util.bitmapFromResource(context, R.drawable.ic_navigation_black_24dp, Color.RED);
+//                        for (LatLng location : model.data)
+                        for (int i = 0; i < model.data.size(); ++i)
                         {
+                            LatLng location = model.data.get(i);
+
                             builder.include(location);
                             polylineOptions.add(location);
+
+                            if (i == model.data.size() - 1)
+                                continue;
+
+                            LatLng nextLocation = model.data.get(i + 1);
+
+                            if (SphericalUtil.computeDistanceBetween(location, nextLocation) < 10)
+                                continue;
+
+                            float heading = (float) SphericalUtil.computeHeading(location, nextLocation);
+
+                            googleMap.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromBitmap(arrow)).anchor(0.5f, 0.5f).rotation(heading));
                         }
                         googleMap.addPolyline(polylineOptions);
                         break;

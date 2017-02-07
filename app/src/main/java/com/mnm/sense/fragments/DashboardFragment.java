@@ -52,27 +52,7 @@ public class DashboardFragment extends Fragment
 
         grid = new DynamicGrid(gridLayout);
 
-        for (int i = 0; i < 25; ++i)
-        {
-            entries.add(new BarEntry(i, random.nextFloat()));
-            vals.add(String.valueOf(i));
-        }
 
-        BarDataSet dataSet = new BarDataSet(entries, "Steps");
-        dataSet.setColor(getResources().getColor(R.color.colorAccent));
-        final BarData data = new BarData(dataSet);
-        data.setBarWidth(0.2f);
-
-//        grid.addItem(new GridItem(2, 3, new DashboardData(SenseApp.instance().tracker(SensorUtils.SENSOR_TYPE_LOCATION), 0, new LatLng(43.3, 21.9))));
-//        grid.addItem(new GridItem(1, 3, new DashboardData(SenseApp.instance().tracker(SensorUtils.SENSOR_TYPE_STEP_COUNTER), 1, getModel)));
-//        grid.addItem(new GridItem(1, 1, new DashboardData(SenseApp.instance().tracker(SensorUtils.SENSOR_TYPE_STEP_COUNTER), 0, "5000/10000")));
-//        grid.addItem(new GridItem(1, 1, new DashboardData(SenseApp.instance().tracker(SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER), 0, "In: 6\nOut: 2\nMissed: 3")));
-//        grid.addItem(new GridItem(1, 1, new DashboardData(SenseApp.instance().tracker(SensorUtils.SENSOR_TYPE_SMS_CONTENT_READER), 0, "In: 15\nOut: 23")));
-//        grid.addItem(new GridItem(1, 1, "omg"));
-//        grid.addItem(new GridItem(1, 1, "it's"));
-//        grid.addItem(new GridItem(1, 1, "working"));
-
-//        grid.layoutItems(inflater);
 
         return scrollView;
     }

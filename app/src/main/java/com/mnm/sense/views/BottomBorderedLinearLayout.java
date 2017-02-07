@@ -42,9 +42,13 @@ public class BottomBorderedLinearLayout extends LinearLayout
         borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         borderPaint.setStyle(Paint.Style.STROKE);
         borderPaint.setStrokeWidth(3);
-        borderPaint.setColor(getResources().getColor(R.color.colorAccent));
 
         setWillNotDraw(false);
+    }
+
+    public void setBorderColor(int resource)
+    {
+        borderPaint.setColor(getResources().getColor(resource));
     }
 
     @Override

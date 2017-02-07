@@ -35,8 +35,10 @@ public class DashboardViewInitializer extends ViewInitializer<DashboardView, Das
     {
         final Tracker tracker = model.tracker;
         final AppCompatActivity activity = (AppCompatActivity) context;
+        final int accent = context.getResources().getColor(tracker.accent);
 
         view.image.setImageResource(tracker.resource);
+        view.image.setColorFilter(accent);
 
         // TODO: Better way for this
         if (model.data instanceof MapModel)
@@ -63,7 +65,7 @@ public class DashboardViewInitializer extends ViewInitializer<DashboardView, Das
 
         if (model.shouldUpdate)
         {
-            final TextView textView = addTextView(context, view);
+            final TextView textView = addTextView(context, view, accent);
 
             tracker.updateCallbacks.put(key, new Tracker.UpdateCallback()
             {
@@ -86,11 +88,11 @@ public class DashboardViewInitializer extends ViewInitializer<DashboardView, Das
         }
     }
 
-    public TextView addTextView(Context context, DashboardView view)
+    public TextView addTextView(Context context, DashboardView view, int color)
     {
         TextView textView = new TextView(context);
         textView.setTextAlignment(View.TEXT_ALIGNMENT_VIEW_END);
-        textView.setTextColor(context.getResources().getColor(R.color.colorAccent));
+        textView.setTextColor(color);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

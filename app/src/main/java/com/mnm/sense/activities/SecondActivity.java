@@ -42,11 +42,19 @@ public class SecondActivity extends AppCompatActivity
     DatePicker startDate;
     DatePicker endDate;
     Spinner typeSpinner;
-    String[] types = { "Type", "Person", "This", "That" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+
+        Class viewClass = (Class) extras.get("view");
+        Tracker tracker = SenseApp.instance().tracker(extras.getInt("tracker"));
+        String visualization = extras.getString("visualization");
+
+        setTheme(tracker.theme);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
@@ -72,13 +80,6 @@ public class SecondActivity extends AppCompatActivity
         startDate.setMaxDate(System.currentTimeMillis());
         endDate.setMinDate(installedDate);
         endDate.setMaxDate(System.currentTimeMillis());
-
-        Intent intent = getIntent();
-        Bundle extras = intent.getExtras();
-
-        Class viewClass = (Class) extras.get("view");
-        Tracker tracker = SenseApp.instance().tracker(extras.getInt("tracker"));
-        String visualization = extras.getString("visualization");
 
         trackerTitle.setText(tracker.text);
         trackerImage.setImageResource(tracker.resource);
@@ -129,7 +130,7 @@ public class SecondActivity extends AppCompatActivity
 
                 for (VisualizationFragment fragment : fragments)
                 {
-                    if (fragment.attribute == attribute)
+                    if (fragment.attribute.equals(attribute))
                         return;
 
                     fragment.attribute = attribute;

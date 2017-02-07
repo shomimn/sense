@@ -89,7 +89,8 @@ public class SensorSettingsActivity extends AppCompatActivity
             final Visualization visualization = entry.getValue();
             final boolean isDisplayed = visualization.isDisplayed;
 
-            LinearLayout layout = new BottomBorderedLinearLayout(this);
+            BottomBorderedLinearLayout layout = new BottomBorderedLinearLayout(this);
+            layout.setBorderColor(tracker.accent);
             layout.setOrientation(LinearLayout.HORIZONTAL);
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1);

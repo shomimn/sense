@@ -29,7 +29,7 @@ public class TextViewInitializer extends ViewInitializer<TextView, TextModel>
 
         view.setText(model.data);
         view.setGravity(Gravity.CENTER);
-        view.setTextColor(context.getResources().getColor(R.color.colorAccent));
+        view.setTextColor(context.getResources().getColor(tracker.accent));
 
         if (model.shouldUpdate)
         {

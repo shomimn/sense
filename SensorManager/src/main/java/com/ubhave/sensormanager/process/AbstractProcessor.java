@@ -15,6 +15,7 @@ import com.ubhave.sensormanager.process.pull.LocationProcessor;
 import com.ubhave.sensormanager.process.pull.MagneticFieldProcessor;
 import com.ubhave.sensormanager.process.pull.MicrophoneProcessor;
 import com.ubhave.sensormanager.process.pull.PhoneRadioProcessor;
+import com.ubhave.sensormanager.process.pull.RunningApplicationProcessor;
 import com.ubhave.sensormanager.process.pull.SMSContentReaderProcessor;
 import com.ubhave.sensormanager.process.pull.StepCounterProcessor;
 import com.ubhave.sensormanager.process.pull.WifiProcessor;
@@ -39,54 +40,57 @@ public abstract class AbstractProcessor
 
 		switch (sensorType)
 		{
-		case SensorUtils.SENSOR_TYPE_ACCELEROMETER:
-			return new AccelerometerProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_BLUETOOTH:
-			return new BluetoothProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_LOCATION:
-			return new LocationProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_MICROPHONE:
-			return new MicrophoneProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_WIFI:
-			return new WifiProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_BATTERY:
-			return new BatteryProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_CONNECTION_STATE:
-			return new ConnectionStateProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_PHONE_STATE:
-			return new PhoneStateProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_SCREEN:
-			return new ScreenProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_SMS:
-			return new SMSProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_PROXIMITY:
-			return new ProximityProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER:
-			return new CallContentReaderProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_SMS_CONTENT_READER:
-			return new SMSContentReaderProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_PHONE_RADIO:
-			return new PhoneRadioProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_CONNECTION_STRENGTH:
-			return new ConnectionStrengthProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_GYROSCOPE:
-			return new GyroscopeProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_LIGHT:
-			return new LightProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_AMBIENT_TEMPERATURE:
-			return new AmbientTemperatureProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_HUMIDITY:
-			return new HumidityProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_PRESSURE:
-			return new PressureProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_PASSIVE_LOCATION:
-			return new PassiveLocationProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_MAGNETIC_FIELD:
-			return new MagneticFieldProcessor(c, setRawData, setProcessedData);
-		case SensorUtils.SENSOR_TYPE_STEP_COUNTER:
-			return new StepCounterProcessor(c, setRawData, setProcessedData);
-		default:
-			throw new ESException(ESException.UNKNOWN_SENSOR_TYPE, "No processor defined for this sensor id ("+sensorType+").");
+			case SensorUtils.SENSOR_TYPE_ACCELEROMETER:
+				return new AccelerometerProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_BLUETOOTH:
+				return new BluetoothProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_LOCATION:
+				return new LocationProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_MICROPHONE:
+				return new MicrophoneProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_WIFI:
+				return new WifiProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_BATTERY:
+				return new BatteryProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_CONNECTION_STATE:
+				return new ConnectionStateProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_PHONE_STATE:
+				return new PhoneStateProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_SCREEN:
+				return new ScreenProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_SMS:
+				return new SMSProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_PROXIMITY:
+				return new ProximityProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER:
+				return new CallContentReaderProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_SMS_CONTENT_READER:
+				return new SMSContentReaderProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_PHONE_RADIO:
+				return new PhoneRadioProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_CONNECTION_STRENGTH:
+				return new ConnectionStrengthProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_GYROSCOPE:
+				return new GyroscopeProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_LIGHT:
+				return new LightProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_AMBIENT_TEMPERATURE:
+				return new AmbientTemperatureProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_HUMIDITY:
+				return new HumidityProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_PRESSURE:
+				return new PressureProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_PASSIVE_LOCATION:
+				return new PassiveLocationProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_MAGNETIC_FIELD:
+				return new MagneticFieldProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_STEP_COUNTER:
+				return new StepCounterProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_RUNNING_APP:
+				return new RunningApplicationProcessor(c, setRawData, setProcessedData);
+
+			default:
+				throw new ESException(ESException.UNKNOWN_SENSOR_TYPE, "No processor defined for this sensor id ("+sensorType+").");
 		}
 	}
 

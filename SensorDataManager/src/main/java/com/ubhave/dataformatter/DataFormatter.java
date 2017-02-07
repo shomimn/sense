@@ -16,6 +16,7 @@ import com.ubhave.dataformatter.json.pull.LocationFormatter;
 import com.ubhave.dataformatter.json.pull.MagneticFieldFormatter;
 import com.ubhave.dataformatter.json.pull.MicrophoneFormatter;
 import com.ubhave.dataformatter.json.pull.PhoneRadioFormatter;
+import com.ubhave.dataformatter.json.pull.RunningApplicationFormatter;
 import com.ubhave.dataformatter.json.pull.SmsContentReaderFormatter;
 import com.ubhave.dataformatter.json.pull.StepCounterFormatter;
 import com.ubhave.dataformatter.json.pull.WifiFormatter;
@@ -86,6 +87,8 @@ public abstract class DataFormatter
 			return new StepCounterFormatter(c);
 		case SensorUtils.SENSOR_TYPE_INTERACTION:
 			return new InteractionFormatter(c);
+        case SensorUtils.SENSOR_TYPE_RUNNING_APP:
+            return new RunningApplicationFormatter(c);
 		default:
 			return null;
 		}

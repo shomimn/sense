@@ -1,8 +1,13 @@
 package com.mnm.sense.activities;
 
 import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -25,10 +30,14 @@ import com.mnm.sense.fragments.DashboardFragment;
 import com.mnm.sense.fragments.TrackersFragment;
 import com.mnm.sense.initializers.TrackerViewInitializer;
 import com.mnm.sense.trackers.Tracker;
+import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.sensors.*;
+import com.ubhave.sensormanager.sensors.pull.ActivityRecognitionSensor;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -53,6 +62,22 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    ActivityRecognitionSensor ars = ActivityRecognitionSensor.getSensor(MainActivity.this);
+                } catch (ESException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.getRootView().setBackgroundColor(Color.parseColor("#EEEEEE"));
         setupViewPager(viewPager);
@@ -76,8 +101,30 @@ public class MainActivity extends AppCompatActivity
                         Manifest.permission.ACCESS_NETWORK_STATE,
                         Manifest.permission.READ_CONTACTS,
                         Manifest.permission.READ_CALL_LOG,
-                        Manifest.permission.READ_PHONE_STATE
+                        Manifest.permission.READ_PHONE_STATE,
+                        Manifest.permission.PACKAGE_USAGE_STATS
                 }, 1);
+
+        checkRunningAppsPermission();
+
+    }
+
+    @TargetApi(22)
+    public void checkRunningAppsPermission()
+    {
+        UsageStatsManager manager = (UsageStatsManager) getSystemService(Context.USAGE_STATS_SERVICE);
+        Calendar calendar = Calendar.getInstance();
+        long endTime = calendar.getTimeInMillis();
+        calendar.add(Calendar.YEAR, -1);
+        long startTime = calendar.getTimeInMillis();
+
+        List<UsageStats> list = manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,startTime,endTime);
+
+        if(list.isEmpty())
+        {
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            startActivity(intent);
+        }
     }
 
     @Override

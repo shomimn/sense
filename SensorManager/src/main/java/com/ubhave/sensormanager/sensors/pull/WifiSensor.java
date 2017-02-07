@@ -44,14 +44,14 @@ public class WifiSensor extends AbstractPullSensor
 {
 	private static final String TAG = "WifiSensor";
 	private static final String[] REQUIRED_PERMISSIONS = new String[]{
-		Manifest.permission.ACCESS_WIFI_STATE,
-		Manifest.permission.ACCESS_NETWORK_STATE,
-		Manifest.permission.CHANGE_WIFI_STATE
+			Manifest.permission.ACCESS_WIFI_STATE,
+			Manifest.permission.ACCESS_NETWORK_STATE,
+			Manifest.permission.CHANGE_WIFI_STATE
 	};
 
 	private static WifiSensor wifiSensor;
 	private static Object lock = new Object();
-	
+
 	private WifiManager wifiManager;
 	private BroadcastReceiver wifiReceiver;
 	private ArrayList<WifiScanResult> wifiScanResults;

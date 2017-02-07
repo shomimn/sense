@@ -38,6 +38,7 @@ import com.ubhave.sensormanager.sensors.env.HumiditySensor;
 import com.ubhave.sensormanager.sensors.env.LightSensor;
 import com.ubhave.sensormanager.sensors.env.PressureSensor;
 import com.ubhave.sensormanager.sensors.pull.AccelerometerSensor;
+import com.ubhave.sensormanager.sensors.pull.ActivityRecognitionSensor;
 import com.ubhave.sensormanager.sensors.pull.BluetoothSensor;
 import com.ubhave.sensormanager.sensors.pull.CallContentReaderSensor;
 import com.ubhave.sensormanager.sensors.pull.GyroscopeSensor;
@@ -45,6 +46,7 @@ import com.ubhave.sensormanager.sensors.pull.LocationSensor;
 import com.ubhave.sensormanager.sensors.pull.MagneticFieldSensor;
 import com.ubhave.sensormanager.sensors.pull.MicrophoneSensor;
 import com.ubhave.sensormanager.sensors.pull.PhoneRadioSensor;
+import com.ubhave.sensormanager.sensors.pull.RunningApplicationSensor;
 import com.ubhave.sensormanager.sensors.pull.SMSContentReaderSensor;
 import com.ubhave.sensormanager.sensors.pull.StepCounterSensor;
 import com.ubhave.sensormanager.sensors.pull.WifiSensor;
@@ -65,7 +67,7 @@ public class SensorUtils
 	public final static int SENSOR_GROUP_PUSH = 1;
 	public final static int SENSOR_GROUP_ENVIRONMENT = 2;
 	public final static int SENSOR_GROUP_USER = 3;
-	
+
 	public final static int SENSOR_TYPE_ACCELEROMETER = 5001;
 	public final static int SENSOR_TYPE_BATTERY = 5002;
 	public final static int SENSOR_TYPE_BLUETOOTH = 5003;
@@ -90,7 +92,10 @@ public class SensorUtils
 	public final static int SENSOR_TYPE_MAGNETIC_FIELD = 5024;
 	public final static int SENSOR_TYPE_STEP_COUNTER = 5025;
 	public final static int SENSOR_TYPE_INTERACTION = 5026;
-	
+	public final static int SENSOR_TYPE_RUNNING_APP = 5027;
+	public final static int SENSOR_TYPE_ACTIVITY_RECOGNITION = 5028;
+
+
 	public final static String SENSOR_NAME_ACCELEROMETER = "Accelerometer";
 	public final static String SENSOR_NAME_BATTERY = "Battery";
 	public final static String SENSOR_NAME_BLUETOOTH = "Bluetooth";
@@ -115,6 +120,9 @@ public class SensorUtils
 	public final static String SENSOR_NAME_MAGNETIC_FIELD = "MagneticField";
 	public final static String SENSOR_NAME_STEP_COUNTER = "StepCounter";
 	public final static String SENSOR_NAME_INTERACTION = "Interaction";
+	public final static String SENSOR_NAME_RUNNING_APP = "RunningApplication";
+	public final static String SENSOR_NAME_ACTIVITY_RECOGNITION = "ActivityRecognition";
+
 
 	private static SensorEnum getSensor(int sensorType) throws ESException
 	{
@@ -175,54 +183,58 @@ public class SensorUtils
 	{
 		switch (id)
 		{
-		case SENSOR_TYPE_ACCELEROMETER:
-			return AccelerometerSensor.getSensor(context);
-		case SENSOR_TYPE_BATTERY:
-			return BatterySensor.getSensor(context);
-		case SENSOR_TYPE_BLUETOOTH:
-			return BluetoothSensor.getSensor(context);
-		case SENSOR_TYPE_LOCATION:
-			return LocationSensor.getSensor(context);
-		case SENSOR_TYPE_MICROPHONE:
-			return MicrophoneSensor.getSensor(context);
-		case SENSOR_TYPE_PHONE_STATE:
-			return PhoneStateSensor.getSensor(context);	
-		case SENSOR_TYPE_PROXIMITY:
-			return ProximitySensor.getSensor(context);
-		case SENSOR_TYPE_SCREEN:
-			return ScreenSensor.getSensor(context);
-		case SENSOR_TYPE_SMS:
-			return SmsSensor.getSensor(context);
-		case SENSOR_TYPE_WIFI:
-			return WifiSensor.getSensor(context);
-		case SENSOR_TYPE_CONNECTION_STATE:
-			return ConnectionStateSensor.getSensor(context);
-		case SENSOR_TYPE_SMS_CONTENT_READER:
-			return SMSContentReaderSensor.getSensor(context);
-		case SENSOR_TYPE_CALL_CONTENT_READER:
-			return CallContentReaderSensor.getSensor(context);
-		case SENSOR_TYPE_GYROSCOPE:
-			return GyroscopeSensor.getSensor(context);
-		case SENSOR_TYPE_LIGHT:
-			return LightSensor.getSensor(context);
-		case SENSOR_TYPE_PHONE_RADIO:
-			return PhoneRadioSensor.getPhoneRadioSensor(context);
-		case SENSOR_TYPE_CONNECTION_STRENGTH:
-			return ConnectionStrengthSensor.getSensor(context);
-		case SENSOR_TYPE_PASSIVE_LOCATION:
-			return PassiveLocationSensor.getSensor(context);
-		case SENSOR_TYPE_AMBIENT_TEMPERATURE:
-			return AmbientTemperatureSensor.getSensor(context);
-		case SENSOR_TYPE_PRESSURE:
-			return PressureSensor.getSensor(context);
-		case SENSOR_TYPE_HUMIDITY:
-			return HumiditySensor.getSensor(context);
-		case SENSOR_TYPE_MAGNETIC_FIELD:
-			return MagneticFieldSensor.getSensor(context);
-		case SENSOR_TYPE_STEP_COUNTER:
-			return StepCounterSensor.getSensor(context);
-		default:
-			throw new ESException(ESException.UNKNOWN_SENSOR_TYPE, "Unknown sensor id: " + id);
+			case SENSOR_TYPE_ACCELEROMETER:
+				return AccelerometerSensor.getSensor(context);
+			case SENSOR_TYPE_BATTERY:
+				return BatterySensor.getSensor(context);
+			case SENSOR_TYPE_BLUETOOTH:
+				return BluetoothSensor.getSensor(context);
+			case SENSOR_TYPE_LOCATION:
+				return LocationSensor.getSensor(context);
+			case SENSOR_TYPE_MICROPHONE:
+				return MicrophoneSensor.getSensor(context);
+			case SENSOR_TYPE_PHONE_STATE:
+				return PhoneStateSensor.getSensor(context);
+			case SENSOR_TYPE_PROXIMITY:
+				return ProximitySensor.getSensor(context);
+			case SENSOR_TYPE_SCREEN:
+				return ScreenSensor.getSensor(context);
+			case SENSOR_TYPE_SMS:
+				return SmsSensor.getSensor(context);
+			case SENSOR_TYPE_WIFI:
+				return WifiSensor.getSensor(context);
+			case SENSOR_TYPE_CONNECTION_STATE:
+				return ConnectionStateSensor.getSensor(context);
+			case SENSOR_TYPE_SMS_CONTENT_READER:
+				return SMSContentReaderSensor.getSensor(context);
+			case SENSOR_TYPE_CALL_CONTENT_READER:
+				return CallContentReaderSensor.getSensor(context);
+			case SENSOR_TYPE_GYROSCOPE:
+				return GyroscopeSensor.getSensor(context);
+			case SENSOR_TYPE_LIGHT:
+				return LightSensor.getSensor(context);
+			case SENSOR_TYPE_PHONE_RADIO:
+				return PhoneRadioSensor.getPhoneRadioSensor(context);
+			case SENSOR_TYPE_CONNECTION_STRENGTH:
+				return ConnectionStrengthSensor.getSensor(context);
+			case SENSOR_TYPE_PASSIVE_LOCATION:
+				return PassiveLocationSensor.getSensor(context);
+			case SENSOR_TYPE_AMBIENT_TEMPERATURE:
+				return AmbientTemperatureSensor.getSensor(context);
+			case SENSOR_TYPE_PRESSURE:
+				return PressureSensor.getSensor(context);
+			case SENSOR_TYPE_HUMIDITY:
+				return HumiditySensor.getSensor(context);
+			case SENSOR_TYPE_MAGNETIC_FIELD:
+				return MagneticFieldSensor.getSensor(context);
+			case SENSOR_TYPE_STEP_COUNTER:
+				return StepCounterSensor.getSensor(context);
+			case SENSOR_TYPE_RUNNING_APP:
+				return RunningApplicationSensor.getSensor(context);
+			case SENSOR_TYPE_ACTIVITY_RECOGNITION:
+				return ActivityRecognitionSensor.getSensor(context);
+			default:
+				throw new ESException(ESException.UNKNOWN_SENSOR_TYPE, "Unknown sensor id: " + id);
 		}
 	}
 
@@ -230,18 +242,18 @@ public class SensorUtils
 	{
 		switch (sensorType)
 		{
-		case SensorUtils.SENSOR_TYPE_ACCELEROMETER:
-			return new AccelerometerDataClassifier();
-		case SensorUtils.SENSOR_TYPE_BLUETOOTH:
-			return new BluetoothDataClassifier();
-		case SensorUtils.SENSOR_TYPE_LOCATION:
-			return new LocationDataClassifier();
-		case SensorUtils.SENSOR_TYPE_MICROPHONE:
-			return new MicrophoneDataClassifier();
-		case SensorUtils.SENSOR_TYPE_WIFI:
-			return new WifiDataClassifier();
-		default:
-			throw new ESException(ESException.UNKNOWN_SENSOR_TYPE, "Sensor data classifier not support for the sensor type " + sensorType);
+			case SensorUtils.SENSOR_TYPE_ACCELEROMETER:
+				return new AccelerometerDataClassifier();
+			case SensorUtils.SENSOR_TYPE_BLUETOOTH:
+				return new BluetoothDataClassifier();
+			case SensorUtils.SENSOR_TYPE_LOCATION:
+				return new LocationDataClassifier();
+			case SensorUtils.SENSOR_TYPE_MICROPHONE:
+				return new MicrophoneDataClassifier();
+			case SensorUtils.SENSOR_TYPE_WIFI:
+				return new WifiDataClassifier();
+			default:
+				throw new ESException(ESException.UNKNOWN_SENSOR_TYPE, "Sensor data classifier not support for the sensor type " + sensorType);
 		}
 	}
 }

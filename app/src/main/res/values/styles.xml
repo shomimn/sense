@@ -11,13 +11,13 @@
     <style name="BlueTheme" parent="AppTheme">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@android:color/holo_blue_dark</item>
+        <item name="colorAccent">@color/greenColorAccent</item>
     </style>
 
     <style name="RedTheme" parent="AppTheme">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@android:color/holo_red_dark</item>
+        <item name="colorAccent">@color/redColorAccent</item>
     </style>
 
     <style name="MyTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">

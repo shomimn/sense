@@ -32,7 +32,7 @@ public class SMSContentTracker extends Tracker
         resource = R.drawable.ic_sms_black_48dp;
         isOn = false;
 
-        accent = android.R.color.holo_blue_dark;
+        accent = R.color.greenColorAccent;
         theme = R.style.BlueTheme;
 
         attributes = new String[]{ ATTRIBUTE_TYPE, ATTRIBUTE_PERSON };

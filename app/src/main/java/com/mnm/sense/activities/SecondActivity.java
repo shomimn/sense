@@ -94,7 +94,7 @@ public class SecondActivity extends AppCompatActivity
 
     private void setupViewPager(ViewPager viewPager, final Tracker tracker, String defaultVisualization)
     {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         int pageToDisplay = 0;
         int page = 0;
         final ArrayList<VisualizationFragment> fragments = new ArrayList<>();
@@ -127,6 +127,13 @@ public class SecondActivity extends AppCompatActivity
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
             {
                 String attribute = tracker.attributes[i];
+//                VisualizationFragment fragment = fragments.get(i);
+//
+//                if (fragment.attribute.equals(attribute))
+//                    return;
+//
+//                fragment.attribute = attribute;
+//                fragment.refresh();
 
                 for (VisualizationFragment fragment : fragments)
                 {

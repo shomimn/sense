@@ -13,6 +13,9 @@ public class RunningApplicationTextAdapter implements VisualizationAdapter<TextV
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {
+        if(data.size() == 0)
+            return null;
+
         int last = data.size() - 1;
 
         return adaptOne(data.get(last));

@@ -8,15 +8,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAlignment="center"
-        android:textColor="@color/colorAccent"
+        android:textColor="?colorAccent"
         android:layout_weight="1"
-        android:tint="@color/colorAccent"/>
+        android:tint="?colorAccent"/>
     <SeekBar
         android:id="@+id/interval_slider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         />
+
 
     <LinearLayout
         android:orientation="horizontal"
@@ -29,10 +30,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:textColor="@color/colorAccent"
+            android:textColor="?colorAccent"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:tint="@color/colorAccent"/>
+            android:tint="?colorAccent"/>
 
         <LinearLayout
             android:orientation="horizontal"
@@ -47,8 +48,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:theme="@style/MyButton"
-            android:tint="@color/colorAccent"
-            android:textColor="@color/colorAccent"
+            android:tint="?colorAccent"
+            android:textColor="?colorAccent"
             style="@style/Widget.AppCompat.Button.Borderless"/>
         <Button
             android:id="@+id/confirm_change"
@@ -56,8 +57,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:theme="@style/MyButton"
-            android:tint="@color/colorAccent"
-            android:textColor="@color/colorAccent"
+            android:tint="?colorAccent"
+            android:textColor="?colorAccent"
             style="@style/Widget.AppCompat.Button.Borderless"/>
         </LinearLayout>
 

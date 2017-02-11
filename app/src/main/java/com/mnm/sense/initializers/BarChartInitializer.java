@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
@@ -20,25 +21,6 @@ import com.ubhave.sensormanager.data.SensorData;
 
 import java.util.ArrayList;
 
-class LabelFormatter implements IAxisValueFormatter
-{
-    private final String[] mLabels;
-
-    public LabelFormatter(String[] labels)
-    {
-        mLabels = labels;
-    }
-
-    @Override
-    public String getFormattedValue(float value, AxisBase axis)
-    {
-        if (value < 0 || value > mLabels.length - 1)
-            return "";
-
-        return mLabels[(int) value];
-    }
-}
-
 public class BarChartInitializer extends ViewInitializer<BarChart, BarChartModel>
 {
     public BarChartInitializer()
@@ -50,12 +32,15 @@ public class BarChartInitializer extends ViewInitializer<BarChart, BarChartModel
     public void init(final Context context, final BarChart barChart, final BarChartModel model)
     {
         final AppCompatActivity activity = (AppCompatActivity) context;
-        final VisualizationAdapter adapter = model.tracker.adapters.get(visualization);
+        final VisualizationAdapter adapter = model.tracker.defaultAdapter(visualization);
 
         barChart.setData(model.data);
         barChart.fitScreen();
         barChart.setDescription(null);
         barChart.setDrawBorders(false);
+        barChart.setDoubleTapToZoomEnabled(false);
+        barChart.setPinchZoom(false);
+        barChart.getLegend().setWordWrapEnabled(true);
 
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
@@ -65,19 +50,27 @@ public class BarChartInitializer extends ViewInitializer<BarChart, BarChartModel
         xAxis.setDrawGridLines(false);
         xAxis.setDrawAxisLine(false);
         xAxis.setAvoidFirstLastClipping(true);
-        xAxis.setCenterAxisLabels(true);
+//        xAxis.setCenterAxisLabels(true);
 
         final YAxis leftYAxis = barChart.getAxisLeft();
-//        leftYAxis.setAxisMaximum(barChart.getData().getYMax());
         leftYAxis.setDrawGridLines(false);
         leftYAxis.setDrawLabels(false);
         leftYAxis.setDrawAxisLine(false);
+        leftYAxis.setGranularity(1);
+        leftYAxis.setGranularityEnabled(true);
 
         final YAxis rightYAxis = barChart.getAxisRight();
-//        rightYAxis.setAxisMaximum(barChart.getData().getYMax());
         rightYAxis.setDrawGridLines(false);
         rightYAxis.setDrawLabels(false);
         rightYAxis.setDrawAxisLine(false);
+        rightYAxis.setGranularity(1);
+        rightYAxis.setGranularityEnabled(true);
+
+//        if (model.data != null)
+//        {
+//            leftYAxis.setAxisMaximum(model.data.getYMax() + 100);
+//            rightYAxis.setAxisMaximum(model.data.getYMax() + 100);
+//        }
 
         adapter.prepareView(barChart);
 

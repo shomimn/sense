@@ -6,8 +6,7 @@
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/MyTheme">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
@@ -21,13 +20,13 @@
                 android:id="@+id/tracker_img"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:tint="@color/colorAccent"
+                android:tint="?colorAccent"
                 android:transitionName="imageTransition"/>
             <TextView
                 android:id="@+id/tracker_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorAccent"/>
+                android:textColor="?colorAccent"/>
 
             <!--<Switch-->
                 <!--android:layout_width="match_parent"-->
@@ -79,7 +78,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Visualizations"
-                android:textColor="@color/colorAccent"
+                android:textColor="?colorAccent"
                 android:textAlignment="center"
             />
 
@@ -91,10 +90,28 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:theme="@style/MyButton"
-                android:tint="@color/colorAccent"
-                android:textColor="@color/colorAccent"
+                android:tint="?colorAccent"
+                android:textColor="?colorAccent"
                 style="@style/Widget.AppCompat.Button.Borderless"/>
         </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/limit_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:padding="5dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:background="?android:selectableItemBackground"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:clickable="true">
+
+        <com.mnm.sense.views.LimitView
+            android:id="@+id/limit_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
     </android.support.v7.widget.CardView>
 

@@ -1,10 +1,12 @@
 package com.mnm.sense;
 
 
+import android.app.ActionBar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayout;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.mnm.sense.initializers.Initializer;
 import com.mnm.sense.initializers.ViewInitializer;

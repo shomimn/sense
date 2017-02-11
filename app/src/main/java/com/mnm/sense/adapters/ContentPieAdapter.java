@@ -33,7 +33,7 @@ public abstract class ContentPieAdapter extends ContentAdapter<PieChart, PieData
         pieDataSet.setValueTextSize(10f);
         pieDataSet.setSliceSpace(3f);
 //        pieDataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-        pieDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
+//        pieDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
 
         pieData.addDataSet(pieDataSet);
         pieData.setValueTextSize(10f);

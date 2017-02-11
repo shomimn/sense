@@ -1,0 +1,68 @@
+package com.mnm.sense.fragments;
+
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
+import com.mnm.sense.R;
+import com.mnm.sense.initializers.Initializer;
+import com.mnm.sense.models.BaseModel;
+import com.mnm.sense.trackers.Tracker;
+
+public class VisualizationFragment extends Fragment
+{
+    public Tracker tracker;
+    public String visualization;
+    public String attribute;
+
+    Object injected;
+
+    public VisualizationFragment()
+    {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    {
+        View view = inflater.inflate(R.layout.visualization_fragment, container, false);
+
+//        BaseModel model = (BaseModel) tracker.getModel(visualization);
+//        model.shouldUpdate = false;
+//
+//        Initializer.get(visualization).injectIn(getContext(), container, model);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+
+        attribute = tracker.attributes[0];
+
+        BaseModel model = (BaseModel) tracker.getModel(visualization);
+        model.shouldUpdate = false;
+
+        injected = Initializer.get(visualization).injectIn(getContext(), view, model);
+    }
+
+    public void refresh()
+    {
+        BaseModel model = (BaseModel) tracker.getModel(attribute, visualization);
+        model.shouldUpdate = false;
+
+        Initializer.get(visualization).init(getContext(), injected, model);
+    }
+}

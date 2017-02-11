@@ -5,8 +5,10 @@ import com.github.mikephil.charting.data.PieData;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.SMSBarAdapter;
+import com.mnm.sense.adapters.SMSPersonTextAdapter;
 import com.mnm.sense.adapters.SMSPieAdapter;
 import com.mnm.sense.adapters.SMSTypeTextAdapter;
+import com.mnm.sense.adapters.VisualizationAdapter;
 import com.mnm.sense.models.BarChartModel;
 import com.mnm.sense.models.PieChartModel;
 import com.mnm.sense.models.TextModel;
@@ -15,9 +17,13 @@ import com.ubhave.sensormanager.config.pull.ContentReaderConfig;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class SMSContentTracker extends Tracker
 {
+    public static final String ATTRIBUTE_TYPE = "Type";
+    public static final String ATTRIBUTE_PERSON = "Person";
+
     public SMSContentTracker() throws ESException
     {
         super(SensorUtils.SENSOR_TYPE_SMS_CONTENT_READER);
@@ -26,13 +32,27 @@ public class SMSContentTracker extends Tracker
         resource = R.drawable.ic_sms_black_48dp;
         isOn = false;
 
+        accent = android.R.color.holo_blue_dark;
+        theme = R.style.BlueTheme;
+
+        attributes = new String[]{ ATTRIBUTE_TYPE, ATTRIBUTE_PERSON };
+
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
         visualizations.put(Visualization.BAR_CHART, new Visualization(1, 3, false));
         visualizations.put(Visualization.PIE_CHART, new Visualization(2, 3, false));
 
-        adapters.put(Visualization.TEXT, new SMSTypeTextAdapter());
-        adapters.put(Visualization.BAR_CHART, new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
-        adapters.put(Visualization.PIE_CHART, new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
+        HashMap<String, VisualizationAdapter> typeAdapters = new HashMap<>();
+        typeAdapters.put(Visualization.TEXT, new SMSTypeTextAdapter());
+        typeAdapters.put(Visualization.BAR_CHART, new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
+        typeAdapters.put(Visualization.PIE_CHART, new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
+
+        HashMap<String, VisualizationAdapter> personAdapters = new HashMap<>();
+        personAdapters.put(Visualization.TEXT, new SMSPersonTextAdapter());
+        personAdapters.put(Visualization.BAR_CHART, new SMSBarAdapter("person"));
+        personAdapters.put(Visualization.PIE_CHART, new SMSPieAdapter("person"));
+
+        adapters.put(ATTRIBUTE_TYPE, typeAdapters);
+        adapters.put(ATTRIBUTE_PERSON, personAdapters);
     }
 
     @Override
@@ -47,19 +67,6 @@ public class SMSContentTracker extends Tracker
         sensorManager().setSensorConfig(type, ContentReaderConfig.TIME_LIMIT_MILLIS, cal.getTimeInMillis());
 
         super.start();
-    }
-
-    @Override
-    public Object getModel(String visualizationType)
-    {
-        if (visualizationType.equals(Visualization.TEXT))
-            return new TextModel(this, (String) super.getModel(visualizationType));
-        else if (visualizationType.equals(Visualization.BAR_CHART))
-            return new BarChartModel(this, (BarData) super.getModel(visualizationType));
-        else if (visualizationType.equals(Visualization.PIE_CHART))
-            return new PieChartModel(this, (PieData) super.getModel(visualizationType));
-
-        return null;
     }
 }
 

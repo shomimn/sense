@@ -2,6 +2,7 @@ package com.mnm.sense.initializers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 
 import com.mnm.sense.R;
+import com.mnm.sense.Util;
 import com.mnm.sense.activities.SensorSettingsActivity;
 import com.mnm.sense.trackers.Tracker;
 import com.mnm.sense.views.TrackerView;
@@ -28,8 +30,9 @@ public class TrackerViewInitializer extends ViewInitializer<TrackerView, Tracker
     public void init(final Context context, final TrackerView view, final Tracker model)
     {
         view.text.setText(model.text);
+        view.text.setTextColor(context.getResources().getColor(model.accent));
         view.image.setImageResource(model.resource);
-        view.image.setColorFilter(context.getResources().getColor(R.color.colorAccent));
+        view.image.setColorFilter(context.getResources().getColor(model.accent));
         view.switch_.setChecked(model.isOn);
 
         view.switch_.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()

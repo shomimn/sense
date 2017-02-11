@@ -25,20 +25,22 @@ public class TextViewInitializer extends ViewInitializer<TextView, TextModel>
     @Override
     public void init(final Context context, final TextView view, final TextModel model)
     {
+        final Tracker tracker = model.tracker;
+
         view.setText(model.data);
         view.setGravity(Gravity.CENTER);
-        view.setTextColor(context.getResources().getColor(R.color.colorAccent));
+        view.setTextColor(context.getResources().getColor(tracker.accent));
 
         if (model.shouldUpdate)
         {
-            model.tracker.updateCallbacks.put(visualization, new Tracker.UpdateCallback()
+            tracker.updateCallbacks.put(visualization, new Tracker.UpdateCallback()
             {
                 @Override
                 public void update(ArrayList<SensorData> with)
                 {
                     AppCompatActivity activity = (AppCompatActivity) context;
                     SensorData sensorData = with.get(with.size() - 1);
-                    final String text = (String) model.tracker.adapters.get(visualization).adaptOne(sensorData);
+                    final String text = (String) tracker.defaultAdapter(visualization).adaptOne(sensorData);
 
                     activity.runOnUiThread(new Runnable()
                     {

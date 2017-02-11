@@ -18,6 +18,7 @@ public class CallContentReaderProcessor extends ContentReaderProcessor
 	private final static String OUTGOING = "outgoing"; // CallLog.Calls.OUTGOING_TYPE
 	private final static String INCOMING = "incoming"; // CallLog.Calls.INCOMING_TYPE
 	private final static String MISSED = "missed"; // CallLog.Calls.MISSED_TYPE
+	private final static String REJECTED = "rejected"; // CallLog.Calls.REJECTED_TYPE
 	
 	public CallContentReaderProcessor(final Context c, boolean rw, boolean sp)
 	{
@@ -85,6 +86,8 @@ public class CallContentReaderProcessor extends ContentReaderProcessor
 				return INCOMING;
 			case CallLog.Calls.MISSED_TYPE:
 				return MISSED;
+			case CallLog.Calls.REJECTED_TYPE:
+				return REJECTED;
 			default:
 				return stringValue;
 			}

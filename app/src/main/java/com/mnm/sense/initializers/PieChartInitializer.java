@@ -35,10 +35,11 @@ public class PieChartInitializer extends ViewInitializer<PieChart, PieChartModel
         Description desc = new Description();
         desc.setText("");
         view.setDescription(desc);
-        view.getLegend().setOrientation(Legend.LegendOrientation.VERTICAL);
-        view.getLegend().setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+//        view.getLegend().setOrientation(Legend.LegendOrientation.VERTICAL);
+//        view.getLegend().setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
         view.getLegend().setWordWrapEnabled(true);
 //        view.getLegend().setEnabled(false);
+        view.setRotationEnabled(false);
 
         view.animateY(500);
 
@@ -49,7 +50,7 @@ public class PieChartInitializer extends ViewInitializer<PieChart, PieChartModel
                 @Override
                 public void update(ArrayList<SensorData> with)
                 {
-                    final PieData pieData = (PieData) model.tracker.adapters.get(visualization).adapt(with);
+                    final PieData pieData = (PieData) model.tracker.defaultAdapter(visualization).adapt(with);
 
                     activity.runOnUiThread(new Runnable()
                     {

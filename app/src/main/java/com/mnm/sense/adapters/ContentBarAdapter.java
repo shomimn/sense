@@ -33,7 +33,7 @@ public abstract class ContentBarAdapter extends ContentAdapter<BarChart, BarData
             BarEntry barEntry = new BarEntry(i++, entry.getValue().floatValue());
             barEntries.add(barEntry);
             BarDataSet dataSet = new BarDataSet(barEntries, entry.getKey());
-            dataSet.setColor(ColorTemplate.COLORFUL_COLORS[i]);
+//            dataSet.setColor(ColorTemplate.COLORFUL_COLORS[i]);
 
             barData.addDataSet(dataSet);
         }

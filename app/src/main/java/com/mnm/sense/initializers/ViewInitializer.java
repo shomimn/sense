@@ -60,7 +60,7 @@ public abstract class ViewInitializer<T, U>
         return view;
     }
 
-    public <Y> void injectIn(Context context, Y parent, U model)
+    public <Y> T injectIn(Context context, Y parent, U model)
     {
         View parentView = (View) parent;
         LinearLayout viewGroup = (LinearLayout) parentView.findViewById(R.id.layout);
@@ -71,6 +71,8 @@ public abstract class ViewInitializer<T, U>
         params.gravity = Gravity.CENTER;
 
         viewGroup.addView((View) view, params);
+
+        return view;
     }
 
     public abstract void init(Context context, T view, U model);

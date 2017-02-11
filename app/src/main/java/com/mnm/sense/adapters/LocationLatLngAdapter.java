@@ -2,6 +2,7 @@ package com.mnm.sense.adapters;
 
 import android.location.Location;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.ubhave.sensormanager.data.SensorData;
@@ -9,11 +10,14 @@ import com.ubhave.sensormanager.data.pull.LocationData;
 
 import java.util.ArrayList;
 
-public class LocationLatLngAdapter implements VisualizationAdapter<SupportMapFragment, LatLng>
+public class LocationLatLngAdapter implements VisualizationAdapter<GoogleMap, LatLng>
 {
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {
+        if (data.size() == 0)
+            return null;
+
         return adaptAll(data);
     }
 
@@ -38,7 +42,7 @@ public class LocationLatLngAdapter implements VisualizationAdapter<SupportMapFra
     }
 
     @Override
-    public void prepareView(SupportMapFragment view)
+    public void prepareView(GoogleMap view)
     {
 
     }

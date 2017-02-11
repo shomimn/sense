@@ -12,6 +12,8 @@ import android.widget.CompoundButton;
 
 import com.mnm.sense.R;
 import com.mnm.sense.Util;
+import com.mnm.sense.Visualization;
+import com.mnm.sense.activities.MainActivity;
 import com.mnm.sense.activities.SensorSettingsActivity;
 import com.mnm.sense.trackers.Tracker;
 import com.mnm.sense.views.TrackerView;
@@ -50,7 +52,14 @@ public class TrackerViewInitializer extends ViewInitializer<TrackerView, Tracker
                             model.pause();
                     }
                     else
+                    {
                         model.start();
+
+                        for(Visualization visualization : model.visualizations.values())
+                            visualization.isDisplayed = true;
+
+                        ((MainActivity) context).addDashboardViews(model, model.visualizations.keySet());
+                    }
                 }
                 catch (ESException e)
                 {
@@ -69,8 +78,8 @@ public class TrackerViewInitializer extends ViewInitializer<TrackerView, Tracker
                 Pair<View, String> switchPair = Pair.create((View)view.switch_, "switchTransition");
 
                 ActivityOptionsCompat options =
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
-                        imagePair);
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                                imagePair);
 
                 Intent i = new Intent(activity, SensorSettingsActivity.class);
                 i.putExtra("tracker", model.type);

@@ -120,7 +120,7 @@ public class RunningApplicationSensor extends AbstractPullSensor
     public List<UsageStats> getUsageStatsList(){
         Calendar calendar = Calendar.getInstance();
         long endTime = calendar.getTimeInMillis();
-        calendar.add(Calendar.YEAR, -1);
+        calendar.add(Calendar.DATE, -1);
         long startTime = calendar.getTimeInMillis();
 
         List<UsageStats> list = usageStatsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,startTime,endTime);

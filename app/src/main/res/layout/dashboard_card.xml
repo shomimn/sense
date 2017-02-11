@@ -6,7 +6,9 @@
               android:orientation="vertical"
               android:foreground="?android:attr/selectableItemBackground"
               android:background="?android:selectableItemBackground"
-              android:weightSum="5">
+              android:weightSum="5"
+    >
+
     <LinearLayout android:id="@+id/top_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -19,7 +21,20 @@
             android:layout_gravity="center"
             android:tint="@color/colorAccent"
         />
+        <TextView
+            android:paddingLeft="10dp"
+            android:paddingStart="10dp"
+            android:id="@+id/text"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textColor="?colorAccent"
+
+            />
     </LinearLayout>
+    <View android:id="@+id/divider" style="@style/Divider"/>
+
+
     <com.mnm.sense.views.InterceptingLinearLayout android:id="@+id/layout"
                   android:layout_width="match_parent"
                   android:layout_height="0dp"
@@ -28,17 +43,6 @@
     >
 
     </com.mnm.sense.views.InterceptingLinearLayout>
-    <ImageButton
-        android:id="@+id/button"
-        android:layout_height="0dp"
-        android:layout_width="50dp"
-        android:layout_weight="0.7"
-        android:layout_gravity="bottom|right"
-        android:src="@drawable/ic_show_chart_black_48dp"
-        android:gravity="bottom|right"
-        android:theme="@style/MyButton"
-        android:tint="@color/colorAccent"
-        style="@style/Widget.AppCompat.Button.Borderless"
-    ></ImageButton>
+
 
 </LinearLayout>

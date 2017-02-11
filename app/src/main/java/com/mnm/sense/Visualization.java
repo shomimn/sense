@@ -9,6 +9,7 @@ public class Visualization
     public static final String MAP = "Map";
     public static final String BAR_CHART = "Bar Chart";
     public static final String PIE_CHART = "Pie Chart";
+    public static final String LIST_VIEW = "List View";
 
     public int rows;
     public int cols;

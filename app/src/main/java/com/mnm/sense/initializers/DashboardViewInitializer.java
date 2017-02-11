@@ -39,6 +39,11 @@ public class DashboardViewInitializer extends ViewInitializer<DashboardView, Das
 
         view.image.setImageResource(tracker.resource);
         view.image.setColorFilter(accent);
+        view.text.setText(tracker.text);
+        view.text.setTextSize(tracker.visualizations.get(model.visualization).rows * 5 + 10);
+        view.text.setTextColor(accent);
+        view.divider.setBackgroundColor(accent);
+
 
         // TODO: Better way for this
         if (model.data instanceof MapModel)

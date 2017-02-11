@@ -36,6 +36,7 @@ import com.ubhave.sensormanager.sensors.pull.ActivityRecognitionSensor;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         ActivityCompat.requestPermissions(MainActivity.this,
-                new String[] {
+                new String[]{
                         Manifest.permission.READ_SMS,
                         Manifest.permission.RECEIVE_SMS,
                         Manifest.permission.BROADCAST_SMS,
@@ -118,9 +119,9 @@ public class MainActivity extends AppCompatActivity
         calendar.add(Calendar.YEAR, -1);
         long startTime = calendar.getTimeInMillis();
 
-        List<UsageStats> list = manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,startTime,endTime);
+        List<UsageStats> list = manager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, endTime);
 
-        if(list.isEmpty())
+        if (list.isEmpty())
         {
             Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
             startActivity(intent);
@@ -178,7 +179,7 @@ public class MainActivity extends AppCompatActivity
 
             Iterator<GridItem> iterator = dashboardFragment.grid.items.iterator();
 
-            while(iterator.hasNext())
+            while (iterator.hasNext())
             {
                 GridItem item = iterator.next();
                 DashboardModel data = (DashboardModel) item.data;
@@ -194,15 +195,22 @@ public class MainActivity extends AppCompatActivity
                 }
             }
 
-            for (String key : forInsertion)
-            {
-                Visualization visualization = tracker.visualizations.get(key);
-
-                dashboardFragment.addDashboardView(visualization.rows, visualization.cols,
-                        new DashboardModel(tracker, key, tracker.getModel(key)));
-            }
-
-            dashboardFragment.layoutDashboard();
+           addDashboardViews(tracker, forInsertion);
         }
     }
+
+    public void addDashboardViews(Tracker tracker, Collection<String> visualizations)
+    {
+        for (String key : visualizations)
+        {
+            Visualization visualization = tracker.visualizations.get(key);
+
+            dashboardFragment.addDashboardView(visualization.rows, visualization.cols,
+                    new DashboardModel(tracker, key, tracker.getModel(key)));
+        }
+
+        dashboardFragment.layoutDashboard();
+    }
+
+
 }

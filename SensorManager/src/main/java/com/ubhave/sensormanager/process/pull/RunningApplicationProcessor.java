@@ -35,16 +35,24 @@ public class RunningApplicationProcessor extends AbstractProcessor
             String packageName = stats.getPackageName();
             ApplicationInfo appInfo = getApplicationInfo(packageName);
 
-            long ft = stats.getTotalTimeInForeground();
-            long btr = stats.getFirstTimeStamp();
-            long etr = stats.getLastTimeStamp();
-            long ltu = stats.getLastTimeUsed();
-            String name = (String)packageManager.getApplicationLabel(appInfo);
-            Drawable icon = packageManager.getApplicationIcon(appInfo);
+            if(appInfo != null) {
+                long ft = stats.getTotalTimeInForeground();
 
-            RunningApplicationData appData = new RunningApplicationData(name, ft, icon, ltu, btr, etr);
+                if(ft == 0)
+                    continue;
 
-            runningApplicationDataList.addRunningApplication(appData);
+                long btr = stats.getFirstTimeStamp();
+                long etr = stats.getLastTimeStamp();
+                long ltu = stats.getLastTimeUsed();
+                String name = (String)packageManager.getApplicationLabel(appInfo);
+                Drawable icon = packageManager.getApplicationIcon(appInfo);
+
+                RunningApplicationData appData = new RunningApplicationData(name, ft, icon, ltu, btr, etr);
+
+                runningApplicationDataList.addRunningApplication(appData);
+            }
+
+
         }
         return runningApplicationDataList;
     }

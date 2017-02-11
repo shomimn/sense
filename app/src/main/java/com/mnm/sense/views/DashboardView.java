@@ -16,6 +16,7 @@ public class DashboardView extends LinearLayout
 {
     public ImageView image;
     public TextView text;
+    public View divider;
     public LinearLayout topLayout;
 
     public DashboardView(Context context)
@@ -48,6 +49,7 @@ public class DashboardView extends LinearLayout
 
         image = (ImageView) findViewById(R.id.image);
         text = (TextView) findViewById(R.id.text);
+        divider = (View) findViewById(R.id.divider);
         topLayout = (LinearLayout) findViewById(R.id.top_layout);
     }
 }

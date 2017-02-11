@@ -22,6 +22,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.sensormanager.config;
 
+import com.ubhave.sensormanager.config.pull.ActivityRecognitionConfig;
 import com.ubhave.sensormanager.config.pull.BluetoothConfig;
 import com.ubhave.sensormanager.config.pull.ContentReaderConfig;
 import com.ubhave.sensormanager.config.pull.LocationConfig;
@@ -29,6 +30,7 @@ import com.ubhave.sensormanager.config.pull.MicrophoneConfig;
 import com.ubhave.sensormanager.config.pull.MotionSensorConfig;
 import com.ubhave.sensormanager.config.pull.PhoneRadioConfig;
 import com.ubhave.sensormanager.config.pull.PullSensorConfig;
+import com.ubhave.sensormanager.config.pull.RunningApplicationConfig;
 import com.ubhave.sensormanager.config.pull.StepCounterConfig;
 import com.ubhave.sensormanager.config.pull.WifiConfig;
 import com.ubhave.sensormanager.config.push.PassiveLocationConfig;
@@ -41,7 +43,7 @@ public class SensorConfig extends AbstractConfig implements Cloneable
 	 */
 	public final static String DATA_SET_RAW_VALUES = "RAW_DATA";
 	public final static String DATA_EXTRACT_FEATURES = "EXTRACT_FEATURES";
-	
+
 	// data preferences
 	public final static boolean GET_RAW_DATA = true;
 	public final static boolean GET_PROCESSED_DATA = false;
@@ -56,42 +58,48 @@ public class SensorConfig extends AbstractConfig implements Cloneable
 		}
 		return clonedSensorConfig;
 	}
-	
+
 	public static SensorConfig getDefaultConfig(int sensorType)
 	{
 		SensorConfig sensorConfig = new SensorConfig();
 		switch (sensorType)
 		{
-		case SensorUtils.SENSOR_TYPE_ACCELEROMETER:
-		case SensorUtils.SENSOR_TYPE_GYROSCOPE:
-		case SensorUtils.SENSOR_TYPE_MAGNETIC_FIELD:
-			sensorConfig = MotionSensorConfig.getDefault();
-			break;
-		case SensorUtils.SENSOR_TYPE_BLUETOOTH:
-			sensorConfig = BluetoothConfig.getDefault();
-			break;
-		case SensorUtils.SENSOR_TYPE_LOCATION:
-			sensorConfig = LocationConfig.getDefault();
-			break;
-		case SensorUtils.SENSOR_TYPE_MICROPHONE:
-			sensorConfig = MicrophoneConfig.getDefault();
-			break;
-		case SensorUtils.SENSOR_TYPE_WIFI:
-			sensorConfig = WifiConfig.getDefault();
-			break;
-		case SensorUtils.SENSOR_TYPE_SMS_CONTENT_READER:
-		case SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER:
-			sensorConfig = ContentReaderConfig.getDefault();
-			break;
-		case SensorUtils.SENSOR_TYPE_PHONE_RADIO:
-			sensorConfig = PhoneRadioConfig.getDefault();
-			break;
-		case SensorUtils.SENSOR_TYPE_PASSIVE_LOCATION:
-			sensorConfig = PassiveLocationConfig.getDefault();
-			break;
-		case SensorUtils.SENSOR_TYPE_STEP_COUNTER:
-			sensorConfig = StepCounterConfig.getDefault();
-			break;
+			case SensorUtils.SENSOR_TYPE_ACCELEROMETER:
+			case SensorUtils.SENSOR_TYPE_GYROSCOPE:
+			case SensorUtils.SENSOR_TYPE_MAGNETIC_FIELD:
+				sensorConfig = MotionSensorConfig.getDefault();
+				break;
+			case SensorUtils.SENSOR_TYPE_BLUETOOTH:
+				sensorConfig = BluetoothConfig.getDefault();
+				break;
+			case SensorUtils.SENSOR_TYPE_LOCATION:
+				sensorConfig = LocationConfig.getDefault();
+				break;
+			case SensorUtils.SENSOR_TYPE_MICROPHONE:
+				sensorConfig = MicrophoneConfig.getDefault();
+				break;
+			case SensorUtils.SENSOR_TYPE_WIFI:
+				sensorConfig = WifiConfig.getDefault();
+				break;
+			case SensorUtils.SENSOR_TYPE_SMS_CONTENT_READER:
+			case SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER:
+				sensorConfig = ContentReaderConfig.getDefault();
+				break;
+			case SensorUtils.SENSOR_TYPE_PHONE_RADIO:
+				sensorConfig = PhoneRadioConfig.getDefault();
+				break;
+			case SensorUtils.SENSOR_TYPE_PASSIVE_LOCATION:
+				sensorConfig = PassiveLocationConfig.getDefault();
+				break;
+			case SensorUtils.SENSOR_TYPE_STEP_COUNTER:
+				sensorConfig = StepCounterConfig.getDefault();
+				break;
+			case SensorUtils.SENSOR_TYPE_RUNNING_APP:
+				sensorConfig = RunningApplicationConfig.getDefault();
+				break;
+			case SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION:
+				sensorConfig = ActivityRecognitionConfig.getDefault();
+				break;
 		}
 		sensorConfig.setParameter(PullSensorConfig.ADAPTIVE_SENSING_ENABLED, false);
 		return sensorConfig;

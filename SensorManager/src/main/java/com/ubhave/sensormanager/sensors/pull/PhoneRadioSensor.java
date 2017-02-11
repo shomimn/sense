@@ -116,16 +116,16 @@ public class PhoneRadioSensor extends AbstractPullSensor
 						// getAllCellInfo() not supported, try old methods
 						switch (telephonyManager.getPhoneType())
 						{
-						case TelephonyManager.PHONE_TYPE_GSM:
-							GsmCellLocation cellLocation = (GsmCellLocation) telephonyManager.getCellLocation();
-							String networkOperator = telephonyManager.getNetworkOperator();
-							String mcc = networkOperator.substring(0, 3);
-							String mnc = networkOperator.substring(3);
-							visibleCells.add(new PhoneRadioData(mcc, mnc, cellLocation.getLac(), cellLocation.getCid()));
-							break;
-						default:
-							// TODO: handle unsupported phone type...
-							break;
+							case TelephonyManager.PHONE_TYPE_GSM:
+								GsmCellLocation cellLocation = (GsmCellLocation) telephonyManager.getCellLocation();
+								String networkOperator = telephonyManager.getNetworkOperator();
+								String mcc = networkOperator.substring(0, 3);
+								String mnc = networkOperator.substring(3);
+								visibleCells.add(new PhoneRadioData(mcc, mnc, cellLocation.getLac(), cellLocation.getCid()));
+								break;
+							default:
+								// TODO: handle unsupported phone type...
+								break;
 						}
 					}
 					else

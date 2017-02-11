@@ -27,17 +27,17 @@
     >
 
     </com.mnm.sense.views.InterceptingLinearLayout>
-    <!--<ImageButton-->
-        <!--android:id="@+id/button"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_width="50dp"-->
-        <!--android:layout_weight="0.7"-->
-        <!--android:layout_gravity="bottom|right"-->
-        <!--android:src="@drawable/ic_show_chart_black_48dp"-->
-        <!--android:gravity="bottom|right"-->
-        <!--android:theme="@style/MyButton"-->
-        <!--android:tint="@color/colorAccent"-->
-        <!--style="@style/Widget.AppCompat.Button.Borderless"-->
-    <!--&gt;</ImageButton>-->
+    <ImageButton
+        android:id="@+id/button"
+        android:layout_height="0dp"
+        android:layout_width="50dp"
+        android:layout_weight="0.7"
+        android:layout_gravity="bottom|right"
+        android:src="@drawable/ic_show_chart_black_48dp"
+        android:gravity="bottom|right"
+        android:theme="@style/MyButton"
+        android:tint="@color/colorAccent"
+        style="@style/Widget.AppCompat.Button.Borderless"
+    ></ImageButton>
 
 </LinearLayout>

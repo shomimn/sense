@@ -18,6 +18,7 @@ public class LocationTracker extends Tracker
 {
     public static final String ATTRIBUTE_MARKER = "Marker";
     public static final String ATTRIBUTE_PATH = "Path";
+    public static final String ATTRIBUTE_HEATMAP = "Heat map";
 
     public LocationTracker() throws ESException
     {
@@ -27,7 +28,7 @@ public class LocationTracker extends Tracker
         resource = R.drawable.ic_my_location_black_48dp;
         isOn = false;
 
-        attributes = new String[] { ATTRIBUTE_MARKER, ATTRIBUTE_PATH };
+        attributes = new String[] { ATTRIBUTE_MARKER, ATTRIBUTE_PATH, ATTRIBUTE_HEATMAP };
 
         visualizations.put(Visualization.MAP, new Visualization(2, 3, false));
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
@@ -40,7 +41,12 @@ public class LocationTracker extends Tracker
         pathAdapters.put(Visualization.MAP, new LocationLatLngAdapter());
         pathAdapters.put(Visualization.TEXT, new LocationTextAdapter());
 
+        HashMap<String, VisualizationAdapter> heatmapAdapters = new HashMap<>();
+        heatmapAdapters.put(Visualization.MAP, new LocationLatLngAdapter());
+        heatmapAdapters.put(Visualization.TEXT, new LocationTextAdapter());
+
         adapters.put(ATTRIBUTE_MARKER, markerAdapters);
         adapters.put(ATTRIBUTE_PATH, pathAdapters);
+        adapters.put(ATTRIBUTE_HEATMAP, heatmapAdapters);
     }
 }

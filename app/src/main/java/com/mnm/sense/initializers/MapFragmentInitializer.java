@@ -29,7 +29,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.android.gms.maps.model.TileOverlayOptions;
 import com.google.maps.android.SphericalUtil;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.mnm.sense.R;
 import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
@@ -70,6 +72,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                 final ArrayList<Marker> markers = new ArrayList<>();
                 final PolylineOptions polylineOptions = new PolylineOptions();
                 final LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                final HeatmapTileProvider.Builder heatmapBuilder = new HeatmapTileProvider.Builder();
 
                 googleMap.clear();
 
@@ -102,7 +105,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
 
                             LatLng nextLocation = model.data.get(i + 1);
 
-                            if (SphericalUtil.computeDistanceBetween(location, nextLocation) < 10)
+                            if (SphericalUtil.computeDistanceBetween(location, nextLocation) < 5)
                                 continue;
 
                             float heading = (float) SphericalUtil.computeHeading(location, nextLocation);
@@ -110,6 +113,18 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                             googleMap.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromBitmap(arrow)).anchor(0.5f, 0.5f).rotation(heading));
                         }
                         googleMap.addPolyline(polylineOptions);
+                        break;
+                    case LocationTracker.ATTRIBUTE_HEATMAP:
+
+                        for (LatLng pos : model.data)
+                            builder.include(pos);
+
+                        if (model.data.size() > 0)
+                        {
+                            heatmapBuilder.data(model.data);
+                            HeatmapTileProvider provider = heatmapBuilder.build();
+                            googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));
+                        }
                         break;
                 }
 

@@ -35,6 +35,8 @@ public class TrackerViewInitializer extends ViewInitializer<TrackerView, Tracker
         view.image.setColorFilter(context.getResources().getColor(model.accent));
         view.switch_.setChecked(model.isOn);
 
+        Util.setAccent(view.switch_, model.accent);
+
         view.switch_.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
         {
             @Override

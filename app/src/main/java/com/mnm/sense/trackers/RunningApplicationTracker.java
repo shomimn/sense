@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class RunningApplicationTracker extends Tracker
 {
-    private static final String ATTRIBUTE_NAME = "Name";
+    private static final String ATTRIBUTE_TOTAL = "Total time";
 
     public RunningApplicationTracker() throws ESException
     {
@@ -21,7 +21,7 @@ public class RunningApplicationTracker extends Tracker
         resource = R.drawable.ic_dashboard_black_48dp;
         isOn = false;
 
-        attributes = new String[]{ATTRIBUTE_NAME};
+        attributes = new String[]{ATTRIBUTE_TOTAL};
 
         visualizations.put(Visualization.TEXT, new Visualization(3, 3, false));
 
@@ -29,6 +29,6 @@ public class RunningApplicationTracker extends Tracker
 
         nameAdapters.put(Visualization.TEXT, new RunningApplicationTextAdapter());
 
-        adapters.put(ATTRIBUTE_NAME, nameAdapters);
+        adapters.put(ATTRIBUTE_TOTAL, nameAdapters);
     }
 }

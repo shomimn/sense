@@ -70,6 +70,9 @@ public class SecondActivity extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        if (tracker.visualizations.size() == 1)
+            tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
+
         slidingLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
         startDate = (DatePicker) findViewById(R.id.start_date);
         endDate = (DatePicker) findViewById(R.id.end_date);

@@ -1,14 +1,12 @@
 package com.mnm.sense.models;
 
-import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.mnm.sense.trackers.Tracker;
 
-public class BarChartModel extends BaseModel<BarData>
+public class LineChartModel extends BaseModel<LineData>
 {
-    public BarChartModel(Tracker tracker, BarData data)
+    public LineChartModel(Tracker tracker, LineData data)
     {
         super(tracker, data);
     }
 }
-

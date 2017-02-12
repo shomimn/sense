@@ -58,13 +58,18 @@ public class Util
     public static void setAccent(Switch view, int accent)
     {
         int color = view.getResources().getColor(accent);
+        int unchecked = view.getResources().getColor(android.R.color.darker_gray);
 
-        int states[][] = { { android.R.attr.state_checked }, {} };
-        int colors[] = { color, color };
+        int buttonStates[][] = { { -android.R.attr.state_checked }, { android.R.attr.state_checked } };
+        int buttonColors[] = { android.R.color.darker_gray, color };
 
-        view.setButtonTintList(new ColorStateList(states, colors));
-        view.setThumbTintList(new ColorStateList(states, colors));
+        int thumbStates[][] = { { -android.R.attr.state_checked}, { android.R.attr.state_checked } };
+        int thumbColors[] = { unchecked, color };
 
-        CompoundButtonCompat.setButtonTintList(view, new ColorStateList(states, colors));
+//        view.setButtonTintList(new ColorStateList(buttonStates, buttonColors));
+        view.setThumbTintList(new ColorStateList(thumbStates, thumbColors));
+
+
+//        CompoundButtonCompat.setButtonTintList(view, new ColorStateList(buttonStates, buttonColors));
     }
 }

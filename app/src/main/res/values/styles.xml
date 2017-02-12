@@ -37,6 +37,10 @@
         <item name="colorControlHighlight">?colorAccent</item>
     </style>
 
+    <style name="MySwitch" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:colorControlActivated">?colorAccent</item>
+    </style>
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 

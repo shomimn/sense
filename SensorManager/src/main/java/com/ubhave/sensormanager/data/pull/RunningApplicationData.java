@@ -32,6 +32,11 @@ public class RunningApplicationData
         return foregroundTime;
     }
 
+    public float getForegroundTimeInMinutes()
+    {
+        return (float)foregroundTime / 60f / 60f;
+    }
+
     public Drawable getIcon()
     {
         return icon;

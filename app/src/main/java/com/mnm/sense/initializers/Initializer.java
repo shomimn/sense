@@ -4,6 +4,7 @@ import com.mnm.sense.Visualization;
 import com.mnm.sense.models.BarChartModel;
 import com.mnm.sense.models.DashboardModel;
 import com.mnm.sense.models.LineChartModel;
+import com.mnm.sense.models.ListViewModel;
 import com.mnm.sense.models.MapModel;
 import com.mnm.sense.models.PieChartModel;
 import com.mnm.sense.models.TextModel;
@@ -29,12 +30,14 @@ public class Initializer
         byData.put(UpdateViewModel.class, new UpdateViewInitializer());
         byData.put(PieChartModel.class, new PieChartInitializer());
         byData.put(LineChartModel.class, new LineChartInitializer());
+        byData.put(ListViewModel.class, new ListViewInitializer());
 
         byVisualization.put(Visualization.BAR_CHART, byData.get(BarChartModel.class));
         byVisualization.put(Visualization.TEXT, byData.get(TextModel.class));
         byVisualization.put(Visualization.MAP, byData.get(MapModel.class));
         byVisualization.put(Visualization.PIE_CHART, byData.get(PieChartModel.class));
         byVisualization.put(Visualization.LINE_CHART, byData.get(LineChartModel.class));
+        byVisualization.put(Visualization.LIST_VIEW, byData.get(ListViewModel.class));
     }
 
     public static ViewInitializer get(Class key)

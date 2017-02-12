@@ -2,6 +2,7 @@ package com.mnm.sense.trackers;
 
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.adapters.RunningApplicationBarAdapter;
 import com.mnm.sense.adapters.RunningApplicationTextAdapter;
 import com.mnm.sense.adapters.VisualizationAdapter;
 import com.mnm.sense.models.TextModel;
@@ -13,22 +14,28 @@ import java.util.HashMap;
 public class RunningApplicationTracker extends Tracker
 {
     private static final String ATTRIBUTE_TOTAL = "Total time";
+    private static final String ATTRIBUTE_LAST_TIME_USED = "Last use";
 
     public RunningApplicationTracker() throws ESException
     {
         super(SensorUtils.SENSOR_TYPE_RUNNING_APP);
+
         text = "Running Apps";
         resource = R.drawable.ic_dashboard_black_48dp;
         isOn = false;
 
         attributes = new String[]{ATTRIBUTE_TOTAL};
 
-        visualizations.put(Visualization.TEXT, new Visualization(3, 3, false));
+        visualizations.put(Visualization.LIST_VIEW, new Visualization(2, 3, false));
+        visualizations.put(Visualization.BAR_CHART, new Visualization(3, 3, false));
 
-        HashMap<String, VisualizationAdapter> nameAdapters = new HashMap<>();
+        HashMap<String, VisualizationAdapter> totalTimeAdapters = new HashMap<>();
 
-        nameAdapters.put(Visualization.TEXT, new RunningApplicationTextAdapter());
+        totalTimeAdapters.put(Visualization.LIST_VIEW, new RunningApplicationTextAdapter());
+        totalTimeAdapters.put(Visualization.BAR_CHART, new RunningApplicationBarAdapter());
 
-        adapters.put(ATTRIBUTE_TOTAL, nameAdapters);
+
+        adapters.put(ATTRIBUTE_TOTAL, totalTimeAdapters);
+//        adapters.put(ATTRIBUTE_LAST_TIME_USED, nameAdapters);
     }
 }

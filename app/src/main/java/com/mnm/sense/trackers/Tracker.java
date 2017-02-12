@@ -16,6 +16,8 @@ import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.VisualizationAdapter;
 import com.mnm.sense.models.BarChartModel;
 import com.mnm.sense.models.LineChartModel;
+import com.mnm.sense.models.ListViewData;
+import com.mnm.sense.models.ListViewModel;
 import com.mnm.sense.models.MapModel;
 import com.mnm.sense.models.PieChartModel;
 import com.mnm.sense.models.TextModel;
@@ -111,6 +113,7 @@ public abstract class Tracker implements SensorDataListener
 
     public void start() throws ESException
     {
+        isOn = true;
         id = sensorManager().subscribeToSensorData(type, this);
     }
 
@@ -132,11 +135,13 @@ public abstract class Tracker implements SensorDataListener
 
     public void pause() throws ESException
     {
+        isOn = true;
         sensorManager().pauseSubscription(id);
     }
 
     public void unpause() throws ESException
     {
+        isOn = false;
         sensorManager().unPauseSubscription(id);
     }
 
@@ -200,6 +205,8 @@ public abstract class Tracker implements SensorDataListener
                 return new MapModel(this, (ArrayList<LatLng>) adaptedData, attribute);
             case Visualization.LINE_CHART:
                 return new LineChartModel(this, (LineData) adaptedData);
+            case Visualization.LIST_VIEW:
+                return new ListViewModel(this, (ListViewData) adaptedData);
         }
 
         return null;

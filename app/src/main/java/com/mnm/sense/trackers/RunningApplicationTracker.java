@@ -28,7 +28,7 @@ public class RunningApplicationTracker extends Tracker
         attributes = new String[]{ATTRIBUTE_TOTAL};
 
         visualizations.put(Visualization.LIST_VIEW, new Visualization(2, 3, false));
-        visualizations.put(Visualization.BAR_CHART, new Visualization(3, 3, false));
+        visualizations.put(Visualization.BAR_CHART, new Visualization(2, 3, false));
 
         HashMap<String, VisualizationAdapter> totalTimeAdapters = new HashMap<>();
 

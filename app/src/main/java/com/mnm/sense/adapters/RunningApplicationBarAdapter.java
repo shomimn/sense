@@ -75,16 +75,16 @@ public class RunningApplicationBarAdapter implements VisualizationAdapter<BarCha
         yAxis.setDrawAxisLine(true);
         yAxis.setEnabled(true);
 
-        yAxis.setAxisMinimum(0f);
-        yAxis.setAxisMaximum(2000f);
-
-        yAxis.setValueFormatter(new IAxisValueFormatter()
-        {
-            @Override
-            public String getFormattedValue(float value, AxisBase axis)
-            {
-                return null;
-            }
-        });
+//        yAxis.setAxisMinimum(0f);
+//        yAxis.setAxisMaximum(2000f);
+        yAxis.setDrawLabels(true);
+//        yAxis.setValueFormatter(new IAxisValueFormatter()
+//        {
+//            @Override
+//            public String getFormattedValue(float value, AxisBase axis)
+//            {
+//                return null;
+//            }
+//        });
     }
 }

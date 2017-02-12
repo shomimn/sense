@@ -59,8 +59,6 @@ public class ListViewInitializer extends ViewInitializer<ListView, ListViewModel
         final VisualizationAdapter adapter = model.tracker.defaultAdapter(visualization);
         view.setAdapter(new ListViewAdapter(context, model.data));
 
-
-
         if (model.shouldUpdate)
         {
             model.tracker.updateCallbacks.put(visualization, new Tracker.UpdateCallback()

@@ -30,6 +30,8 @@ import com.ubhave.sensormanager.data.SensorData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class Tracker implements SensorDataListener
 {
@@ -72,6 +74,7 @@ public abstract class Tracker implements SensorDataListener
     public String[] attributes = { };
 
     protected static Handler handler = new Handler();
+//    public Object lock = new Object();
 
     public Tracker(int t) throws ESException
     {
@@ -84,6 +87,7 @@ public abstract class Tracker implements SensorDataListener
         correctData(data);
 
         sensorData.add(data);
+
         updateViews();
 
         if (hasLimit())

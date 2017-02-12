@@ -115,6 +115,9 @@ class BatteryLineAdapter implements VisualizationAdapter<LineChart, LineData>
         XAxis xAxis = view.getXAxis();
         xAxis.setAxisMinimum(X_MIN);
         xAxis.setAxisMaximum(X_MAX);
+        xAxis.setDrawLabels(true);
+
+
 
         YAxis yAxis = view.getAxisLeft();
         yAxis.setAxisMinimum(0);

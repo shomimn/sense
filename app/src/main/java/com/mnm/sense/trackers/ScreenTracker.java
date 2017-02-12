@@ -71,7 +71,8 @@ public class ScreenTracker extends Tracker
 
         limit = new Limit("Daily limit", 4, 1, 12);
 
-        accent = android.R.color.holo_red_dark;
+//        accent = android.R.color.holo_red_dark;
+        accent = R.color.redColorAccent;
         theme = R.style.RedTheme;
 
         HashMap<String, VisualizationAdapter> timeAdapters = new HashMap<>();

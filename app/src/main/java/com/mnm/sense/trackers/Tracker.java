@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Handler;
 
 import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
 import com.google.android.gms.maps.model.LatLng;
 import com.mnm.sense.R;
@@ -14,6 +15,7 @@ import com.mnm.sense.SenseApp;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.VisualizationAdapter;
 import com.mnm.sense.models.BarChartModel;
+import com.mnm.sense.models.LineChartModel;
 import com.mnm.sense.models.ListViewData;
 import com.mnm.sense.models.ListViewModel;
 import com.mnm.sense.models.MapModel;
@@ -201,6 +203,8 @@ public abstract class Tracker implements SensorDataListener
                 return new PieChartModel(this, (PieData) adaptedData);
             case Visualization.MAP:
                 return new MapModel(this, (ArrayList<LatLng>) adaptedData, attribute);
+            case Visualization.LINE_CHART:
+                return new LineChartModel(this, (LineData) adaptedData);
             case Visualization.LIST_VIEW:
                 return new ListViewModel(this, (ListViewData) adaptedData);
         }

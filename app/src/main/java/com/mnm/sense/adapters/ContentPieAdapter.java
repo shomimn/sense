@@ -29,7 +29,7 @@ public abstract class ContentPieAdapter extends ContentAdapter<PieChart, PieData
             entries.add(new PieEntry(entry.getValue().floatValue(), entry.getKey()));
 
         PieDataSet pieDataSet = new PieDataSet(entries, "");
-        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
+        pieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
         pieDataSet.setValueTextSize(10f);
         pieDataSet.setSliceSpace(3f);
 //        pieDataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);

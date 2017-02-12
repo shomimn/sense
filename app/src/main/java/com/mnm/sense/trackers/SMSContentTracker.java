@@ -1,9 +1,14 @@
 package com.mnm.sense.trackers;
 
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.adapters.ContentAdapter;
 import com.mnm.sense.adapters.SMSBarAdapter;
 import com.mnm.sense.adapters.SMSPersonTextAdapter;
 import com.mnm.sense.adapters.SMSPieAdapter;
@@ -14,10 +19,14 @@ import com.mnm.sense.models.PieChartModel;
 import com.mnm.sense.models.TextModel;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.config.pull.ContentReaderConfig;
+import com.ubhave.sensormanager.data.SensorData;
+import com.ubhave.sensormanager.data.pull.SMSContentListData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 
 public class SMSContentTracker extends Tracker
 {
@@ -32,7 +41,7 @@ public class SMSContentTracker extends Tracker
         resource = R.drawable.ic_sms_black_48dp;
         isOn = false;
 
-        accent = android.R.color.holo_blue_dark;
+        accent = R.color.greenColorAccent;
         theme = R.style.BlueTheme;
 
         attributes = new String[]{ ATTRIBUTE_TYPE, ATTRIBUTE_PERSON };

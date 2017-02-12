@@ -16,7 +16,6 @@ public class RunningApplicationTracker extends Tracker
     private static final String ATTRIBUTE_TOTAL = "Total time";
     private static final String ATTRIBUTE_LAST_TIME_USED = "Last use";
 
-
     public RunningApplicationTracker() throws ESException
     {
         super(SensorUtils.SENSOR_TYPE_RUNNING_APP);
@@ -38,6 +37,5 @@ public class RunningApplicationTracker extends Tracker
 
         adapters.put(ATTRIBUTE_TOTAL, totalTimeAdapters);
 //        adapters.put(ATTRIBUTE_LAST_TIME_USED, nameAdapters);
-
     }
 }

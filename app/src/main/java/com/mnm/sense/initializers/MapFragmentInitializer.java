@@ -163,7 +163,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
         View parentView = (View) parent;
         LinearLayout viewGroup = (LinearLayout) parentView.findViewById(R.id.layout);
 //        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) viewGroup.getLayoutParams();
-//        params.setMargins(Util.dp(5), 0, Util.dp(5), 0);
+//        params.setMargins(Util.dp(5), 0, 0, 0);
 
         SupportMapFragment mapFragment = construct(context, model);
         AppCompatActivity activity = (AppCompatActivity) context;

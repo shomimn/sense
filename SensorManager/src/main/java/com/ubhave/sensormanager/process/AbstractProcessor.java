@@ -8,6 +8,7 @@ import com.ubhave.sensormanager.process.env.HumidityProcessor;
 import com.ubhave.sensormanager.process.env.LightProcessor;
 import com.ubhave.sensormanager.process.env.PressureProcessor;
 import com.ubhave.sensormanager.process.pull.AccelerometerProcessor;
+import com.ubhave.sensormanager.process.pull.ActivityRecognitionProcessor;
 import com.ubhave.sensormanager.process.pull.BluetoothProcessor;
 import com.ubhave.sensormanager.process.pull.CallContentReaderProcessor;
 import com.ubhave.sensormanager.process.pull.GyroscopeProcessor;
@@ -88,7 +89,8 @@ public abstract class AbstractProcessor
 				return new StepCounterProcessor(c, setRawData, setProcessedData);
 			case SensorUtils.SENSOR_TYPE_RUNNING_APP:
 				return new RunningApplicationProcessor(c, setRawData, setProcessedData);
-
+			case SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION:
+				return new ActivityRecognitionProcessor(c, setRawData, setProcessedData);
 			default:
 				throw new ESException(ESException.UNKNOWN_SENSOR_TYPE, "No processor defined for this sensor id ("+sensorType+").");
 		}

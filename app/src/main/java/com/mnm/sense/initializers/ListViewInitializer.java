@@ -84,7 +84,7 @@ public class ListViewInitializer extends ViewInitializer<ListView, ListViewModel
 
                 gridItem.setOrientation(LinearLayout.VERTICAL);
                 gridItem.setPadding(15, 15, 15, 15);
-                text.setTextSize(13);
+                text.setTextSize(12);
                 text.setText(data.getNameAt(counter));
 
                 image.setImageDrawable(data.getIconAt(counter++));

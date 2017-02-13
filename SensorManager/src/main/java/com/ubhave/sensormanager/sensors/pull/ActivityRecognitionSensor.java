@@ -1,7 +1,6 @@
 package com.ubhave.sensormanager.sensors.pull;
 
 import android.Manifest;
-import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -9,17 +8,19 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.ActivityRecognition;
-import com.google.android.gms.location.ActivityRecognitionResult;
 import com.google.android.gms.location.DetectedActivity;
 import com.ubhave.sensormanager.ESException;
+import com.ubhave.sensormanager.config.SensorConfig;
+import com.ubhave.sensormanager.config.pull.PullSensorConfig;
 import com.ubhave.sensormanager.data.SensorData;
+import com.ubhave.sensormanager.data.pull.ActivityRecognitionDataList;
+import com.ubhave.sensormanager.process.pull.ActivityRecognitionProcessor;
+import com.ubhave.sensormanager.sensors.SensorUtils;
 import com.ubhave.sensormanager.sensors.push.AbstractPushSensor;
 
 import java.util.List;
@@ -37,6 +38,9 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
 
     private static ActivityRecognitionSensor activityRecognitionSensor;
     private static Object lock = new Object();
+
+    List<DetectedActivity> detectedActivities;
+    private ActivityRecognitionDataList activities;
 
     public static ActivityRecognitionSensor getSensor(final Context context) throws ESException
     {
@@ -67,6 +71,21 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
                 .addOnConnectionFailedListener(this)
                 .build();
 
+        mApiClient.connect();
+
+    }
+
+    @Override
+    protected SensorData getMostRecentRawData()
+    {
+        return activities;
+    }
+
+    @Override
+    protected void processSensorData()
+    {
+        ActivityRecognitionProcessor processor = (ActivityRecognitionProcessor) getProcessor();
+        activities = processor.process(pullSenseStartTimestamp, detectedActivities, sensorConfig.clone());
     }
 
     @Override
@@ -77,9 +96,17 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
             @Override
             public void run()
             {
-                Intent intent = new Intent( applicationContext, ActivityRecognizedService.class );
-                PendingIntent pendingIntent = PendingIntent.getService( applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT );
-                ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates( mApiClient, 0, pendingIntent );
+                try
+                {
+                    Intent intent = new Intent(applicationContext, ActivityRecognizedService.class);
+                    PendingIntent pendingIntent = PendingIntent.getService(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+                    ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mApiClient, (long)getSensorConfig(PullSensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS), pendingIntent);
+                }
+                catch (ESException e)
+                {
+                    e.printStackTrace();
+                }
             }
         }.start();
 
@@ -88,7 +115,7 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
     @Override
     public void onConnectionSuspended(int i)
     {
-        Log.d("Connection suspend", String.valueOf(i)) ;
+        Log.d("Connection suspend", String.valueOf(i));
 
     }
 
@@ -98,21 +125,14 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
         Log.d("Connection failed", connectionResult.toString());
     }
 
-    @Override
-    protected SensorData getMostRecentRawData()
-    {
-        return null;
-    }
-
-    @Override
-    protected void processSensorData()
-    {
-
-    }
 
     @Override
     protected boolean startSensing()
     {
+        if (mApiClient != null)
+        {
+            return true;
+        }
         return false;
     }
 
@@ -131,52 +151,13 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
     @Override
     public int getSensorType()
     {
-        return 0;
+        return SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION;
     }
 
-    public void handleDetectedActivities(List<DetectedActivity> probableActivities) {
-        for( DetectedActivity activity : probableActivities ) {
-            switch( activity.getType() ) {
-                case DetectedActivity.IN_VEHICLE: {
-                    Log.e( "ActivityRecogition", "In Vehicle: " + activity.getConfidence() );
-                    break;
-                }
-                case DetectedActivity.ON_BICYCLE: {
-                    Log.e( "ActivityRecogition", "On Bicycle: " + activity.getConfidence() );
-                    break;
-                }
-                case DetectedActivity.ON_FOOT: {
-                    Log.e( "ActivityRecogition", "On Foot: " + activity.getConfidence() );
-                    break;
-                }
-                case DetectedActivity.RUNNING: {
-                    Log.e( "ActivityRecogition", "Running: " + activity.getConfidence() );
-                    break;
-                }
-                case DetectedActivity.STILL: {
-                    Log.e( "ActivityRecogition", "Still: " + activity.getConfidence() );
-                    break;
-                }
-                case DetectedActivity.TILTING: {
-                    Log.e( "ActivityRecogition", "Tilting: " + activity.getConfidence() );
-                    break;
-                }
-                case DetectedActivity.WALKING: {
-                    Log.e( "ActivityRecogition", "Walking: " + activity.getConfidence() );
-//                    if( activity.getConfidence() >= 75 ) {
-//                        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-//                        builder.setContentText( "Are you walking?" );
-//                        builder.setSmallIcon( R.mipmap.ic_launcher );
-//                        builder.setContentTitle( getString( R.string.app_name ) );
-//                        NotificationManagerCompat.from(this).notify(0, builder.build());
-//                    }
-                    break;
-                }
-                case DetectedActivity.UNKNOWN: {
-                    Log.e( "ActivityRecogition", "Unknown: " + activity.getConfidence() );
-                    break;
-                }
-            }
-        }
+    public void handleDetectedActivities(List<DetectedActivity> probableActivities)
+    {
+        detectedActivities = probableActivities;
+        notifySenseCyclesComplete();
+
     }
 }

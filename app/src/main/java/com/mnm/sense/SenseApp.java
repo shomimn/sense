@@ -3,7 +3,9 @@ package com.mnm.sense;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.hardware.Sensor;
 
+import com.mnm.sense.trackers.ActivityTracker;
 import com.mnm.sense.trackers.BatteryTracker;
 import com.mnm.sense.trackers.BluetoothTracker;
 import com.mnm.sense.trackers.CallLogTracker;
@@ -49,6 +51,7 @@ public class SenseApp extends Application
             trackers.put(SensorUtils.SENSOR_TYPE_PROXIMITY, new ProximityTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_SCREEN, new ScreenTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_RUNNING_APP, new RunningApplicationTracker());
+            trackers.put(SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION, new ActivityTracker());
         }
         catch (ESException e)
         {

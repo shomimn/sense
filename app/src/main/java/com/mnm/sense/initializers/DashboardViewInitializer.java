@@ -40,7 +40,7 @@ public class DashboardViewInitializer extends ViewInitializer<DashboardView, Das
         view.image.setImageResource(tracker.resource);
         view.image.setColorFilter(accent);
         view.text.setText(tracker.text);
-        view.text.setTextSize(tracker.visualizations.get(model.visualization).rows * 5 + 10);
+//        view.text.setTextSize(tracker.visualizations.get(model.visualization).rows * 5 + 10);
         view.text.setTextColor(accent);
         view.divider.setBackgroundColor(accent);
 
@@ -57,7 +57,6 @@ public class DashboardViewInitializer extends ViewInitializer<DashboardView, Das
             public void onClick(View view)
             {
                 Intent intent = new Intent(context, SecondActivity.class);
-                intent.putExtra("view", model.data.getClass());
                 intent.putExtra("tracker", tracker.type);
                 intent.putExtra("visualization", model.visualization);
 

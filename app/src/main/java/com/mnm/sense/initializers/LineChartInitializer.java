@@ -71,6 +71,7 @@ public class LineChartInitializer extends ViewInitializer<LineChart, LineChartMo
                             LineData lineData = (LineData) adapter.adapt(with);
 
                             view.setData(lineData);
+                            adapter.prepareView(view);
                             view.invalidate();
                         }
                     });

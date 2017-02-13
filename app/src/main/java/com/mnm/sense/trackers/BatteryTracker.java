@@ -4,11 +4,13 @@ package com.mnm.sense.trackers;
 import android.util.Log;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.mnm.sense.R;
@@ -39,7 +41,7 @@ public class BatteryTracker extends Tracker
 
         attributes = new String[]{ ATTRIBUTE_PERCENT };
 
-        visualizations.put(Visualization.LINE_CHART, new Visualization(1, 3, false));
+        visualizations.put(Visualization.LINE_CHART, new Visualization(2, 3, false));
 
         HashMap<String, VisualizationAdapter> percentAdapters = new HashMap<>();
         percentAdapters.put(Visualization.LINE_CHART, new BatteryLineAdapter());
@@ -54,6 +56,8 @@ class BatteryLineAdapter implements VisualizationAdapter<LineChart, LineData>
 
     public static final int X_MIN = 0;
     public static final int X_MAX = 24 * (60 / UNIT);
+
+    private float yMin = 0;
 
     @Override
     public Object adapt(ArrayList<SensorData> data)
@@ -116,17 +120,46 @@ class BatteryLineAdapter implements VisualizationAdapter<LineChart, LineData>
         xAxis.setAxisMinimum(X_MIN);
         xAxis.setAxisMaximum(X_MAX);
         xAxis.setDrawLabels(true);
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setGranularity(1);
+        xAxis.setGranularityEnabled(true);
+        xAxis.setLabelCount(24, true);
 
+        xAxis.setValueFormatter(new IAxisValueFormatter()
+        {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis)
+            {
+                int val = (int) value / (60 / UNIT);
 
+                if (val % 4 == 0)
+                    return String.valueOf(val);
+
+                return ".";
+            }
+        });
 
         YAxis yAxis = view.getAxisLeft();
-        yAxis.setAxisMinimum(0);
+        yAxis.setAxisMinimum(Math.max(yMin - 9,0));
+        yAxis.setGranularity(10);
         yAxis.setAxisMaximum(100);
         yAxis.setDrawGridLines(true);
 
+        yAxis.setValueFormatter(new IAxisValueFormatter()
+        {
+            @Override
+            public String getFormattedValue(float value, AxisBase axis)
+            {
+                return String.valueOf((int)value) + "%";
+            }
+        });
+
         yAxis = view.getAxisRight();
-        yAxis.setAxisMinimum(0);
+        yAxis.setGranularity(10);
+        yAxis.setAxisMinimum(Math.max(yMin - 9, 0));
         yAxis.setAxisMaximum(100);
+
+        yMin = 0;
     }
 
     private LineData merge(ArrayList<LineData> data)
@@ -148,6 +181,8 @@ class BatteryLineAdapter implements VisualizationAdapter<LineChart, LineData>
 //        dataSet.setCircleColor(ColorTemplate.MATERIAL_COLORS[0]);
 //        dataSet.setColor(ColorTemplate.MATERIAL_COLORS[0]);
 //        dataSet.setFillColor(ColorTemplate.MATERIAL_COLORS[0]);
+
+        yMin = dataSet.getYMin();
 
         if (dataSet.getEntryCount() > 1)
             dataSet.setDrawCircles(false);

@@ -42,7 +42,7 @@ public class SMSContentTracker extends Tracker
         isOn = false;
 
         accent = R.color.greenColorAccent;
-        theme = R.style.BlueTheme;
+        theme = R.style.GreenTheme;
 
         attributes = new String[]{ ATTRIBUTE_TYPE, ATTRIBUTE_PERSON };
 

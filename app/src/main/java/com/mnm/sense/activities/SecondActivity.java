@@ -49,7 +49,6 @@ public class SecondActivity extends AppCompatActivity
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        Class viewClass = (Class) extras.get("view");
         Tracker tracker = SenseApp.instance().tracker(extras.getInt("tracker"));
         String visualization = extras.getString("visualization");
 

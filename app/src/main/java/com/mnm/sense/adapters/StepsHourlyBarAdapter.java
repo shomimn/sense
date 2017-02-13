@@ -1,8 +1,5 @@
 package com.mnm.sense.adapters;
 
-import android.util.Log;
-import android.util.SparseArray;
-
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -15,26 +12,21 @@ import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.mnm.sense.R;
 import com.mnm.sense.SenseApp;
+import com.mnm.sense.adapters.VisualizationAdapter;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.StepCounterData;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class StepsDailyBarAdapter implements VisualizationAdapter<BarChart, BarData>
+public class StepsHourlyBarAdapter implements VisualizationAdapter<BarChart, BarData>
 {
-    float[] counter = new float[8];
-    SparseArray<String> weekDays = new SparseArray<>();
+    float[] counter = new float[24];
 
-    public StepsDailyBarAdapter()
+    public StepsHourlyBarAdapter()
     {
-        weekDays.append(1, "Sun");
-        weekDays.append(2, "Mon");
-        weekDays.append(3, "Tue");
-        weekDays.append(4, "Wed");
-        weekDays.append(5, "Thu");
-        weekDays.append(6, "Fri");
-        weekDays.append(7, "Sat");
+        for (int i = 0; i < 24; ++i)
+            counter[i] = 0f;
     }
 
     @Override
@@ -56,14 +48,14 @@ public class StepsDailyBarAdapter implements VisualizationAdapter<BarChart, BarD
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(stepsData.getTimestamp());
-        int day = cal.get(Calendar.DAY_OF_WEEK);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
 
-        counter[day] = steps;
+        counter[hour] = steps;
 
         BarData barData = new BarData();
         ArrayList<BarEntry> entries = new ArrayList<>();
 
-        for (int i = 1; i < 8; ++i)
+        for (int i = 0; i < 24; ++i)
             entries.add(new BarEntry(i, counter[i]));
 
         BarDataSet dataSet = new BarDataSet(entries, "Steps");
@@ -81,7 +73,7 @@ public class StepsDailyBarAdapter implements VisualizationAdapter<BarChart, BarD
         });
 
         barData.addDataSet(dataSet);
-        barData.setBarWidth(0.5f);
+        barData.setBarWidth(0.1f);
         barData.setValueTextSize(6f);
 
         return barData;
@@ -103,12 +95,10 @@ public class StepsDailyBarAdapter implements VisualizationAdapter<BarChart, BarD
         xAxis.setDrawLabels(true);
         xAxis.setGranularity(1f);
         xAxis.setGranularityEnabled(true);
-        xAxis.resetAxisMaximum();
-//        xAxis.setAxisMaximum(7f);
-        xAxis.setLabelCount(3, true);
-//        xAxis.setCenterAxisLabels(true);
-        xAxis.setAxisMinimum(1f);
-//        xAxis.setAxisMaximum(7f);
+        xAxis.setCenterAxisLabels(false);
+        xAxis.setLabelCount(24, true);
+        xAxis.setAxisMinimum(0f);
+        xAxis.setAxisMaximum(23f);
 
         xAxis.setValueFormatter(null);
 
@@ -117,14 +107,13 @@ public class StepsDailyBarAdapter implements VisualizationAdapter<BarChart, BarD
             @Override
             public String getFormattedValue(float value, AxisBase axis)
             {
-                Log.d("formatter", String.valueOf(value));
                 int val = (int) value;
-
-                if (val < 8)
-                    return weekDays.valueAt(val);
+                if (val % 4 == 0)
+                    return String.valueOf(val);
 
                 return ".";
             }
         });
     }
 }
+

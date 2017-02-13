@@ -4,6 +4,7 @@ package com.mnm.sense.trackers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.util.Log;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
@@ -29,12 +30,17 @@ import com.ubhave.sensormanager.data.SensorData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class Tracker implements SensorDataListener
 {
+    public static final String DEFAULT_VISUALIZATIONS_KEY = "DefaultVisualizations";
+
     public class Limit
     {
         public String title;
@@ -202,7 +208,7 @@ public abstract class Tracker implements SensorDataListener
             case Visualization.TEXT:
                 return new TextModel(this, (String) adaptedData);
             case Visualization.BAR_CHART:
-                return new BarChartModel(this, (BarData) adaptedData);
+                return new BarChartModel(this, (BarData) adaptedData, attribute);
             case Visualization.PIE_CHART:
                 return new PieChartModel(this, (PieData) adaptedData);
             case Visualization.MAP:
@@ -253,5 +259,47 @@ public abstract class Tracker implements SensorDataListener
     public SharedPreferences getConfig()
     {
         return SenseApp.context().getSharedPreferences("com.mnm.sense." + text, Context.MODE_PRIVATE);
+    }
+
+    public void addDefaultVisualization(String visualization)
+    {
+        SharedPreferences prefs = getConfig();
+        SharedPreferences.Editor editor = prefs.edit();
+        Set<String> defaults = prefs.getStringSet(DEFAULT_VISUALIZATIONS_KEY, new HashSet<String>());
+
+        editor.clear();
+
+        if (!defaults.contains(visualization))
+        {
+            defaults.add(visualization);
+            editor.putStringSet(DEFAULT_VISUALIZATIONS_KEY, defaults);
+            editor.commit();
+        }
+    }
+
+    public void removeDefaultVisualization(String visualization)
+    {
+        SharedPreferences prefs = getConfig();
+        SharedPreferences.Editor editor = prefs.edit();
+        Set<String> defaults = prefs.getStringSet(DEFAULT_VISUALIZATIONS_KEY, new HashSet<String>());
+
+        editor.clear().commit();
+
+        if (defaults.contains(visualization))
+        {
+            Iterator<String> it = defaults.iterator();
+
+            while(it.hasNext())
+            {
+                if (it.next().equals(visualization))
+                {
+                    it.remove();
+                    break;
+                }
+            }
+
+            editor.putStringSet(DEFAULT_VISUALIZATIONS_KEY, defaults);
+            editor.commit();
+        }
     }
 }

@@ -19,6 +19,11 @@ import com.mnm.sense.trackers.Tracker;
 import com.mnm.sense.views.TrackerView;
 import com.ubhave.sensormanager.ESException;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 public class TrackerViewInitializer extends ViewInitializer<TrackerView, Tracker>
 {
     public static final int REQUEST_CODE = 501;
@@ -57,10 +62,23 @@ public class TrackerViewInitializer extends ViewInitializer<TrackerView, Tracker
                     {
                         model.start();
 
-                        for(Visualization visualization : model.visualizations.values())
-                            visualization.isDisplayed = true;
+                        ArrayList<String> visualizations = new ArrayList<>();
 
-                        ((MainActivity) context).addDashboardViews(model, model.visualizations.keySet());
+                        for(Map.Entry<String, Visualization> entry : model.visualizations.entrySet())
+                        {
+                            if (entry.getValue().isDisplayed)
+                                continue;
+
+                            Set<String> defaults = model.getConfig().getStringSet(Tracker.DEFAULT_VISUALIZATIONS_KEY, new HashSet<String>());
+
+                            if (defaults.contains(entry.getKey()))
+                            {
+                                entry.getValue().isDisplayed = true;
+                                visualizations.add(entry.getKey());
+                            }
+                        }
+
+                        ((MainActivity) context).addDashboardViews(model, visualizations);
                     }
                 }
                 catch (ESException e)

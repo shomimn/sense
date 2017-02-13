@@ -20,7 +20,11 @@ import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class SenseApp extends Application
 {
@@ -59,6 +63,8 @@ public class SenseApp extends Application
 
         if (!prefs.contains(INSTALLED_DATE_KEY))
             prefs.edit().putLong(INSTALLED_DATE_KEY, System.currentTimeMillis()).commit();
+
+        setTrackerDefaults();
     }
 
     public static SenseApp instance()
@@ -79,5 +85,23 @@ public class SenseApp extends Application
     public long installedDate()
     {
         return getSharedPreferences(PREFS_KEY, MODE_PRIVATE).getLong(INSTALLED_DATE_KEY, System.currentTimeMillis());
+    }
+
+    private void setTrackerDefaults()
+    {
+        for (Tracker tracker : trackers.values())
+        {
+            SharedPreferences prefs = tracker.getConfig();
+
+            if (prefs.contains(Tracker.DEFAULT_VISUALIZATIONS_KEY))
+                continue;
+
+            Set<String> defaultVisualizations = new HashSet<>();
+
+            for (String visualization : tracker.visualizations.keySet())
+                defaultVisualizations.add(visualization);
+
+            prefs.edit().putStringSet(Tracker.DEFAULT_VISUALIZATIONS_KEY, defaultVisualizations).commit();
+        }
     }
 }

@@ -27,6 +27,9 @@ public class CallLogTracker extends Tracker
         resource = R.drawable.ic_phone_in_talk_black_48dp;
         isOn = false;
 
+        accent = R.color.greenColorAccent;
+        theme = R.style.GreenTheme;
+
         attributes = new String[]{ ATTRIBUTE_TYPE, ATTRIBUTE_PERSON };
 
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));

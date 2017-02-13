@@ -6,6 +6,7 @@ import com.mnm.sense.NotificationCreator;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.StepsDailyBarAdapter;
+import com.mnm.sense.adapters.StepsHourlyBarAdapter;
 import com.mnm.sense.adapters.StepsTextAdapter;
 import com.mnm.sense.adapters.VisualizationAdapter;
 import com.ubhave.sensormanager.ESException;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 
 public class StepsTracker extends Tracker
 {
+    public static final String ATTRIBUTE_HOURLY = "Hourly";
     public static final String ATTRIBUTE_DAILY = "Daily";
 
     float firstCount = 0;
@@ -35,18 +37,23 @@ public class StepsTracker extends Tracker
 
         limit = new Limit("Daily goal", 1000, 100, 20000);
 
-        attributes = new String[] { ATTRIBUTE_DAILY };
+        attributes = new String[] { ATTRIBUTE_HOURLY, ATTRIBUTE_DAILY };
 
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
         visualizations.put(Visualization.BAR_CHART, new Visualization(1, 3, false));
+
+        HashMap<String, VisualizationAdapter> hourlyAdapters = new HashMap<>();
+        hourlyAdapters.put(Visualization.TEXT, new StepsTextAdapter());
+        hourlyAdapters.put(Visualization.BAR_CHART, new StepsHourlyBarAdapter());
 
         HashMap<String, VisualizationAdapter> dailyAdapters = new HashMap<>();
         dailyAdapters.put(Visualization.TEXT, new StepsTextAdapter());
         dailyAdapters.put(Visualization.BAR_CHART, new StepsDailyBarAdapter());
 
+        adapters.put(ATTRIBUTE_HOURLY, hourlyAdapters);
         adapters.put(ATTRIBUTE_DAILY, dailyAdapters);
 
-        getConfig().edit().clear().commit();
+//        getConfig().edit().clear().commit();
     }
 
     @Override

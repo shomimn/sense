@@ -32,7 +32,7 @@ public class BarChartInitializer extends ViewInitializer<BarChart, BarChartModel
     public void init(final Context context, final BarChart barChart, final BarChartModel model)
     {
         final AppCompatActivity activity = (AppCompatActivity) context;
-        final VisualizationAdapter adapter = model.tracker.defaultAdapter(visualization);
+        final VisualizationAdapter adapter = model.tracker.adapter(model.attribute, visualization);
 
         barChart.setData(model.data);
         barChart.fitScreen();

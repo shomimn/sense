@@ -8,7 +8,7 @@ import com.ubhave.sensormanager.data.pull.LocationData;
 
 import java.util.ArrayList;
 
-public class LocationTextAdapter implements VisualizationAdapter<TextView, String>
+public class LocationTextAdapter extends VisualizationAdapter<TextView, String>
 {
     @Override
     public Object adapt(ArrayList<SensorData> data)
@@ -40,5 +40,11 @@ public class LocationTextAdapter implements VisualizationAdapter<TextView, Strin
     public void prepareView(TextView view)
     {
 
+    }
+
+    @Override
+    public VisualizationAdapter<TextView, String> newInstance()
+    {
+        return new LocationTextAdapter();
     }
 }

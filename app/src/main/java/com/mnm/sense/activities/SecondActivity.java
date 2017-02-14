@@ -1,13 +1,16 @@
 package com.mnm.sense.activities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
@@ -20,7 +23,10 @@ import android.widget.TextView;
 
 import com.mnm.sense.DepthPageTransformer;
 import com.mnm.sense.R;
+import com.mnm.sense.Repository;
 import com.mnm.sense.SenseApp;
+import com.mnm.sense.Task;
+import com.mnm.sense.TaskManager;
 import com.mnm.sense.ViewPagerAdapter;
 import com.mnm.sense.ZoomOutPageTransformer;
 import com.mnm.sense.fragments.VisualizationFragment;
@@ -28,10 +34,14 @@ import com.mnm.sense.initializers.Initializer;
 import com.mnm.sense.models.BaseModel;
 import com.mnm.sense.trackers.Tracker;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
+import com.ubhave.datahandler.except.DataHandlerException;
+import com.ubhave.sensormanager.ESException;
+import com.ubhave.sensormanager.data.SensorData;
 
 import java.util.ArrayList;
 
 public class SecondActivity extends AppCompatActivity
+                            implements SlidingUpPanelLayout.PanelSlideListener
 {
     CoordinatorLayout coordinatorLayout;
     TextView trackerTitle;
@@ -43,13 +53,16 @@ public class SecondActivity extends AppCompatActivity
     DatePicker endDate;
     Spinner typeSpinner;
 
+    Tracker tracker;
+    ArrayList<VisualizationFragment> fragments = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        Tracker tracker = SenseApp.instance().tracker(extras.getInt("tracker"));
+        tracker = SenseApp.instance().tracker(extras.getInt("tracker"));
         String visualization = extras.getString("visualization");
 
         setTheme(tracker.theme);
@@ -92,6 +105,8 @@ public class SecondActivity extends AppCompatActivity
         typeSpinner.setAdapter(adapter);
 
         setupViewPager(viewPager, tracker, visualization);
+
+        slidingLayout.addPanelSlideListener(this);
     }
 
     private void setupViewPager(ViewPager viewPager, final Tracker tracker, String defaultVisualization)
@@ -99,7 +114,6 @@ public class SecondActivity extends AppCompatActivity
         final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         int pageToDisplay = 0;
         int page = 0;
-        final ArrayList<VisualizationFragment> fragments = new ArrayList<>();
 
         for (String visualization : tracker.visualizations.keySet())
         {
@@ -162,5 +176,47 @@ public class SecondActivity extends AppCompatActivity
             slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
         else
             super.onBackPressed();
+    }
+
+    @Override
+    public void onPanelSlide(View panel, float slideOffset)
+    {
+
+    }
+
+    @Override
+    public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState)
+    {
+        if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED)
+        {
+            String baseUrl = Repository.baseUrl;
+            try
+            {
+                baseUrl = Repository.instance().getRemoteFor(tracker.type);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+
+            long begin = 1487026800000L;
+            long end = 1487113200000L;
+
+            String url = String.format("%s/%d/%d", baseUrl, begin, end);
+
+            TaskManager.instance().executeAndPost(new Task.Progress(this, tracker.type, url, "Downloading data")
+            {
+                @Override
+                public void executeImpl(ArrayList<SensorData> data)
+                {
+                    Log.d("Progress Task", "Data downloaded and displayed");
+
+                    for (VisualizationFragment fragment : fragments)
+                    {
+                        fragment.refresh(tracker.getRemoteModel(fragment.attribute, fragment.visualization, data));
+                    }
+                }
+            });
+        }
     }
 }

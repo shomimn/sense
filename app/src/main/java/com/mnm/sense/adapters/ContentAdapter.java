@@ -6,7 +6,7 @@ import com.ubhave.sensormanager.data.pull.AbstractContentReaderEntry;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class ContentAdapter<T, U> implements VisualizationAdapter<T, U>
+public abstract class ContentAdapter<T, U> extends VisualizationAdapter<T, U>
 {
     protected String key;
 

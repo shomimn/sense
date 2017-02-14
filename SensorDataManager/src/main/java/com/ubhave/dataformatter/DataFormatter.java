@@ -50,9 +50,9 @@ public abstract class DataFormatter
 		case SensorUtils.SENSOR_TYPE_WIFI:
 			return new WifiFormatter(c);
 		case SensorUtils.SENSOR_TYPE_SMS_CONTENT_READER:
-			return new CallContentReaderFormatter(c);
-		case SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER:
 			return new SmsContentReaderFormatter(c);
+		case SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER:
+			return new CallContentReaderFormatter(c);
 		case SensorUtils.SENSOR_TYPE_BATTERY:
 			return new BatteryFormatter(c);
 		case SensorUtils.SENSOR_TYPE_SCREEN:

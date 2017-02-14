@@ -93,7 +93,7 @@ public class UnencryptedDataTables extends SQLiteOpenHelper implements DataTable
 		finally
 		{
 			database.endTransaction();
-			database.close();
+//			database.close();
 //			close();
 		}
 	}
@@ -119,7 +119,7 @@ public class UnencryptedDataTables extends SQLiteOpenHelper implements DataTable
 			finally
 			{
 				database.endTransaction();
-				database.close();
+//				database.close();
 			}
 			return data;
 		}
@@ -151,7 +151,7 @@ public class UnencryptedDataTables extends SQLiteOpenHelper implements DataTable
 			finally
 			{
 				database.endTransaction();
-				database.close();
+//				database.close();
 			}	
 			return data;
 		}
@@ -177,7 +177,7 @@ public class UnencryptedDataTables extends SQLiteOpenHelper implements DataTable
 			finally
 			{
 				database.endTransaction();
-				database.close();
+//				database.close();
 			}
 		}
 	}

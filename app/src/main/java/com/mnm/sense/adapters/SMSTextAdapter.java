@@ -25,4 +25,10 @@ public class SMSTextAdapter extends ContentTextAdapter
     {
 
     }
+
+    @Override
+    public VisualizationAdapter<TextView, String> newInstance()
+    {
+        return new SMSTextAdapter(key);
+    }
 }

@@ -49,16 +49,7 @@ public class SenseApp extends Application
             for (Tracker tracker : trackers.values())
                 tracker.purge();
 
-            Calendar cal = Calendar.getInstance();
-
-            long now = cal.getTimeInMillis();
-            cal.set(Calendar.HOUR_OF_DAY, 1);
-            cal.add(Calendar.MINUTE, 2);
-            long then = cal.getTimeInMillis();
-
-            Log.d("Purge", "Purging data at " + cal.getTime().toString());
-
-            handler.postDelayed(purgeTask, then - now);
+            schedulePurging();
         }
     };
 
@@ -94,7 +85,7 @@ public class SenseApp extends Application
 
         setTrackerDefaults();
 
-        schedulePurging();
+//        schedulePurging();
     }
 
     public static SenseApp instance()
@@ -146,8 +137,8 @@ public class SenseApp extends Application
         Calendar cal = Calendar.getInstance();
 
         long now = cal.getTimeInMillis();
-        cal.set(Calendar.HOUR_OF_DAY, 1);
-        cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) + 2);
+//        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.add(Calendar.MINUTE, 2);
         long then = cal.getTimeInMillis();
 
         Log.d("Purge", "Purging data at " + cal.getTime().toString());

@@ -142,9 +142,9 @@ public class LocationFormatter extends PullSensorJSONFormatter
 					JSONObject json = jsonArray.getJSONObject(i);
 					double latitude = (Double) json.get(LATITUDE);
 					double longitude = (Double) json.get(LONGITUDE);
-					float accuracy = ((Double) json.get(ACCURACY)).floatValue();
-					float speed = ((Double) json.get(SPEED)).floatValue();
-					float bearing = ((Double) json.get(BEARING)).floatValue();
+					float accuracy = Float.valueOf(json.get(ACCURACY).toString());
+					float speed = Float.valueOf(json.get(SPEED).toString());
+					float bearing = Float.valueOf(json.get(BEARING).toString());
 					String provider = (String) json.get(PROVIDER);
 					long timestamp = (Long) json.get(TIME);
 

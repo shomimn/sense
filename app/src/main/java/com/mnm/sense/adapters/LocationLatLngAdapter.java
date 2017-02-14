@@ -10,7 +10,7 @@ import com.ubhave.sensormanager.data.pull.LocationData;
 
 import java.util.ArrayList;
 
-public class LocationLatLngAdapter implements VisualizationAdapter<GoogleMap, LatLng>
+public class LocationLatLngAdapter extends VisualizationAdapter<GoogleMap, LatLng>
 {
     @Override
     public Object adapt(ArrayList<SensorData> data)
@@ -45,5 +45,11 @@ public class LocationLatLngAdapter implements VisualizationAdapter<GoogleMap, La
     public void prepareView(GoogleMap view)
     {
 
+    }
+
+    @Override
+    public VisualizationAdapter<GoogleMap, LatLng> newInstance()
+    {
+        return new LocationLatLngAdapter();
     }
 }

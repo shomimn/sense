@@ -223,6 +223,36 @@ public abstract class Tracker implements SensorDataListener
         return null;
     }
 
+    public Object getRemoteModel(String attribute, String visualizationType, ArrayList<SensorData> data)
+    {
+        HashMap<String, VisualizationAdapter> attributeAdapters = adapters.get(attribute);
+        VisualizationAdapter adapter = attributeAdapters.get(visualizationType).newInstance();
+
+        if (adapter.isAggregating())
+            for (int i = 0; i < data.size() - 1; ++i)
+                adapter.adaptOne(data.get(i));
+
+        Object adaptedData = adapter.adapt(data);
+
+        switch (visualizationType)
+        {
+            case Visualization.TEXT:
+                return new TextModel(this, (String) adaptedData);
+            case Visualization.BAR_CHART:
+                return new BarChartModel(this, (BarData) adaptedData, attribute);
+            case Visualization.PIE_CHART:
+                return new PieChartModel(this, (PieData) adaptedData);
+            case Visualization.MAP:
+                return new MapModel(this, (ArrayList<LatLng>) adaptedData, attribute);
+            case Visualization.LINE_CHART:
+                return new LineChartModel(this, (LineData) adaptedData);
+            case Visualization.LIST_VIEW:
+                return new ListViewModel(this, (ListViewData) adaptedData);
+        }
+
+        return null;
+    }
+
     public VisualizationAdapter adapter(String attribute, String visualization)
     {
         return adapters.get(attribute).get(visualization);

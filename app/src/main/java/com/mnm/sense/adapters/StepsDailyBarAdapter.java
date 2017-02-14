@@ -21,7 +21,7 @@ import com.ubhave.sensormanager.data.pull.StepCounterData;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class StepsDailyBarAdapter implements VisualizationAdapter<BarChart, BarData>
+public class StepsDailyBarAdapter extends VisualizationAdapter<BarChart, BarData>
 {
     float[] counter = new float[8];
     SparseArray<String> weekDays = new SparseArray<>();
@@ -127,5 +127,17 @@ public class StepsDailyBarAdapter implements VisualizationAdapter<BarChart, BarD
                 return ".";
             }
         });
+    }
+
+    @Override
+    public VisualizationAdapter<BarChart, BarData> newInstance()
+    {
+        return new StepsDailyBarAdapter();
+    }
+
+    @Override
+    public boolean isAggregating()
+    {
+        return true;
     }
 }

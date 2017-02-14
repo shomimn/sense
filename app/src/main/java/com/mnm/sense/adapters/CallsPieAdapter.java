@@ -26,4 +26,10 @@ public class CallsPieAdapter extends ContentPieAdapter
     {
 
     }
+
+    @Override
+    public VisualizationAdapter<PieChart, PieData> newInstance()
+    {
+        return new CallsPieAdapter(key);
+    }
 }

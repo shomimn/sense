@@ -95,5 +95,14 @@ public class StepsTracker extends Tracker
         steps = lastCount - firstCount;
         stepsData.setNumSteps(steps);
     }
+
+    @Override
+    public void purge()
+    {
+        steps = 0;
+        firstCount = 0;
+
+        super.purge();
+    }
 }
 

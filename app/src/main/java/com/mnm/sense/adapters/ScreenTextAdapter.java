@@ -2,31 +2,34 @@ package com.mnm.sense.adapters;
 
 import android.widget.TextView;
 
-import com.mnm.sense.adapters.VisualizationAdapter;
 import com.ubhave.sensormanager.data.SensorData;
-import com.ubhave.sensormanager.data.pull.StepCounterData;
+import com.ubhave.sensormanager.data.push.ScreenData;
 
 import java.util.ArrayList;
 
-public class StepsTextAdapter extends VisualizationAdapter<TextView, String>
+public class ScreenTextAdapter extends VisualizationAdapter<TextView, String>
 {
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {
-        if (data.size() == 0)
+        int size = data.size();
+
+        if (size == 0)
             return null;
 
-        int count = data.size();
-
-        return adaptOne(data.get(count - 1));
+        return adaptOne(data.get(size - 1));
     }
 
     @Override
     public String adaptOne(SensorData data)
     {
-        StepCounterData stepsData = (StepCounterData) data;
+        ScreenData screenData = (ScreenData) data;
+        String result = "";
 
-        return String.valueOf((int)stepsData.getNumSteps());
+        result += "Time on: " + String.valueOf(screenData.getTimeOn() / 1000) + "\n"
+               + "Time off: " + String.valueOf(screenData.getTimeOff() / 1000);
+
+        return result;
     }
 
     @Override
@@ -44,6 +47,6 @@ public class StepsTextAdapter extends VisualizationAdapter<TextView, String>
     @Override
     public VisualizationAdapter<TextView, String> newInstance()
     {
-        return new StepsTextAdapter();
+        return new ScreenTextAdapter();
     }
 }

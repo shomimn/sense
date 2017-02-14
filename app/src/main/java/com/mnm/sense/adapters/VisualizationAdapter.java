@@ -4,12 +4,21 @@ import com.ubhave.sensormanager.data.SensorData;
 
 import java.util.ArrayList;
 
-public interface VisualizationAdapter<T, U>
+public abstract class VisualizationAdapter<T, U>
 {
-    Object adapt(ArrayList<SensorData> data);
+    public abstract Object adapt(ArrayList<SensorData> data);
 
-    U adaptOne(SensorData data);
-    ArrayList<U> adaptAll(ArrayList<SensorData> data);
+    public abstract U adaptOne(SensorData data);
+    public abstract ArrayList<U> adaptAll(ArrayList<SensorData> data);
 
-    void prepareView(T view);
+    public void prepareView(T view)
+    {
+    }
+
+    public abstract VisualizationAdapter<T, U> newInstance();
+
+    public boolean isAggregating()
+    {
+        return false;
+    }
 }

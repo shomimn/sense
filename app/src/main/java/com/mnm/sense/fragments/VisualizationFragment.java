@@ -58,4 +58,12 @@ public class VisualizationFragment extends Fragment
 
         Initializer.get(visualization).init(getContext(), injected, model);
     }
+
+    public void refresh(Object model)
+    {
+        BaseModel baseModel = (BaseModel) model;
+        baseModel.shouldUpdate = false;
+
+        Initializer.get(visualization).init(getContext(), injected, baseModel);
+    }
 }

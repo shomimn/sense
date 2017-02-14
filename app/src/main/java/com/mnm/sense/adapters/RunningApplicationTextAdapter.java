@@ -20,10 +20,8 @@ import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
 
 import java.util.ArrayList;
 
-public class RunningApplicationTextAdapter implements VisualizationAdapter<ListView, ListViewData>
+public class RunningApplicationTextAdapter extends VisualizationAdapter<ListView, ListViewData>
 {
-
-
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {
@@ -64,4 +62,9 @@ public class RunningApplicationTextAdapter implements VisualizationAdapter<ListV
 
     }
 
+    @Override
+    public VisualizationAdapter<ListView, ListViewData> newInstance()
+    {
+        return new RunningApplicationTextAdapter();
+    }
 }

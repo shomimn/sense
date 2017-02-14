@@ -38,7 +38,9 @@ public class TaskManager
         threadPools[Task.SERVER] = Executors.newFixedThreadPool(1);
         threadPools[Task.GENERAL] = Executors.newFixedThreadPool(CORE_POOL_SIZE - 1);
 
-        Looper.prepare();
+        if (Looper.myLooper() == null)
+            Looper.prepare();
+
         mainHandler = new Handler();
     }
 

@@ -19,7 +19,7 @@ import com.ubhave.sensormanager.data.pull.StepCounterData;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class StepsHourlyBarAdapter implements VisualizationAdapter<BarChart, BarData>
+public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarData>
 {
     float[] counter = new float[24];
 
@@ -114,6 +114,18 @@ public class StepsHourlyBarAdapter implements VisualizationAdapter<BarChart, Bar
                 return ".";
             }
         });
+    }
+
+    @Override
+    public VisualizationAdapter<BarChart, BarData> newInstance()
+    {
+        return new StepsHourlyBarAdapter();
+    }
+
+    @Override
+    public boolean isAggregating()
+    {
+        return true;
     }
 }
 

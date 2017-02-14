@@ -39,4 +39,10 @@ public class SMSBarAdapter extends ContentBarAdapter
     {
 
     }
+
+    @Override
+    public VisualizationAdapter<BarChart, BarData> newInstance()
+    {
+        return new SMSBarAdapter(key);
+    }
 }

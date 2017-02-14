@@ -19,7 +19,7 @@ import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class RunningApplicationBarAdapter implements VisualizationAdapter<BarChart,BarData>
+public class RunningApplicationBarAdapter extends VisualizationAdapter<BarChart,BarData>
 {
 
     @Override
@@ -86,5 +86,11 @@ public class RunningApplicationBarAdapter implements VisualizationAdapter<BarCha
                 return null;
             }
         });
+    }
+
+    @Override
+    public VisualizationAdapter<BarChart, BarData> newInstance()
+    {
+        return new RunningApplicationBarAdapter();
     }
 }

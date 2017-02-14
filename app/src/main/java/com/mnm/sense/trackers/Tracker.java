@@ -29,6 +29,7 @@ import com.ubhave.sensormanager.config.pull.PullSensorConfig;
 import com.ubhave.sensormanager.data.SensorData;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -301,5 +302,12 @@ public abstract class Tracker implements SensorDataListener
             editor.putStringSet(DEFAULT_VISUALIZATIONS_KEY, defaults);
             editor.commit();
         }
+    }
+
+    public void purge()
+    {
+        sensorData.clear();
+
+        updateViews();
     }
 }

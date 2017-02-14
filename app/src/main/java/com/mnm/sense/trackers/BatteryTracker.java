@@ -14,6 +14,7 @@ import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.mnm.sense.R;
+import com.mnm.sense.SenseApp;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.VisualizationAdapter;
 import com.ubhave.sensormanager.ESException;
@@ -123,7 +124,7 @@ class BatteryLineAdapter implements VisualizationAdapter<LineChart, LineData>
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setGranularity(1);
         xAxis.setGranularityEnabled(true);
-        xAxis.setLabelCount(24, true);
+        xAxis.setLabelCount(25, true);
 
         xAxis.setValueFormatter(new IAxisValueFormatter()
         {

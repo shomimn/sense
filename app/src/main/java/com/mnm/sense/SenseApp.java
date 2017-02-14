@@ -3,6 +3,9 @@ package com.mnm.sense;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
+import android.provider.Settings;
+import android.util.Log;
 
 import com.mnm.sense.trackers.BatteryTracker;
 import com.mnm.sense.trackers.BluetoothTracker;
@@ -21,10 +24,13 @@ import com.ubhave.sensormanager.sensors.SensorUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import static java.security.AccessController.getContext;
 
 public class SenseApp extends Application
 {
@@ -33,6 +39,28 @@ public class SenseApp extends Application
 
     private static SenseApp instance_;
     public HashMap<Integer, Tracker> trackers = new HashMap<>();
+    private static Handler handler = new Handler();
+
+    Runnable purgeTask = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            for (Tracker tracker : trackers.values())
+                tracker.purge();
+
+            Calendar cal = Calendar.getInstance();
+
+            long now = cal.getTimeInMillis();
+            cal.set(Calendar.HOUR_OF_DAY, 1);
+            cal.add(Calendar.MINUTE, 2);
+            long then = cal.getTimeInMillis();
+
+            Log.d("Purge", "Purging data at " + cal.getTime().toString());
+
+            handler.postDelayed(purgeTask, then - now);
+        }
+    };
 
     @Override
     public void onCreate()
@@ -65,6 +93,8 @@ public class SenseApp extends Application
             prefs.edit().putLong(INSTALLED_DATE_KEY, System.currentTimeMillis()).commit();
 
         setTrackerDefaults();
+
+        schedulePurging();
     }
 
     public static SenseApp instance()
@@ -103,5 +133,25 @@ public class SenseApp extends Application
 
             prefs.edit().putStringSet(Tracker.DEFAULT_VISUALIZATIONS_KEY, defaultVisualizations).commit();
         }
+    }
+
+    public static String deviceId()
+    {
+        return Settings.Secure.getString(context().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+    }
+
+    private void schedulePurging()
+    {
+        Calendar cal = Calendar.getInstance();
+
+        long now = cal.getTimeInMillis();
+        cal.set(Calendar.HOUR_OF_DAY, 1);
+        cal.set(Calendar.MINUTE, cal.get(Calendar.MINUTE) + 2);
+        long then = cal.getTimeInMillis();
+
+        Log.d("Purge", "Purging data at " + cal.getTime().toString());
+
+        handler.postDelayed(purgeTask, then - now);
     }
 }

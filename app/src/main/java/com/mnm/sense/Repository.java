@@ -2,16 +2,13 @@ package com.mnm.sense;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.ubhave.datahandler.ESDataManager;
 import com.ubhave.datahandler.config.DataStorageConfig;
 import com.ubhave.datahandler.except.DataHandlerException;
 import com.ubhave.datahandler.loggertypes.AbstractAsyncTransferLogger;
 import com.ubhave.datahandler.transfer.DataUploadCallback;
 import com.ubhave.sensormanager.ESException;
 
-import java.util.Date;
 import java.util.HashMap;
 
 public class Repository extends AbstractAsyncTransferLogger implements DataUploadCallback
@@ -20,6 +17,7 @@ public class Repository extends AbstractAsyncTransferLogger implements DataUploa
 
     private int updateInterval = 10 * 60000;
     private long prev = 0;
+    private String deviceId = SenseApp.deviceId();
 
     protected Repository(Context context) throws DataHandlerException, ESException
     {
@@ -61,7 +59,7 @@ public class Repository extends AbstractAsyncTransferLogger implements DataUploa
     @Override
     protected String getDataPostURL()
     {
-        return "http://192.168.0.10/api/test";
+        return "http://192.168.0.107/api/upload";
     }
 
     @Override
@@ -91,6 +89,7 @@ public class Repository extends AbstractAsyncTransferLogger implements DataUploa
     @Override
     protected String getDeviceId()
     {
+//        return deviceId;
         return "test-device-id";
     }
 

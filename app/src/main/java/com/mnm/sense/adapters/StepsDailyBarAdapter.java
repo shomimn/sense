@@ -104,8 +104,9 @@ public class StepsDailyBarAdapter implements VisualizationAdapter<BarChart, BarD
         xAxis.setGranularity(1f);
         xAxis.setGranularityEnabled(true);
         xAxis.resetAxisMaximum();
+        xAxis.resetAxisMinimum();
 //        xAxis.setAxisMaximum(7f);
-        xAxis.setLabelCount(3, true);
+        xAxis.setLabelCount(7, true);
 //        xAxis.setCenterAxisLabels(true);
         xAxis.setAxisMinimum(1f);
 //        xAxis.setAxisMaximum(7f);

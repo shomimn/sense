@@ -92,6 +92,14 @@ public class BarChartInitializer extends ViewInitializer<BarChart, BarChartModel
                 {
                     final BarData barData = (BarData) adapter.adapt(with);
 
+                    if (barData == null)
+                    {
+                        barChart.clear();
+                        barChart.invalidate();
+
+                        return;
+                    }
+
                     activity.runOnUiThread(new Runnable()
                     {
                         @Override

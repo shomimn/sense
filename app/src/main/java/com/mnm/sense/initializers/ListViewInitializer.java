@@ -131,7 +131,7 @@ public class ListViewInitializer extends ViewInitializer<ListView, ListViewModel
                 DisplayMetrics metrics = context.getResources().getDisplayMetrics();
                 int width = metrics.widthPixels;
                 int height = metrics.heightPixels;
-                dialog.getWindow().setLayout((7 * width)/8, height/4);
+                dialog.getWindow().setLayout((7 * width)/8, height/3);
 
 
                 ImageView imageView = (ImageView)dialog.findViewById(R.id.item_image);

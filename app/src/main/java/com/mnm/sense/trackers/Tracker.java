@@ -41,6 +41,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public abstract class Tracker implements SensorDataListener
 {
     public static final String DEFAULT_VISUALIZATIONS_KEY = "DefaultVisualizations";
+    public static final int MODE_LOCAL = 0;
+    public static final int MODE_REMOTE = 1;
 
     public class Limit
     {
@@ -78,6 +80,7 @@ public abstract class Tracker implements SensorDataListener
     public HashMap<String, HashMap<String, VisualizationAdapter>> adapters = new HashMap<>();
     public HashMap<String, UpdateCallback> updateCallbacks = new HashMap<>();
     public ArrayList<SensorData> sensorData = new ArrayList<>();
+    public ArrayList<SensorData> remoteData = new ArrayList<>();
     public String[] attributes = { };
 
     protected static Handler handler = new Handler();
@@ -198,41 +201,35 @@ public abstract class Tracker implements SensorDataListener
         return getModel(attributes[0], visualizationType);
     }
 
-    public Object getModel(String attribute, String visualizationType)
+    public Object getModel(int mode, String attribute, String visualizationType)
     {
-        HashMap<String, VisualizationAdapter> attributeAdapters = adapters.get(attribute);
-        VisualizationAdapter adapter = attributeAdapters.get(visualizationType);
-        Object adaptedData = adapter.adapt(sensorData);
+        ArrayList<SensorData> data = mode == MODE_LOCAL ? sensorData : remoteData;
 
-        switch (visualizationType)
-        {
-            case Visualization.TEXT:
-                return new TextModel(this, (String) adaptedData);
-            case Visualization.BAR_CHART:
-                return new BarChartModel(this, (BarData) adaptedData, attribute);
-            case Visualization.PIE_CHART:
-                return new PieChartModel(this, (PieData) adaptedData);
-            case Visualization.MAP:
-                return new MapModel(this, (ArrayList<LatLng>) adaptedData, attribute);
-            case Visualization.LINE_CHART:
-                return new LineChartModel(this, (LineData) adaptedData);
-            case Visualization.LIST_VIEW:
-                return new ListViewModel(this, (ListViewData) adaptedData);
-        }
-
-        return null;
+        return createModel(mode, attribute, visualizationType, data);
     }
 
-    public Object getRemoteModel(String attribute, String visualizationType, ArrayList<SensorData> data)
+    public Object getModel(String attribute, String visualizationType)
     {
-        HashMap<String, VisualizationAdapter> attributeAdapters = adapters.get(attribute);
-        VisualizationAdapter adapter = attributeAdapters.get(visualizationType).newInstance();
+        return createModel(MODE_LOCAL, attribute, visualizationType, sensorData);
+    }
 
-        if (adapter.isAggregating())
-            for (int i = 0; i < data.size() - 1; ++i)
-                adapter.adaptOne(data.get(i));
+    private Object createModel(int mode, String attribute, String visualizationType, ArrayList<SensorData> data)
+    {
+        VisualizationAdapter adapter = adapter(attribute, visualizationType);
 
-        Object adaptedData = adapter.adapt(data);
+        Object adaptedData = null;
+
+        if (mode == MODE_LOCAL)
+        {
+            adaptedData = adapter.adapt(sensorData);
+        }
+        else if (mode == MODE_REMOTE)
+        {
+            if (adapter.isAggregating())
+                adaptedData = adapter.newInstance().aggregate(data);
+            else
+                adaptedData = adapter.newInstance().adapt(data);
+        }
 
         switch (visualizationType)
         {

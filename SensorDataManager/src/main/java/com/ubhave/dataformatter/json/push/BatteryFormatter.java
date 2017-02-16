@@ -172,11 +172,11 @@ public class BatteryFormatter extends PushSensorJSONFormatter
 			BatteryData data = new BatteryData(timestamp, sensorConfig);
 			try
 			{
-				data.setBatteryLevel(((Long) jsonData.get(LEVEL)).intValue());
-				data.setScale(((Long) jsonData.get(SCALE)).intValue());
-				data.setTemperature(((Long) jsonData.get(TEMPERATURE)).intValue());
-				data.setVoltage(((Long) jsonData.get(VOLTAGE)).intValue());
-				data.setPlugged(((Long) jsonData.get(PLUGGED)).intValue());
+				data.setBatteryLevel(jsonData.getInt(LEVEL));
+				data.setScale(jsonData.getInt(SCALE));
+				data.setTemperature(jsonData.getInt(TEMPERATURE));
+				data.setVoltage(jsonData.getInt(VOLTAGE));
+				data.setPlugged(jsonData.getInt(PLUGGED));
 				data.setStatus(getStatusId((String) jsonData.get(STATUS)));
 				data.setHealth(getHealthId((String) jsonData.get(HEALTH)));
 				return data;

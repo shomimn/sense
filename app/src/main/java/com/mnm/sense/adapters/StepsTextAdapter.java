@@ -46,4 +46,10 @@ public class StepsTextAdapter extends VisualizationAdapter<TextView, String>
     {
         return new StepsTextAdapter();
     }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        return null;
+    }
 }

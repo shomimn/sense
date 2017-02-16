@@ -22,6 +22,9 @@ public class BatteryTracker extends Tracker
         resource = R.drawable.ic_battery_full_black_48dp;
         isOn = false;
 
+//        accent = R.color.redColorAccent;
+//        theme = R.style.RedTheme;
+
         attributes = new String[]{ ATTRIBUTE_PERCENT };
 
         visualizations.put(Visualization.LINE_CHART, new Visualization(2, 3, false));

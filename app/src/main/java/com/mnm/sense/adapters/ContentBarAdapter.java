@@ -4,15 +4,11 @@ import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
+import com.mnm.sense.ColorGenerator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 public abstract class ContentBarAdapter extends ContentAdapter<BarChart, BarData>
 {
@@ -26,16 +22,19 @@ public abstract class ContentBarAdapter extends ContentAdapter<BarChart, BarData
     {
         BarData barData = new BarData();
         int i = 0;
+        int[] colors = ColorGenerator.generateRandom(counter.size());
 
         for (Map.Entry<String, Integer> entry : counter.entrySet())
         {
             ArrayList<BarEntry> barEntries = new ArrayList<>();
-            BarEntry barEntry = new BarEntry(i++, entry.getValue().floatValue());
+            BarEntry barEntry = new BarEntry(i, entry.getValue().floatValue());
             barEntries.add(barEntry);
             BarDataSet dataSet = new BarDataSet(barEntries, entry.getKey());
-//            dataSet.setColor(ColorTemplate.COLORFUL_COLORS[i]);
+//            dataSet.setColor(colors[i]);
 
             barData.addDataSet(dataSet);
+
+            ++i;
         }
 
         barData.setBarWidth(0.9f);

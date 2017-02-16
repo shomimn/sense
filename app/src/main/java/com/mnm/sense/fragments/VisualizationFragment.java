@@ -18,6 +18,8 @@ public class VisualizationFragment extends Fragment
     public Tracker tracker;
     public String visualization;
     public String attribute;
+    public int mode;
+    public boolean refreshScheduled = false;
 
     Object injected;
 
@@ -53,17 +55,11 @@ public class VisualizationFragment extends Fragment
 
     public void refresh()
     {
-        BaseModel model = (BaseModel) tracker.getModel(attribute, visualization);
+        refreshScheduled = false;
+
+        BaseModel model = (BaseModel) tracker.getModel(mode, attribute, visualization);
         model.shouldUpdate = false;
 
         Initializer.get(visualization).init(getContext(), injected, model);
-    }
-
-    public void refresh(Object model)
-    {
-        BaseModel baseModel = (BaseModel) model;
-        baseModel.shouldUpdate = false;
-
-        Initializer.get(visualization).init(getContext(), injected, baseModel);
     }
 }

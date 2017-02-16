@@ -67,4 +67,10 @@ public class RunningApplicationTextAdapter extends VisualizationAdapter<ListView
     {
         return new RunningApplicationTextAdapter();
     }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        return null;
+    }
 }

@@ -11,6 +11,9 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.mnm.sense.R;
+import com.mnm.sense.SenseApp;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.push.BatteryData;
 
@@ -142,7 +145,7 @@ public class BatteryLineAdapter extends VisualizationAdapter<LineChart, LineData
             entries.add(ds.getEntryForIndex(0));
         }
 
-        LineDataSet dataSet = new LineDataSet(entries, "");
+        LineDataSet dataSet = new LineDataSet(entries, "Percentage");
         dataSet.setDrawFilled(true);
         dataSet.setDrawValues(false);
 //        dataSet.setDrawCircles(false);
@@ -150,6 +153,9 @@ public class BatteryLineAdapter extends VisualizationAdapter<LineChart, LineData
 //        dataSet.setCircleColor(ColorTemplate.MATERIAL_COLORS[0]);
 //        dataSet.setColor(ColorTemplate.MATERIAL_COLORS[0]);
 //        dataSet.setFillColor(ColorTemplate.MATERIAL_COLORS[0]);
+
+//        dataSet.setFillColor(SenseApp.context().getResources().getColor(R.color.redColorAccent));
+//        dataSet.setColor(SenseApp.context().getResources().getColor(android.R.color.holo_red_light));
 
         yMin = dataSet.getYMin();
 
@@ -165,5 +171,11 @@ public class BatteryLineAdapter extends VisualizationAdapter<LineChart, LineData
     public VisualizationAdapter<LineChart, LineData> newInstance()
     {
         return new BatteryLineAdapter();
+    }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        return adapt(data);
     }
 }

@@ -18,6 +18,7 @@ import com.ubhave.sensormanager.data.pull.StepCounterData;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarData>
 {
@@ -29,29 +30,8 @@ public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarDat
             counter[i] = 0f;
     }
 
-    @Override
-    public Object adapt(ArrayList<SensorData> data)
+    private BarData createFrom(float[] counter)
     {
-        if (data.size() == 0)
-            return null;
-
-        int count = data.size();
-
-        return adaptOne(data.get(count - 1));
-    }
-
-    @Override
-    public BarData adaptOne(SensorData data)
-    {
-        StepCounterData stepsData = (StepCounterData) data;
-        float steps = stepsData.getNumSteps();
-
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(stepsData.getTimestamp());
-        int hour = cal.get(Calendar.HOUR_OF_DAY);
-
-        counter[hour] = steps;
-
         BarData barData = new BarData();
         ArrayList<BarEntry> entries = new ArrayList<>();
 
@@ -77,6 +57,33 @@ public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarDat
         barData.setValueTextSize(6f);
 
         return barData;
+    }
+
+    @Override
+    public Object adapt(ArrayList<SensorData> data)
+    {
+        if (data.size() == 0)
+            return null;
+
+        int count = data.size();
+
+        return adaptOne(data.get(count - 1));
+    }
+
+    @Override
+    public BarData adaptOne(SensorData data)
+    {
+        StepCounterData stepsData = (StepCounterData) data;
+        float steps = stepsData.getNumSteps();
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(stepsData.getTimestamp());
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
+
+        if (counter[hour] < steps)
+            counter[hour] = steps;
+
+        return createFrom(counter);
     }
 
     @Override
@@ -126,6 +133,44 @@ public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarDat
     public boolean isAggregating()
     {
         return true;
+    }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        if (data.size() == 0)
+            return null;
+
+        HashMap<String, ArrayList<SensorData>> dataByDay = partitionByDays(data);
+        ArrayList<float[]> counters = new ArrayList<>(dataByDay.size());
+        Calendar cal = Calendar.getInstance();
+
+        for (ArrayList<SensorData> dailyData : dataByDay.values())
+        {
+            float[] counter = new float[24];
+
+            for (SensorData sensorData : dailyData)
+            {
+                StepCounterData stepsData = (StepCounterData) sensorData;
+                cal.setTimeInMillis(stepsData.getTimestamp());
+
+                int hour = cal.get(Calendar.HOUR_OF_DAY);
+                float steps = stepsData.getNumSteps();
+
+                if (counter[hour] < steps)
+                    counter[hour] = steps;
+            }
+
+            counters.add(counter);
+        }
+
+        float[] totalCounter = new float[24];
+
+        for (float[] counter : counters)
+            for (int i = 0; i < 24; ++i)
+                totalCounter[i] += counter[i];
+
+        return createFrom(totalCounter);
     }
 }
 

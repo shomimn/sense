@@ -9,6 +9,7 @@ import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.push.ScreenData;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ScreenPieAdapter extends VisualizationAdapter<PieChart, PieData>
 {
@@ -66,5 +67,37 @@ public class ScreenPieAdapter extends VisualizationAdapter<PieChart, PieData>
     public VisualizationAdapter<PieChart, PieData> newInstance()
     {
         return new ScreenPieAdapter();
+    }
+
+    @Override
+    public boolean isAggregating()
+    {
+        return true;
+    }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        if (data.size() == 0)
+            return null;
+
+        HashMap<String, ArrayList<SensorData>> dataByDays = partitionByDays(data);
+
+        long timeOn = 0;
+        long timeOff = 0;
+
+        for (ArrayList<SensorData> dailyData : dataByDays.values())
+        {
+            ScreenData screenData = (ScreenData) dailyData.get(dailyData.size() - 1);
+
+            timeOn += screenData.getTimeOn();
+            timeOff += screenData.getTimeOff();
+        }
+
+        ScreenData screenData = (ScreenData) data.get(data.size() - 1);
+        screenData.setTimeOn(timeOn);
+        screenData.setTimeOff(timeOff);
+
+        return adaptOne(screenData);
     }
 }

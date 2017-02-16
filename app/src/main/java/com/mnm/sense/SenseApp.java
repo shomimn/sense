@@ -62,14 +62,14 @@ public class SenseApp extends Application
         try
         {
             trackers.put(SensorUtils.SENSOR_TYPE_STEP_COUNTER, new StepsTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_WIFI, new WifiTracker());
+//            trackers.put(SensorUtils.SENSOR_TYPE_WIFI, new WifiTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_BATTERY, new BatteryTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_LOCATION, new LocationTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_SMS_CONTENT_READER, new SMSContentTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_BLUETOOTH, new BluetoothTracker());
+//            trackers.put(SensorUtils.SENSOR_TYPE_BLUETOOTH, new BluetoothTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER, new CallLogTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_LIGHT, new LightTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_PROXIMITY, new ProximityTracker());
+//            trackers.put(SensorUtils.SENSOR_TYPE_LIGHT, new LightTracker());
+//            trackers.put(SensorUtils.SENSOR_TYPE_PROXIMITY, new ProximityTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_SCREEN, new ScreenTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_RUNNING_APP, new RunningApplicationTracker());
         }

@@ -20,6 +20,7 @@ import com.ubhave.sensormanager.data.pull.StepCounterData;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 
 public class StepsDailyBarAdapter extends VisualizationAdapter<BarChart, BarData>
 {
@@ -139,5 +140,13 @@ public class StepsDailyBarAdapter extends VisualizationAdapter<BarChart, BarData
     public boolean isAggregating()
     {
         return true;
+    }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        HashMap<String, ArrayList<SensorData>> dataByDay = partitionByDays(data);
+
+        return null;
     }
 }

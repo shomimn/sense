@@ -47,4 +47,10 @@ public class LocationTextAdapter extends VisualizationAdapter<TextView, String>
     {
         return new LocationTextAdapter();
     }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        return null;
+    }
 }

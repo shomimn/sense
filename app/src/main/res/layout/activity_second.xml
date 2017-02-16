@@ -82,30 +82,53 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:weightSum="2">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:gravity="center"
-                android:layout_weight="0.2"
-                android:text="Date range"
-                android:textSize="16sp" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1.8"
-                android:weightSum="2">
-                <DatePicker
-                    android:id="@+id/start_date"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
-                <DatePicker
-                    android:id="@+id/end_date"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"/>
 
-            </LinearLayout>
+                <LinearLayout android:layout_width="match_parent"
+                              android:layout_height="0dp"
+                              android:animateLayoutChanges="true"
+                              android:paddingLeft="10dp"
+                              android:paddingRight="10dp"
+                              android:weightSum="2"
+                              android:layout_weight="0.2">
+                    <TextView
+                        android:id="@+id/date_range"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:gravity="start|center_vertical"
+                        android:text="Date range"
+                        android:layout_weight="1.4"
+                        android:textSize="16sp" />
+                    <Button
+                        android:id="@+id/confirm_button"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:layout_weight="0.6"
+                        android:text="Confirm"
+                        android:tint="?colorAccent"
+                        android:textColor="?colorAccent"
+                        android:visibility="invisible"
+                        android:theme="@style/MyButton"
+                        style="@style/Widget.AppCompat.Button.Borderless"
+                                />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.8"
+                    android:weightSum="2">
+                    <DatePicker
+                        android:id="@+id/start_date"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+                    <DatePicker
+                        android:id="@+id/end_date"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
             </LinearLayout>
         </com.sothree.slidinguppanel.SlidingUpPanelLayout>
 </android.support.design.widget.CoordinatorLayout>

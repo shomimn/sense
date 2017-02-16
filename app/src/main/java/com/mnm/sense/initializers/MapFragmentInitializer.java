@@ -110,7 +110,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
 
                             float heading = (float) SphericalUtil.computeHeading(location, nextLocation);
 
-                            googleMap.addMarker(new MarkerOptions().position(location).icon(BitmapDescriptorFactory.fromBitmap(arrow)).anchor(0.5f, 0.5f).rotation(heading));
+                            googleMap.addMarker(new MarkerOptions().position(location).flat(true).icon(BitmapDescriptorFactory.fromBitmap(arrow)).anchor(0.5f, 0.5f).rotation(heading));
                         }
                         googleMap.addPolyline(polylineOptions);
                         break;

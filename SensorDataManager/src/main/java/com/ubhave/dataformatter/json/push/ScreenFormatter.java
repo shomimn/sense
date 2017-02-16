@@ -35,6 +35,8 @@ import com.ubhave.sensormanager.sensors.SensorUtils;
 public class ScreenFormatter extends PushSensorJSONFormatter
 {
 	private final static String STATUS = "status";
+	private final static String TIME_ON = "timeOn";
+	private final static String TIME_OFF = "timeOff";
 	
 	public ScreenFormatter(final Context context)
 	{
@@ -78,6 +80,8 @@ public class ScreenFormatter extends PushSensorJSONFormatter
 	{
 		ScreenData screenData = (ScreenData) data;
 		json.put(STATUS, getScreenStatusString(screenData));
+		json.put(TIME_ON, screenData.getTimeOn());
+		json.put(TIME_OFF, screenData.getTimeOff());
 	}
 	
 	@Override
@@ -92,6 +96,8 @@ public class ScreenFormatter extends PushSensorJSONFormatter
 			try
 			{
 				data.setStatus(getScreenStatusId((String) jsonData.get(STATUS)));
+				data.setTimeOn(jsonData.getInt(TIME_ON));
+				data.setTimeOff(jsonData.getInt(TIME_OFF));
 			}
 			catch (Exception e)
 			{

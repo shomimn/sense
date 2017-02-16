@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -38,7 +39,9 @@ import com.ubhave.datahandler.except.DataHandlerException;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.data.SensorData;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class SecondActivity extends AppCompatActivity
                             implements SlidingUpPanelLayout.PanelSlideListener
@@ -52,6 +55,11 @@ public class SecondActivity extends AppCompatActivity
     DatePicker startDate;
     DatePicker endDate;
     Spinner typeSpinner;
+    Button confirmButton;
+    TextView dateRange;
+
+    long prevStart = 0;
+    long prevEnd = 0;
 
     Tracker tracker;
     ArrayList<VisualizationFragment> fragments = new ArrayList<>();
@@ -89,6 +97,8 @@ public class SecondActivity extends AppCompatActivity
         startDate = (DatePicker) findViewById(R.id.start_date);
         endDate = (DatePicker) findViewById(R.id.end_date);
         typeSpinner = (Spinner) findViewById(R.id.type_spinner);
+        confirmButton = (Button) findViewById(R.id.confirm_button);
+        dateRange = (TextView) findViewById(R.id.date_range);
 
         long installedDate = SenseApp.instance().installedDate();
         startDate.setMinDate(installedDate);
@@ -107,9 +117,11 @@ public class SecondActivity extends AppCompatActivity
         setupViewPager(viewPager, tracker, visualization);
 
         slidingLayout.addPanelSlideListener(this);
+
+        setupDatePickers();
     }
 
-    private void setupViewPager(ViewPager viewPager, final Tracker tracker, String defaultVisualization)
+    private void setupViewPager(final ViewPager viewPager, final Tracker tracker, String defaultVisualization)
     {
         final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         int pageToDisplay = 0;
@@ -137,27 +149,50 @@ public class SecondActivity extends AppCompatActivity
 
         viewPager.setCurrentItem(pageToDisplay);
 
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+            {
+
+            }
+
+            @Override
+            public void onPageSelected(int position)
+            {
+                VisualizationFragment fragment = fragments.get(position);
+
+                if (fragment.refreshScheduled)
+                    fragment.refresh();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state)
+            {
+
+            }
+        });
+
         typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
         {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l)
+            public void onItemSelected(AdapterView<?> adapterView, View view, int j, long l)
             {
-                String attribute = tracker.attributes[i];
-//                VisualizationFragment fragment = fragments.get(i);
-//
-//                if (fragment.attribute.equals(attribute))
-//                    return;
-//
-//                fragment.attribute = attribute;
-//                fragment.refresh();
+                String attribute = tracker.attributes[j];
+                int currentFragment = viewPager.getCurrentItem();
 
-                for (VisualizationFragment fragment : fragments)
+                for (int i = 0; i < fragments.size(); ++i)
                 {
+                    VisualizationFragment fragment = fragments.get(i);
+
                     if (fragment.attribute.equals(attribute))
                         return;
 
                     fragment.attribute = attribute;
-                    fragment.refresh();
+                    fragment.refreshScheduled = true;
+
+                    if (i == currentFragment)
+                        fragment.refresh();
                 }
             }
 
@@ -178,6 +213,16 @@ public class SecondActivity extends AppCompatActivity
             super.onBackPressed();
     }
 
+    private void updateDatePickerIfNeeded(DatePicker datePicker, Calendar calendar)
+    {
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        if (datePicker.getYear() != year || datePicker.getMonth() != month || datePicker.getDayOfMonth() != day)
+            datePicker.updateDate(year, month, day);
+    }
+
     @Override
     public void onPanelSlide(View panel, float slideOffset)
     {
@@ -189,34 +234,133 @@ public class SecondActivity extends AppCompatActivity
     {
         if (newState == SlidingUpPanelLayout.PanelState.COLLAPSED)
         {
-            String baseUrl = Repository.baseUrl;
-            try
-            {
-                baseUrl = Repository.instance().getRemoteFor(tracker.type);
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
+            SimpleDateFormat dateFormat = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
 
-            long begin = 1487026800000L;
-            long end = 1487113200000L;
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(prevStart);
 
-            String url = String.format("%s/%d/%d", baseUrl, begin, end);
+            updateDatePickerIfNeeded(startDate, calendar);
 
-            TaskManager.instance().executeAndPost(new Task.Progress(this, tracker.type, url, "Downloading data")
-            {
-                @Override
-                public void executeImpl(ArrayList<SensorData> data)
-                {
-                    Log.d("Progress Task", "Data downloaded and displayed");
+            String begin = dateFormat.format(calendar.getTime());
 
-                    for (VisualizationFragment fragment : fragments)
-                    {
-                        fragment.refresh(tracker.getRemoteModel(fragment.attribute, fragment.visualization, data));
-                    }
-                }
-            });
+            calendar.setTimeInMillis(prevEnd);
+
+            updateDatePickerIfNeeded(endDate, calendar);
+
+            String end = dateFormat.format(calendar.getTime());
+
+            dateRange.setText(String.format("%s - %s", begin, end));
+
+            if (confirmButton.getVisibility() == View.VISIBLE)
+                confirmButton.setVisibility(View.INVISIBLE);
         }
+    }
+
+    public void setupDatePickers()
+    {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        prevStart = calendar.getTimeInMillis();
+        prevEnd = prevStart;
+
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-mm-yyyy");
+        final SimpleDateFormat dateFormat = (SimpleDateFormat) SimpleDateFormat.getDateInstance();
+        String date = dateFormat.format(calendar.getTime());
+
+        dateRange.setText(String.format("%s - %s", date, date));
+
+        startDate.init(year, month, day, new DatePicker.OnDateChangedListener()
+        {
+            @Override
+            public void onDateChanged(DatePicker datePicker, int i, int i1, int i2)
+            {
+                if (confirmButton.getVisibility() == View.INVISIBLE)
+                    confirmButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        endDate.init(year, month, day, new DatePicker.OnDateChangedListener()
+        {
+            @Override
+            public void onDateChanged(DatePicker datePicker, int i, int i1, int i2)
+            {
+                if (confirmButton.getVisibility() == View.INVISIBLE)
+                    confirmButton.setVisibility(View.VISIBLE);
+            }
+        });
+
+        confirmButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                TaskManager.getMainHandler().postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        slidingLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    }
+                }, 250);
+
+                String baseUrl = Repository.baseUrl;
+                try
+                {
+                    baseUrl = Repository.instance().getRemoteFor(tracker.type);
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
+
+                long begin = 1487026800000L;
+                long end = 1487113200000L;
+
+                Calendar cal = Calendar.getInstance();
+                cal.set(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth(), 0, 0, 0);
+
+                String beginStr = dateFormat.format(cal.getTime());
+                begin = cal.getTimeInMillis();
+                prevStart = begin;
+
+                cal.set(endDate.getYear(), endDate.getMonth(), endDate.getDayOfMonth(), 23, 59, 59);
+
+                String endStr = dateFormat.format(cal.getTime());;
+                end = cal.getTimeInMillis();
+                prevEnd = end;
+
+                dateRange.setText(String.format("%s - %s", beginStr, endStr));
+
+                Log.d("Download", "Fetching data from " + beginStr + " to " + endStr);
+
+                String url = String.format("%s/%d/%d", baseUrl, begin, end);
+
+                TaskManager.instance().executeAndPost(new Task.Progress(SecondActivity.this, tracker.type, url, "Downloading data")
+                {
+                    @Override
+                    public void executeImpl(ArrayList<SensorData> data)
+                    {
+                        Log.d("Progress Task", "Data downloaded and displayed");
+                        tracker.remoteData = data;
+
+                        int currentFragment = viewPager.getCurrentItem();
+
+                        for (int i = 0; i < fragments.size(); ++i)
+                        {
+                            VisualizationFragment fragment = fragments.get(i);
+
+                            fragment.mode = Tracker.MODE_REMOTE;
+                            fragment.refreshScheduled = true;
+
+                            if (i == currentFragment)
+                                fragment.refresh();
+                        }
+                    }
+                });
+            }
+        });
     }
 }

@@ -49,4 +49,10 @@ public class ScreenTextAdapter extends VisualizationAdapter<TextView, String>
     {
         return new ScreenTextAdapter();
     }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        return null;
+    }
 }

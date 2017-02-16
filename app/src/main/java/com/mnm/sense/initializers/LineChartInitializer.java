@@ -56,6 +56,8 @@ public class LineChartInitializer extends ViewInitializer<LineChart, LineChartMo
 
         adapter.prepareView(view);
 
+        view.animateY(500);
+
         if (model.shouldUpdate)
         {
             tracker.updateCallbacks.put(visualization, new Tracker.UpdateCallback()

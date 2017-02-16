@@ -93,4 +93,10 @@ public class RunningApplicationBarAdapter extends VisualizationAdapter<BarChart,
     {
         return new RunningApplicationBarAdapter();
     }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        return null;
+    }
 }

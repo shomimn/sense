@@ -52,4 +52,10 @@ public class LocationLatLngAdapter extends VisualizationAdapter<GoogleMap, LatLn
     {
         return new LocationLatLngAdapter();
     }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        return null;
+    }
 }

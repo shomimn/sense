@@ -1,33 +1,35 @@
 package com.mnm.sense.adapters;
 
-import android.location.Location;
 import android.widget.TextView;
 
 import com.ubhave.sensormanager.data.SensorData;
-import com.ubhave.sensormanager.data.pull.LocationData;
+import com.ubhave.sensormanager.data.push.ScreenData;
 
 import java.util.ArrayList;
 
-public class LocationTextAdapter extends VisualizationAdapter<TextView, String>
+public class ScreenTextAdapter extends VisualizationAdapter<TextView, String>
 {
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {
-        if (data.size() == 0)
+        int size = data.size();
+
+        if (size == 0)
             return null;
 
-        int last = data.size() - 1;
-
-        return adaptOne(data.get(last));
+        return adaptOne(data.get(size - 1));
     }
 
     @Override
     public String adaptOne(SensorData data)
     {
-        LocationData locationData = (LocationData) data;
-        Location location = locationData.getLastLocation();
+        ScreenData screenData = (ScreenData) data;
+        String result = "";
 
-        return "(" + String.valueOf(location.getLatitude()) + ", " + String.valueOf(location.getLongitude()) + ")";
+        result += "Time on: " + String.valueOf(screenData.getTimeOn() / 1000) + "\n"
+               + "Time off: " + String.valueOf(screenData.getTimeOff() / 1000);
+
+        return result;
     }
 
     @Override
@@ -45,7 +47,7 @@ public class LocationTextAdapter extends VisualizationAdapter<TextView, String>
     @Override
     public VisualizationAdapter<TextView, String> newInstance()
     {
-        return new LocationTextAdapter();
+        return new ScreenTextAdapter();
     }
 
     @Override

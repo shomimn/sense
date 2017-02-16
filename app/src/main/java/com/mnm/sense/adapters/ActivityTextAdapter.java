@@ -8,7 +8,7 @@ import com.ubhave.sensormanager.data.pull.ActivityRecognitionDataList;
 
 import java.util.ArrayList;
 
-public class ActivityTextAdapter implements VisualizationAdapter<TextView, String>
+public class ActivityTextAdapter extends VisualizationAdapter<TextView, String>
 {
     @Override
     public Object adapt(ArrayList<SensorData> data)
@@ -45,5 +45,17 @@ public class ActivityTextAdapter implements VisualizationAdapter<TextView, Strin
     public void prepareView(TextView view)
     {
 
+    }
+
+    @Override
+    public VisualizationAdapter<TextView, String> newInstance()
+    {
+        return new ActivityTextAdapter();
+    }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        return null;
     }
 }

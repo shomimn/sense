@@ -10,7 +10,7 @@ public class LocationConfig
 	
 	public static final long DEFAULT_SAMPLING_WINDOW_SIZE_MILLIS = 10000;
 	public static final long DEFAULT_SLEEP_INTERVAL = 15 * 60 * 1000;
-	public final static int LOCATION_CHANGE_DISTANCE_THRESHOLD = 100;
+	public final static int LOCATION_CHANGE_DISTANCE_THRESHOLD = 5;
 	
 	public static SensorConfig getDefault()
 	{

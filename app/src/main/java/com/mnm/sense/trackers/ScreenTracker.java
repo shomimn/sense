@@ -1,31 +1,19 @@
 package com.mnm.sense.trackers;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
-import android.widget.TextView;
 
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
 import com.mnm.sense.NotificationCreator;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.adapters.ScreenPieAdapter;
+import com.mnm.sense.adapters.ScreenTextAdapter;
 import com.mnm.sense.adapters.VisualizationAdapter;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.push.ScreenData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
-import org.joda.time.Hours;
-import org.joda.time.Seconds;
-
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Map;
 
 public class ScreenTracker extends Tracker
 {
@@ -148,96 +136,15 @@ public class ScreenTracker extends Tracker
 
         handler.postDelayed(limitGuard, GUARD_SLEEP_INTERVAL);
     }
-}
-
-class ScreenPieAdapter implements VisualizationAdapter<PieChart, PieData>
-{
-    @Override
-    public Object adapt(ArrayList<SensorData> data)
-    {
-        int size = data.size();
-
-        if (size == 0)
-            return null;
-
-        return adaptOne(data.get(size - 1));
-    }
 
     @Override
-    public PieData adaptOne(SensorData data)
+    public void purge()
     {
-        ScreenData screenData = (ScreenData) data;
+        prevTimestamp = 0;
+        timeOn = 0;
+        timeOff = 0;
 
-        PieData pieData = new PieData();
-        ArrayList<PieEntry> entries = new ArrayList<>();
-
-        float timeOn = screenData.getTimeOn();
-        float timeOff = screenData.getTimeOff();
-
-        entries.add(new PieEntry(timeOn / 1000f / 60f, "Time on"));
-        entries.add(new PieEntry(timeOff / 1000f / 60f, "Time off"));
-
-        PieDataSet pieDataSet = new PieDataSet(entries, "");
-        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS);
-        pieDataSet.setValueTextSize(10f);
-        pieDataSet.setSliceSpace(3f);
-//        pieDataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-//        pieDataSet.setYValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);
-
-        pieData.addDataSet(pieDataSet);
-        pieData.setValueTextSize(10f);
-
-        return pieData;
-    }
-
-    @Override
-    public ArrayList<PieData> adaptAll(ArrayList<SensorData> data)
-    {
-        return null;
-    }
-
-    @Override
-    public void prepareView(PieChart view)
-    {
-
-    }
-}
-
-class ScreenTextAdapter implements VisualizationAdapter<TextView, String>
-{
-    @Override
-    public Object adapt(ArrayList<SensorData> data)
-    {
-        int size = data.size();
-
-        if (size == 0)
-            return null;
-
-        return adaptOne(data.get(size - 1));
-    }
-
-    @Override
-    public String adaptOne(SensorData data)
-    {
-        ScreenData screenData = (ScreenData) data;
-        String result = "";
-
-        result += "Time on: " + String.valueOf(screenData.getTimeOn() / 1000) + "\n"
-               + "Time off: " + String.valueOf(screenData.getTimeOff() / 1000);
-
-        return result;
-    }
-
-    @Override
-    public ArrayList<String> adaptAll(ArrayList<SensorData> data)
-    {
-        return null;
-    }
-
-    @Override
-    public void prepareView(TextView view)
-    {
-
+        super.purge();
     }
 }
 

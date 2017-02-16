@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -39,6 +40,7 @@ public class SensorSettingsActivity extends AppCompatActivity
     UpdateView updateView;
     CardView limitCard;
     LimitView limitView;
+    Button viewDataButton;
 
     Tracker tracker;
     ArrayList<String> forRemoval = new ArrayList<>();
@@ -63,6 +65,7 @@ public class SensorSettingsActivity extends AppCompatActivity
         updateView = (UpdateView) findViewById(R.id.update_view);
         limitCard = (CardView) findViewById(R.id.limit_card);
         limitView = (LimitView) findViewById(R.id.limit_view);
+        viewDataButton = (Button) findViewById(R.id.view_data);
 
         trackerTitle.getRootView().setBackgroundColor(Color.parseColor("#EEEEEE"));
 
@@ -77,6 +80,21 @@ public class SensorSettingsActivity extends AppCompatActivity
         addVisualizations();
         setupLimits();
         setupUpdateView();
+
+        viewDataButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                String visualization = tracker.visualizations.keySet().iterator().next();
+
+                Intent intent = new Intent(SensorSettingsActivity.this, SecondActivity.class);
+                intent.putExtra("tracker", tracker.type);
+                intent.putExtra("visualization", visualization);
+
+                startActivity(intent);
+            }
+        });
     }
 
     public void addVisualizations()
@@ -122,12 +140,16 @@ public class SensorSettingsActivity extends AppCompatActivity
                         if (!isDisplayed)
                             forInsertion.add(key);
                         forRemoval.remove(key);
+
+                        tracker.addDefaultVisualization(key);
                     }
                     else
                     {
                         forInsertion.remove(key);
                         if (isDisplayed)
                         forRemoval.add(key);
+
+                        tracker.removeDefaultVisualization(key);
                     }
 
                     visualization.isDisplayed = b;

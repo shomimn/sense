@@ -18,6 +18,8 @@ public class VisualizationFragment extends Fragment
     public Tracker tracker;
     public String visualization;
     public String attribute;
+    public int mode;
+    public boolean refreshScheduled = false;
 
     Object injected;
 
@@ -35,14 +37,7 @@ public class VisualizationFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View view = inflater.inflate(R.layout.visualization_fragment, container, false);
-
-//        BaseModel model = (BaseModel) tracker.getModel(visualization);
-//        model.shouldUpdate = false;
-//
-//        Initializer.get(visualization).injectIn(getContext(), container, model);
-
-        return view;
+        return inflater.inflate(R.layout.visualization_fragment, container, false);
     }
 
     @Override
@@ -60,7 +55,9 @@ public class VisualizationFragment extends Fragment
 
     public void refresh()
     {
-        BaseModel model = (BaseModel) tracker.getModel(attribute, visualization);
+        refreshScheduled = false;
+
+        BaseModel model = (BaseModel) tracker.getModel(mode, attribute, visualization);
         model.shouldUpdate = false;
 
         Initializer.get(visualization).init(getContext(), injected, model);

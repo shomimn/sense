@@ -8,7 +8,7 @@ import com.ubhave.sensormanager.data.pull.StepCounterData;
 
 import java.util.ArrayList;
 
-public class StepsTextAdapter implements VisualizationAdapter<TextView, String>
+public class StepsTextAdapter extends VisualizationAdapter<TextView, String>
 {
     @Override
     public Object adapt(ArrayList<SensorData> data)
@@ -39,5 +39,17 @@ public class StepsTextAdapter implements VisualizationAdapter<TextView, String>
     public void prepareView(TextView view)
     {
 
+    }
+
+    @Override
+    public VisualizationAdapter<TextView, String> newInstance()
+    {
+        return new StepsTextAdapter();
+    }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        return null;
     }
 }

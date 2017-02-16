@@ -25,4 +25,10 @@ public class CallsTextAdapter extends ContentTextAdapter
     {
 
     }
+
+    @Override
+    public VisualizationAdapter<TextView, String> newInstance()
+    {
+        return new CallsTextAdapter(key);
+    }
 }

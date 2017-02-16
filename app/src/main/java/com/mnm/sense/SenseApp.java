@@ -3,7 +3,9 @@ package com.mnm.sense;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.hardware.Sensor;
+import android.os.Handler;
+import android.provider.Settings;
+import android.util.Log;
 
 import com.mnm.sense.trackers.ActivityTracker;
 import com.mnm.sense.trackers.BatteryTracker;
@@ -22,7 +24,14 @@ import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import static java.security.AccessController.getContext;
 
 public class SenseApp extends Application
 {
@@ -31,6 +40,19 @@ public class SenseApp extends Application
 
     private static SenseApp instance_;
     public HashMap<Integer, Tracker> trackers = new HashMap<>();
+    private static Handler handler = new Handler();
+
+    Runnable purgeTask = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            for (Tracker tracker : trackers.values())
+                tracker.purge();
+
+            schedulePurging();
+        }
+    };
 
     @Override
     public void onCreate()
@@ -41,14 +63,14 @@ public class SenseApp extends Application
         try
         {
             trackers.put(SensorUtils.SENSOR_TYPE_STEP_COUNTER, new StepsTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_WIFI, new WifiTracker());
+//            trackers.put(SensorUtils.SENSOR_TYPE_WIFI, new WifiTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_BATTERY, new BatteryTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_LOCATION, new LocationTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_SMS_CONTENT_READER, new SMSContentTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_BLUETOOTH, new BluetoothTracker());
+//            trackers.put(SensorUtils.SENSOR_TYPE_BLUETOOTH, new BluetoothTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER, new CallLogTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_LIGHT, new LightTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_PROXIMITY, new ProximityTracker());
+//            trackers.put(SensorUtils.SENSOR_TYPE_LIGHT, new LightTracker());
+//            trackers.put(SensorUtils.SENSOR_TYPE_PROXIMITY, new ProximityTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_SCREEN, new ScreenTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_RUNNING_APP, new RunningApplicationTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION, new ActivityTracker());
@@ -62,6 +84,10 @@ public class SenseApp extends Application
 
         if (!prefs.contains(INSTALLED_DATE_KEY))
             prefs.edit().putLong(INSTALLED_DATE_KEY, System.currentTimeMillis()).commit();
+
+        setTrackerDefaults();
+
+//        schedulePurging();
     }
 
     public static SenseApp instance()
@@ -82,5 +108,43 @@ public class SenseApp extends Application
     public long installedDate()
     {
         return getSharedPreferences(PREFS_KEY, MODE_PRIVATE).getLong(INSTALLED_DATE_KEY, System.currentTimeMillis());
+    }
+
+    private void setTrackerDefaults()
+    {
+        for (Tracker tracker : trackers.values())
+        {
+            SharedPreferences prefs = tracker.getConfig();
+
+            if (prefs.contains(Tracker.DEFAULT_VISUALIZATIONS_KEY))
+                continue;
+
+            Set<String> defaultVisualizations = new HashSet<>();
+
+            for (String visualization : tracker.visualizations.keySet())
+                defaultVisualizations.add(visualization);
+
+            prefs.edit().putStringSet(Tracker.DEFAULT_VISUALIZATIONS_KEY, defaultVisualizations).commit();
+        }
+    }
+
+    public static String deviceId()
+    {
+        return Settings.Secure.getString(context().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+    }
+
+    private void schedulePurging()
+    {
+        Calendar cal = Calendar.getInstance();
+
+        long now = cal.getTimeInMillis();
+//        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.add(Calendar.MINUTE, 2);
+        long then = cal.getTimeInMillis();
+
+        Log.d("Purge", "Purging data at " + cal.getTime().toString());
+
+        handler.postDelayed(purgeTask, then - now);
     }
 }

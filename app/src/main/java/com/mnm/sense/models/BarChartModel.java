@@ -6,9 +6,13 @@ import com.mnm.sense.trackers.Tracker;
 
 public class BarChartModel extends BaseModel<BarData>
 {
-    public BarChartModel(Tracker tracker, BarData data)
+    public String attribute;
+
+    public BarChartModel(Tracker tracker, BarData data, String attr)
     {
         super(tracker, data);
+
+        attribute = attr;
     }
 }
 

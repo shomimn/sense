@@ -25,4 +25,10 @@ public class SMSPieAdapter extends ContentPieAdapter
     {
 
     }
+
+    @Override
+    public VisualizationAdapter<PieChart, PieData> newInstance()
+    {
+        return new SMSPieAdapter(key);
+    }
 }

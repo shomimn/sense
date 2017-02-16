@@ -2,6 +2,7 @@ package com.mnm.sense.views;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -56,6 +57,8 @@ public class UpdateView extends LinearLayout
         intervalValue = (TextView) findViewById(R.id.interval_text);
         cancel = (Button) findViewById(R.id.cancel_change);
         confirm = (Button) findViewById(R.id.confirm_change);
+
+        viewTitle.setTypeface(null, Typeface.BOLD);
 
         hideButtons();
 

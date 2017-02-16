@@ -1,8 +1,5 @@
 package com.mnm.sense.adapters;
 
-import android.util.Log;
-import android.util.SparseArray;
-
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -15,6 +12,7 @@ import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.mnm.sense.R;
 import com.mnm.sense.SenseApp;
+import com.mnm.sense.adapters.VisualizationAdapter;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.StepCounterData;
 
@@ -22,20 +20,43 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 
-public class StepsDailyBarAdapter extends VisualizationAdapter<BarChart, BarData>
+public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarData>
 {
-    float[] counter = new float[8];
-    SparseArray<String> weekDays = new SparseArray<>();
+    float[] counter = new float[24];
 
-    public StepsDailyBarAdapter()
+    public StepsHourlyBarAdapter()
     {
-        weekDays.append(1, "Sun");
-        weekDays.append(2, "Mon");
-        weekDays.append(3, "Tue");
-        weekDays.append(4, "Wed");
-        weekDays.append(5, "Thu");
-        weekDays.append(6, "Fri");
-        weekDays.append(7, "Sat");
+        for (int i = 0; i < 24; ++i)
+            counter[i] = 0f;
+    }
+
+    private BarData createFrom(float[] counter)
+    {
+        BarData barData = new BarData();
+        ArrayList<BarEntry> entries = new ArrayList<>();
+
+        for (int i = 0; i < 24; ++i)
+            entries.add(new BarEntry(i, counter[i]));
+
+        BarDataSet dataSet = new BarDataSet(entries, "Steps");
+        dataSet.setColor(SenseApp.context().getResources().getColor(R.color.colorAccent));
+        dataSet.setValueFormatter(new IValueFormatter()
+        {
+            @Override
+            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
+            {
+                if (value > 0)
+                    return String.valueOf(value);
+
+                return "";
+            }
+        });
+
+        barData.addDataSet(dataSet);
+        barData.setBarWidth(0.1f);
+        barData.setValueTextSize(6f);
+
+        return barData;
     }
 
     @Override
@@ -57,35 +78,12 @@ public class StepsDailyBarAdapter extends VisualizationAdapter<BarChart, BarData
 
         Calendar cal = Calendar.getInstance();
         cal.setTimeInMillis(stepsData.getTimestamp());
-        int day = cal.get(Calendar.DAY_OF_WEEK);
+        int hour = cal.get(Calendar.HOUR_OF_DAY);
 
-        counter[day] = steps;
+        if (counter[hour] < steps)
+            counter[hour] = steps;
 
-        BarData barData = new BarData();
-        ArrayList<BarEntry> entries = new ArrayList<>();
-
-        for (int i = 1; i < 8; ++i)
-            entries.add(new BarEntry(i, counter[i]));
-
-        BarDataSet dataSet = new BarDataSet(entries, "Steps");
-        dataSet.setColor(SenseApp.context().getResources().getColor(R.color.colorAccent));
-        dataSet.setValueFormatter(new IValueFormatter()
-        {
-            @Override
-            public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler)
-            {
-                if (value > 0)
-                    return String.valueOf(value);
-
-                return "";
-            }
-        });
-
-        barData.addDataSet(dataSet);
-        barData.setBarWidth(0.5f);
-        barData.setValueTextSize(6f);
-
-        return barData;
+        return createFrom(counter);
     }
 
     @Override
@@ -104,13 +102,10 @@ public class StepsDailyBarAdapter extends VisualizationAdapter<BarChart, BarData
         xAxis.setDrawLabels(true);
         xAxis.setGranularity(1f);
         xAxis.setGranularityEnabled(true);
-        xAxis.resetAxisMaximum();
-        xAxis.resetAxisMinimum();
-//        xAxis.setAxisMaximum(7f);
-        xAxis.setLabelCount(7, true);
-//        xAxis.setCenterAxisLabels(true);
-        xAxis.setAxisMinimum(1f);
-//        xAxis.setAxisMaximum(7f);
+        xAxis.setCenterAxisLabels(false);
+        xAxis.setLabelCount(24, true);
+        xAxis.setAxisMinimum(0f);
+        xAxis.setAxisMaximum(23f);
 
         xAxis.setValueFormatter(null);
 
@@ -119,11 +114,9 @@ public class StepsDailyBarAdapter extends VisualizationAdapter<BarChart, BarData
             @Override
             public String getFormattedValue(float value, AxisBase axis)
             {
-                Log.d("formatter", String.valueOf(value));
                 int val = (int) value;
-
-                if (val < 8)
-                    return weekDays.valueAt(val);
+                if (val % 4 == 0)
+                    return String.valueOf(val);
 
                 return ".";
             }
@@ -133,7 +126,7 @@ public class StepsDailyBarAdapter extends VisualizationAdapter<BarChart, BarData
     @Override
     public VisualizationAdapter<BarChart, BarData> newInstance()
     {
-        return new StepsDailyBarAdapter();
+        return new StepsHourlyBarAdapter();
     }
 
     @Override
@@ -145,8 +138,39 @@ public class StepsDailyBarAdapter extends VisualizationAdapter<BarChart, BarData
     @Override
     public Object aggregate(ArrayList<SensorData> data)
     {
-        HashMap<String, ArrayList<SensorData>> dataByDay = partitionByDays(data);
+        if (data.size() == 0)
+            return null;
 
-        return null;
+        HashMap<String, ArrayList<SensorData>> dataByDay = partitionByDays(data);
+        ArrayList<float[]> counters = new ArrayList<>(dataByDay.size());
+        Calendar cal = Calendar.getInstance();
+
+        for (ArrayList<SensorData> dailyData : dataByDay.values())
+        {
+            float[] counter = new float[24];
+
+            for (SensorData sensorData : dailyData)
+            {
+                StepCounterData stepsData = (StepCounterData) sensorData;
+                cal.setTimeInMillis(stepsData.getTimestamp());
+
+                int hour = cal.get(Calendar.HOUR_OF_DAY);
+                float steps = stepsData.getNumSteps();
+
+                if (counter[hour] < steps)
+                    counter[hour] = steps;
+            }
+
+            counters.add(counter);
+        }
+
+        float[] totalCounter = new float[24];
+
+        for (float[] counter : counters)
+            for (int i = 0; i < 24; ++i)
+                totalCounter[i] += counter[i];
+
+        return createFrom(totalCounter);
     }
 }
+

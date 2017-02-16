@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.models.BaseModel;
 
 import java.lang.reflect.Constructor;
 

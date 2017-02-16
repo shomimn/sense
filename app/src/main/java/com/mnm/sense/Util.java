@@ -62,20 +62,18 @@ public class Util
     {
         if (android.os.Build.VERSION.SDK_INT >= 23)
         {
-            int color = view.getResources().getColor(accent);
-            int unchecked = view.getResources().getColor(android.R.color.darker_gray);
+            int checked = view.getResources().getColor(accent);
+            int unchecked = Color.rgb(236, 236, 236);
+            int disabled = Color.rgb(185, 185, 185);
 
-            int buttonStates[][] = {{-android.R.attr.state_checked}, {android.R.attr.state_checked}};
-            int buttonColors[] = {android.R.color.darker_gray, color};
+            int buttonStates[][] = { { -android.R.attr.state_checked }, { android.R.attr.state_checked } };
+            int buttonColors[] = { disabled, checked };
 
-            int thumbStates[][] = {{-android.R.attr.state_checked}, {android.R.attr.state_checked}};
-            int thumbColors[] = {unchecked, color};
+            int thumbStates[][] = { { -android.R.attr.state_checked}, { android.R.attr.state_checked } };
+            int thumbColors[] = { unchecked, checked };
 
-//        view.setButtonTintList(new ColorStateList(buttonStates, buttonColors));
             view.setThumbTintList(new ColorStateList(thumbStates, thumbColors));
-
-
-//        CompoundButtonCompat.setButtonTintList(view, new ColorStateList(buttonStates, buttonColors));
+            view.setTrackTintList(new ColorStateList(buttonStates, buttonColors));
         }
     }
 }

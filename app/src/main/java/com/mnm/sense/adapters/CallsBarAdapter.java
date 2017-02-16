@@ -26,4 +26,12 @@ public class CallsBarAdapter extends ContentBarAdapter
     {
 
     }
+
+    @Override
+    public VisualizationAdapter<BarChart, BarData> newInstance()
+    {
+        return new CallsBarAdapter(key);
+    }
+
+
 }

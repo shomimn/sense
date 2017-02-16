@@ -27,6 +27,9 @@ public class CallLogTracker extends Tracker
         resource = R.drawable.ic_phone_in_talk_black_48dp;
         isOn = false;
 
+        accent = R.color.greenColorAccent;
+        theme = R.style.GreenTheme;
+
         attributes = new String[]{ ATTRIBUTE_TYPE, ATTRIBUTE_PERSON };
 
         visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
@@ -51,7 +54,7 @@ public class CallLogTracker extends Tracker
     public void start() throws ESException
     {
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, -1);
+//        cal.add(Calendar.DATE, -1);
         cal.set(Calendar.HOUR, 0);
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);

@@ -2,24 +2,27 @@ package com.mnm.sense;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.ubhave.datahandler.ESDataManager;
+import com.mnm.sense.trackers.Tracker;
 import com.ubhave.datahandler.config.DataStorageConfig;
 import com.ubhave.datahandler.except.DataHandlerException;
 import com.ubhave.datahandler.loggertypes.AbstractAsyncTransferLogger;
 import com.ubhave.datahandler.transfer.DataUploadCallback;
 import com.ubhave.sensormanager.ESException;
+import com.ubhave.sensormanager.sensors.SensorUtils;
 
-import java.util.Date;
 import java.util.HashMap;
+
+import static com.ubhave.sensormanager.sensors.SensorUtils.getSensorName;
 
 public class Repository extends AbstractAsyncTransferLogger implements DataUploadCallback
 {
+    public static final String baseUrl = "http://192.168.0.106/api";
+
     private static Repository _instance;
 
     private int updateInterval = 10 * 60000;
-    private long prev = 0;
+    private String deviceId = null;
 
     protected Repository(Context context) throws DataHandlerException, ESException
     {
@@ -61,7 +64,7 @@ public class Repository extends AbstractAsyncTransferLogger implements DataUploa
     @Override
     protected String getDataPostURL()
     {
-        return "http://192.168.0.10/api/test";
+        return String.format("%s/upload", baseUrl);
     }
 
     @Override
@@ -91,7 +94,10 @@ public class Repository extends AbstractAsyncTransferLogger implements DataUploa
     @Override
     protected String getDeviceId()
     {
-        return "test-device-id";
+        if (deviceId == null)
+            deviceId = SenseApp.deviceId();
+
+        return deviceId;
     }
 
     @Override
@@ -131,5 +137,23 @@ public class Repository extends AbstractAsyncTransferLogger implements DataUploa
     public int getUpdateInterval()
     {
         return updateInterval / 1000;
+    }
+
+    public String getRemoteFor(int trackerType)
+    {
+        String remoteUrl = Repository.baseUrl;
+
+        try
+        {
+            String sensorName = SensorUtils.getSensorName(trackerType);
+
+            remoteUrl += String.format("/history/%s/%s/%s", getUniqueUserId(), getDeviceId(), sensorName);
+        }
+        catch (ESException e)
+        {
+            e.printStackTrace();
+        }
+
+        return remoteUrl;
     }
 }

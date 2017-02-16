@@ -29,11 +29,21 @@ import com.ubhave.sensormanager.config.pull.PullSensorConfig;
 import com.ubhave.sensormanager.data.SensorData;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class Tracker implements SensorDataListener
 {
+    public static final String DEFAULT_VISUALIZATIONS_KEY = "DefaultVisualizations";
+    public static final int MODE_LOCAL = 0;
+    public static final int MODE_REMOTE = 1;
+
     public class Limit
     {
         public String title;
@@ -70,9 +80,11 @@ public abstract class Tracker implements SensorDataListener
     public HashMap<String, HashMap<String, VisualizationAdapter>> adapters = new HashMap<>();
     public HashMap<String, UpdateCallback> updateCallbacks = new HashMap<>();
     public ArrayList<SensorData> sensorData = new ArrayList<>();
+    public ArrayList<SensorData> remoteData = new ArrayList<>();
     public String[] attributes = { };
 
     protected static Handler handler = new Handler();
+//    public Object lock = new Object();
 
     public Tracker(int t) throws ESException
     {
@@ -86,6 +98,7 @@ public abstract class Tracker implements SensorDataListener
         correctData(data);
 
         sensorData.add(data);
+
         updateViews();
 
         if (hasLimit())
@@ -189,18 +202,42 @@ public abstract class Tracker implements SensorDataListener
         return getModel(attributes[0], visualizationType);
     }
 
+    public Object getModel(int mode, String attribute, String visualizationType)
+    {
+        ArrayList<SensorData> data = mode == MODE_LOCAL ? sensorData : remoteData;
+
+        return createModel(mode, attribute, visualizationType, data);
+    }
+
     public Object getModel(String attribute, String visualizationType)
     {
-        HashMap<String, VisualizationAdapter> attributeAdapters = adapters.get(attribute);
-        VisualizationAdapter adapter = attributeAdapters.get(visualizationType);
-        Object adaptedData = adapter.adapt(sensorData);
+        return createModel(MODE_LOCAL, attribute, visualizationType, sensorData);
+    }
+
+    private Object createModel(int mode, String attribute, String visualizationType, ArrayList<SensorData> data)
+    {
+        VisualizationAdapter adapter = adapter(attribute, visualizationType);
+
+        Object adaptedData = null;
+
+        if (mode == MODE_LOCAL)
+        {
+            adaptedData = adapter.adapt(sensorData);
+        }
+        else if (mode == MODE_REMOTE)
+        {
+            if (adapter.isAggregating())
+                adaptedData = adapter.newInstance().aggregate(data);
+            else
+                adaptedData = adapter.newInstance().adapt(data);
+        }
 
         switch (visualizationType)
         {
             case Visualization.TEXT:
                 return new TextModel(this, (String) adaptedData);
             case Visualization.BAR_CHART:
-                return new BarChartModel(this, (BarData) adaptedData);
+                return new BarChartModel(this, (BarData) adaptedData, attribute);
             case Visualization.PIE_CHART:
                 return new PieChartModel(this, (PieData) adaptedData);
             case Visualization.MAP:
@@ -251,5 +288,54 @@ public abstract class Tracker implements SensorDataListener
     public SharedPreferences getConfig()
     {
         return SenseApp.context().getSharedPreferences("com.mnm.sense." + text, Context.MODE_PRIVATE);
+    }
+
+    public void addDefaultVisualization(String visualization)
+    {
+        SharedPreferences prefs = getConfig();
+        SharedPreferences.Editor editor = prefs.edit();
+        Set<String> defaults = prefs.getStringSet(DEFAULT_VISUALIZATIONS_KEY, new HashSet<String>());
+
+        editor.clear();
+
+        if (!defaults.contains(visualization))
+        {
+            defaults.add(visualization);
+            editor.putStringSet(DEFAULT_VISUALIZATIONS_KEY, defaults);
+            editor.commit();
+        }
+    }
+
+    public void removeDefaultVisualization(String visualization)
+    {
+        SharedPreferences prefs = getConfig();
+        SharedPreferences.Editor editor = prefs.edit();
+        Set<String> defaults = prefs.getStringSet(DEFAULT_VISUALIZATIONS_KEY, new HashSet<String>());
+
+        editor.clear().commit();
+
+        if (defaults.contains(visualization))
+        {
+            Iterator<String> it = defaults.iterator();
+
+            while(it.hasNext())
+            {
+                if (it.next().equals(visualization))
+                {
+                    it.remove();
+                    break;
+                }
+            }
+
+            editor.putStringSet(DEFAULT_VISUALIZATIONS_KEY, defaults);
+            editor.commit();
+        }
+    }
+
+    public void purge()
+    {
+        sensorData.clear();
+
+        updateViews();
     }
 }

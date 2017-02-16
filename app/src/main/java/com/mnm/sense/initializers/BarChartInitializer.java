@@ -32,7 +32,7 @@ public class BarChartInitializer extends ViewInitializer<BarChart, BarChartModel
     public void init(final Context context, final BarChart barChart, final BarChartModel model)
     {
         final AppCompatActivity activity = (AppCompatActivity) context;
-        final VisualizationAdapter adapter = model.tracker.defaultAdapter(visualization);
+        final VisualizationAdapter adapter = model.tracker.adapter(model.attribute, visualization);
 
         barChart.setData(model.data);
         barChart.fitScreen();
@@ -91,6 +91,14 @@ public class BarChartInitializer extends ViewInitializer<BarChart, BarChartModel
                 public void update(ArrayList<SensorData> with)
                 {
                     final BarData barData = (BarData) adapter.adapt(with);
+
+                    if (barData == null)
+                    {
+                        barChart.clear();
+                        barChart.invalidate();
+
+                        return;
+                    }
 
                     activity.runOnUiThread(new Runnable()
                     {

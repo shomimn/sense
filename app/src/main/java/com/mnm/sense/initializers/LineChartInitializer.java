@@ -56,6 +56,8 @@ public class LineChartInitializer extends ViewInitializer<LineChart, LineChartMo
 
         adapter.prepareView(view);
 
+        view.animateY(500);
+
         if (model.shouldUpdate)
         {
             tracker.updateCallbacks.put(visualization, new Tracker.UpdateCallback()
@@ -71,6 +73,7 @@ public class LineChartInitializer extends ViewInitializer<LineChart, LineChartMo
                             LineData lineData = (LineData) adapter.adapt(with);
 
                             view.setData(lineData);
+                            adapter.prepareView(view);
                             view.invalidate();
                         }
                     });

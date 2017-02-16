@@ -18,7 +18,7 @@ import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RunningApplicationPieAdapter implements VisualizationAdapter<PieChart, PieData>
+public class RunningApplicationPieAdapter extends VisualizationAdapter<PieChart, PieData>
 {
     @Override
     public Object adapt(ArrayList<SensorData> data)
@@ -66,5 +66,17 @@ public class RunningApplicationPieAdapter implements VisualizationAdapter<PieCha
     public void prepareView(PieChart view)
     {
        // view.getData().setValueFormatter(new PercentFormatter());
+    }
+
+    @Override
+    public VisualizationAdapter<PieChart, PieData> newInstance()
+    {
+        return new RunningApplicationPieAdapter();
+    }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        return null;
     }
 }

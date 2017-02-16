@@ -43,13 +43,18 @@ public class RunningApplicationTextAdapter implements VisualizationAdapter<ListV
         int size = appDataList.getRunningApplications().size();
         Drawable[] images = new Drawable[size];
         String[] names = new String[size];
+        long[] lastTimeUsages = new long[size];
+        float[] foregroundTimes = new float[size];
+
         int i = 0;
         for(RunningApplicationData appData: appDataList.getRunningApplications())
         {
             images[i] = appData.getIcon();
-            names[i++] = appData.getName();
+            names[i] = appData.getName();
+            lastTimeUsages[i] = appData.getLastTimeUsed();
+            foregroundTimes[i++] = appData.getForegroundTimeMins();
         }
-        return new ListViewData(names, images);
+        return new ListViewData(names, images, foregroundTimes, lastTimeUsages);
     }
 
     @Override

@@ -61,6 +61,11 @@ public class ESSensorManager implements ESSensorManagerInterface, SensorDataList
 	private final SubscriptionList subscriptionList;
 	private final GlobalConfig config;
 
+	public static ESSensorManager getSensorManager()
+	{
+		return sensorManager;
+	}
+
 	public static ESSensorManager getSensorManager(final Context context) throws ESException
 	{
 		if (context == null)

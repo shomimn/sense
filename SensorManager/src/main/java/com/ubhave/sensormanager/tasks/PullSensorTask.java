@@ -22,6 +22,7 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.sensormanager.tasks;
 
+import android.os.Debug;
 import android.util.Log;
 
 import com.ubhave.sensormanager.ESException;
@@ -82,7 +83,7 @@ public class PullSensorTask extends AbstractSensorTask
 							state = RUNNING;
 							continue;
 						}
-
+						Log.d("publish", "dsadadas");
 						// SENSE
 						// sense() is a blocking call and returns when
 						// the sensing is complete, the sensorConfig object

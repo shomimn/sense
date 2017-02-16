@@ -1,25 +1,22 @@
 package com.mnm.sense.adapters;
 
 
-import android.util.Log;
-
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.AxisBase;
-import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.mnm.sense.Colors;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
 
 import java.util.ArrayList;
-import java.util.Map;
 
-public class RunningApplicationBarAdapter implements VisualizationAdapter<BarChart,BarData>
+public class RunningApplicationBarAdapter implements VisualizationAdapter<BarChart, BarData>
 {
 
     @Override
@@ -38,21 +35,18 @@ public class RunningApplicationBarAdapter implements VisualizationAdapter<BarCha
     {
         RunningApplicationDataList appDataList = (RunningApplicationDataList)data;
 
-        BarData barData = new BarData();
         int i = 0;
+        BarData barData = new BarData();
 
-        for (RunningApplicationData appData : appDataList.getRunningApplications())
+        for (RunningApplicationData appData : appDataList.getMostUsedApplications())
         {
             ArrayList<BarEntry> barEntries = new ArrayList<>();
 
-            BarEntry barEntry = new BarEntry(i++, appData.getForegroundTimeInMinutes());
-            barEntries.add(barEntry);
+            barEntries.add(new BarEntry(i++, appData.getForegroundTimeMins()));
             BarDataSet dataSet = new BarDataSet(barEntries, appData.getName());
-            dataSet.setColor(ColorTemplate.COLORFUL_COLORS[i % ColorTemplate.COLORFUL_COLORS.length]);
-
+            dataSet.setColor(Colors.CUSTOM_COLORS[i % appDataList.getMostUsedApplications().size()]);
             barData.addDataSet(dataSet);
         }
-
 
         barData.setBarWidth(0.9f);
         barData.setValueTextSize(10f);
@@ -74,7 +68,6 @@ public class RunningApplicationBarAdapter implements VisualizationAdapter<BarCha
 
         yAxis.setDrawAxisLine(true);
         yAxis.setEnabled(true);
-
 //        yAxis.setAxisMinimum(0f);
 //        yAxis.setAxisMaximum(2000f);
         yAxis.setDrawLabels(true);
@@ -83,7 +76,7 @@ public class RunningApplicationBarAdapter implements VisualizationAdapter<BarCha
 //            @Override
 //            public String getFormattedValue(float value, AxisBase axis)
 //            {
-//                return null;
+//                return String.valueOf(value) + "";
 //            }
 //        });
     }

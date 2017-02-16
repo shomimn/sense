@@ -2,13 +2,21 @@ package com.mnm.sense.initializers;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.text.format.DateFormat;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -25,10 +33,12 @@ import com.mnm.sense.models.ListViewData;
 import com.mnm.sense.models.ListViewModel;
 import com.mnm.sense.trackers.Tracker;
 import com.ubhave.sensormanager.data.SensorData;
+import com.ubhave.sensormanager.data.pull.RunningApplicationData;
 
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 
 public class ListViewInitializer extends ViewInitializer<ListView, ListViewModel>
@@ -85,6 +95,8 @@ public class ListViewInitializer extends ViewInitializer<ListView, ListViewModel
                 gridItem.setOrientation(LinearLayout.VERTICAL);
                 gridItem.setPadding(15, 15, 15, 15);
                 text.setTextSize(12);
+                text.setEllipsize(TextUtils.TruncateAt.END);
+                text.setMaxLines(1);
                 text.setText(data.getNameAt(counter));
 
                 image.setImageDrawable(data.getIconAt(counter++));
@@ -92,7 +104,6 @@ public class ListViewInitializer extends ViewInitializer<ListView, ListViewModel
                 gridView.addView(gridItem);
                 i++;
             }
-
             return gridView;
         }
     }
@@ -107,6 +118,41 @@ public class ListViewInitializer extends ViewInitializer<ListView, ListViewModel
     {
         final AppCompatActivity activity = (AppCompatActivity) context;
         final VisualizationAdapter adapter = model.tracker.defaultAdapter(visualization);
+        final int accent = context.getResources().getColor(model.tracker.accent);
+
+        view.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                Dialog dialog = new Dialog(context);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.list_item_dialog);
+                DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+                int width = metrics.widthPixels;
+                int height = metrics.heightPixels;
+                dialog.getWindow().setLayout((7 * width)/8, height/4);
+
+
+                ImageView imageView = (ImageView)dialog.findViewById(R.id.item_image);
+                TextView nameView = (TextView)dialog.findViewById(R.id.app_name);
+                TextView foregroundTimeView = (TextView)dialog.findViewById(R.id.foreground_time);
+                TextView lastTimeUsedView = (TextView)dialog.findViewById(R.id.last_time_used);
+
+                Drawable icon = model.data.getIconAt(i);
+                String name = model.data.getNameAt(i);
+                float foregroundTime = model.data.getForegroundTimeAt(i);
+                long lastTimeUsed = model.data.getLastTimeUsedAt(i);
+
+                String date = (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date(lastTimeUsed)).toString());
+                nameView.setText(name);
+                imageView.setImageDrawable(icon);
+                foregroundTimeView.setText(String.valueOf(foregroundTime) + " mins");
+                lastTimeUsedView.setText(date);
+
+                dialog.show();
+            }
+        });
 
         if (model.shouldUpdate)
         {

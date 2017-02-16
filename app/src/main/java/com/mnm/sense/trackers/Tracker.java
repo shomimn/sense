@@ -4,6 +4,7 @@ package com.mnm.sense.trackers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.util.Log;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
@@ -81,6 +82,7 @@ public abstract class Tracker implements SensorDataListener
     @Override
     public void onDataSensed(SensorData data)
     {
+        Log.d("data", "sensed");
         correctData(data);
 
         sensorData.add(data);

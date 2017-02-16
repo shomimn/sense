@@ -32,7 +32,7 @@ public class RunningApplicationData
         return foregroundTime;
     }
 
-    public float getForegroundTimeInMinutes()
+    public float getForegroundTimeMins()
     {
         return (float)foregroundTime / 60f / 60f;
     }
@@ -55,5 +55,10 @@ public class RunningApplicationData
     public long getEndTimeRange()
     {
         return endTimeRange;
+    }
+
+    public void setForegroundTime(long foregroundTime)
+    {
+        this.foregroundTime = foregroundTime;
     }
 }

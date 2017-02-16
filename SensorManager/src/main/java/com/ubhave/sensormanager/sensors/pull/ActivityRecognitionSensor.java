@@ -78,7 +78,9 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
     @Override
     protected SensorData getMostRecentRawData()
     {
+        Log.d("stigloo", "Ddsada");
         return activities;
+
     }
 
     @Override

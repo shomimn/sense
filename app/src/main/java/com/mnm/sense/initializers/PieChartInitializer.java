@@ -11,6 +11,7 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.PieData;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.adapters.VisualizationAdapter;
 import com.mnm.sense.models.PieChartModel;
 import com.mnm.sense.trackers.Tracker;
 import com.ubhave.sensormanager.data.SensorData;
@@ -28,6 +29,7 @@ public class PieChartInitializer extends ViewInitializer<PieChart, PieChartModel
     public void init(Context context, final PieChart view, final PieChartModel model)
     {
         final AppCompatActivity activity = (AppCompatActivity) context;
+        final VisualizationAdapter adapter = model.tracker.defaultAdapter(visualization);
 
         view.setData(model.data);
         view.setDrawEntryLabels(false);
@@ -40,6 +42,8 @@ public class PieChartInitializer extends ViewInitializer<PieChart, PieChartModel
         view.getLegend().setWordWrapEnabled(true);
 //        view.getLegend().setEnabled(false);
         view.setRotationEnabled(false);
+
+        adapter.prepareView(view);
 
         view.animateY(500);
 

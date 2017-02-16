@@ -8,6 +8,6 @@ public class ListViewModel extends BaseModel<ListViewData>
 {
     public ListViewModel(Tracker tracker, ListViewData data)
     {
-        super(tracker, data == null ? new ListViewData(new String[]{}, new Drawable[]{}) : data);
+        super(tracker, data == null ? new ListViewData() : data);
     }
 }

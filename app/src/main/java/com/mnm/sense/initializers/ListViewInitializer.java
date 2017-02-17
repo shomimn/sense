@@ -176,6 +176,16 @@ public class ListViewInitializer extends ViewInitializer<ListView, ListViewModel
                     });
                 }
             });
+
+            model.tracker.clearCallbacks.put(visualization, new Tracker.ClearCallback()
+            {
+                @Override
+                public void clear()
+                {
+                    view.setAdapter(new GridViewAdapter(context,
+                            new ListViewData(new String[]{}, new Drawable[]{}, new float[]{}, new long[]{})));
+                }
+            });
         }
         else
         {

@@ -47,6 +47,7 @@ public class Colors
             rgb("#2ecc71"), rgb("#f1c40f"), rgb("#e74c3c"), rgb("#3498db")
     };
     public static final int[] CUSTOM_COLORS = {
+            rgb("#2ecc71"), rgb("#f1c40f"), rgb("#e74c3c"), rgb("#3498db"),
             rgb("#BB9D49"), rgb("#8ECA6A"), rgb("#AC435B"), rgb("#3E4381"),
             rgb("#E7C979"), rgb("#65A340"), rgb("#72001B"), rgb("#5F62A0"),
             rgb("#7C5B00"), rgb("#296D00"), rgb("#D46F87"), rgb("#232862"),

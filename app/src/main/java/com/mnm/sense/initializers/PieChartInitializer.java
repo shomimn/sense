@@ -69,6 +69,16 @@ public class PieChartInitializer extends ViewInitializer<PieChart, PieChartModel
                     });
                 }
             });
+
+            model.tracker.clearCallbacks.put(visualization, new Tracker.ClearCallback()
+            {
+                @Override
+                public void clear()
+                {
+                    view.clear();
+                    view.invalidate();
+                }
+            });
         }
     }
 }

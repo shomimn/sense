@@ -52,6 +52,7 @@ public class RunningApplicationPieAdapter extends VisualizationAdapter<PieChart,
         dataSet.setSliceSpace(3f);
 
         PieData pieData = new PieData(dataSet);
+        pieData.setValueFormatter(new PercentFormatter());
 
         return pieData;
     }
@@ -65,7 +66,6 @@ public class RunningApplicationPieAdapter extends VisualizationAdapter<PieChart,
     @Override
     public void prepareView(PieChart view)
     {
-       // view.getData().setValueFormatter(new PercentFormatter());
     }
 
     @Override

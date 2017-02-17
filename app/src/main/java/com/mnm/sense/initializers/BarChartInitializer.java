@@ -92,14 +92,6 @@ public class BarChartInitializer extends ViewInitializer<BarChart, BarChartModel
                 {
                     final BarData barData = (BarData) adapter.adapt(with);
 
-                    if (barData == null)
-                    {
-                        barChart.clear();
-                        barChart.invalidate();
-
-                        return;
-                    }
-
                     activity.runOnUiThread(new Runnable()
                     {
                         @Override
@@ -115,6 +107,16 @@ public class BarChartInitializer extends ViewInitializer<BarChart, BarChartModel
                             barChart.invalidate();
                         }
                     });
+                }
+            });
+
+            model.tracker.clearCallbacks.put(visualization, new Tracker.ClearCallback()
+            {
+                @Override
+                public void clear()
+                {
+                    barChart.clear();
+                    barChart.invalidate();
                 }
             });
         }

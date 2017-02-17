@@ -65,6 +65,11 @@ public abstract class Tracker implements SensorDataListener
         void update(ArrayList<SensorData> with);
     }
 
+    public interface ClearCallback
+    {
+        void clear();
+    }
+
     public String text;
     public int resource;
     public boolean isOn;
@@ -79,6 +84,7 @@ public abstract class Tracker implements SensorDataListener
     public TreeMap<String, Visualization> visualizations = new TreeMap<>();
     public HashMap<String, HashMap<String, VisualizationAdapter>> adapters = new HashMap<>();
     public HashMap<String, UpdateCallback> updateCallbacks = new HashMap<>();
+    public HashMap<String, ClearCallback> clearCallbacks = new HashMap<>();
     public ArrayList<SensorData> sensorData = new ArrayList<>();
     public ArrayList<SensorData> remoteData = new ArrayList<>();
     public String[] attributes = { };
@@ -261,7 +267,7 @@ public abstract class Tracker implements SensorDataListener
         return adapter(attributes[0], visualization);
     }
 
-    public void updateViews()
+    private void updateViews()
     {
         for (HashMap.Entry entry : updateCallbacks.entrySet())
         {
@@ -270,6 +276,12 @@ public abstract class Tracker implements SensorDataListener
 
             callback.update(sensorData);
         }
+    }
+
+    private void clearViews()
+    {
+        for (ClearCallback callback : clearCallbacks.values())
+            callback.clear();
     }
 
     public boolean hasLimit()
@@ -336,6 +348,6 @@ public abstract class Tracker implements SensorDataListener
     {
         sensorData.clear();
 
-        updateViews();
+        clearViews();
     }
 }

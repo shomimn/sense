@@ -90,6 +90,8 @@ public abstract class DataFormatter
 				return new InteractionFormatter(c);
 			case SensorUtils.SENSOR_TYPE_RUNNING_APP:
 				return new RunningApplicationFormatter(c);
+			case SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION:
+				return new ActivityRecognitionFormatter(c);
 			default:
 				return null;
 		}

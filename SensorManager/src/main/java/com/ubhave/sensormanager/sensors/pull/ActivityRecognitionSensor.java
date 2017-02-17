@@ -1,6 +1,7 @@
 package com.ubhave.sensormanager.sensors.pull;
 
 import android.Manifest;
+import android.app.IntentService;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +43,8 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
     List<DetectedActivity> detectedActivities;
     private ActivityRecognitionDataList activities;
 
+    private PendingIntent pendingIntent;
+
     public static ActivityRecognitionSensor getSensor(final Context context) throws ESException
     {
         if (activityRecognitionSensor == null)
@@ -78,9 +81,7 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
     @Override
     protected SensorData getMostRecentRawData()
     {
-        Log.d("stigloo", "Ddsada");
         return activities;
-
     }
 
     @Override
@@ -93,25 +94,7 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
     @Override
     public void onConnected(@Nullable Bundle bundle)
     {
-        new Thread()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    Intent intent = new Intent(applicationContext, ActivityRecognizedService.class);
-                    PendingIntent pendingIntent = PendingIntent.getService(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                    ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mApiClient, (long)getSensorConfig(PullSensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS), pendingIntent);
-                }
-                catch (ESException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-
+      Log.d("Connection success", "onConnected called");
     }
 
     @Override
@@ -133,6 +116,24 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
     {
         if (mApiClient != null)
         {
+            new Thread()
+            {
+                @Override
+                public void run()
+                {
+                    // try
+                    {
+                        Intent intent = new Intent(applicationContext, ActivityRecognizedService.class);
+                        pendingIntent = PendingIntent.getService(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mApiClient, 0, pendingIntent);
+
+                    }
+//                catch (ESException e)
+//                {
+//                    e.printStackTrace();
+//                }
+                }
+            }.start();
             return true;
         }
         return false;
@@ -141,7 +142,10 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
     @Override
     protected void stopSensing()
     {
-        mApiClient.disconnect();
+        if(mApiClient != null)
+        {
+            ActivityRecognition.ActivityRecognitionApi.removeActivityUpdates(mApiClient, pendingIntent);
+        }
     }
 
     @Override

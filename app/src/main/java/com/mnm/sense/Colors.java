@@ -46,6 +46,9 @@ public class Colors
     public static final int[] MATERIAL_COLORS = {
             rgb("#2ecc71"), rgb("#f1c40f"), rgb("#e74c3c"), rgb("#3498db")
     };
+    public static final int[] ACTIVITY_COLORS = {
+        rgb("#8bc34a"), rgb("#E7C979"), rgb("#dddddd")
+    };
     public static final int[] CUSTOM_COLORS = {
             rgb("#BB9D49"), rgb("#8ECA6A"), rgb("#AC435B"), rgb("#3E4381"),
             rgb("#E7C979"), rgb("#65A340"), rgb("#72001B"), rgb("#5F62A0"),

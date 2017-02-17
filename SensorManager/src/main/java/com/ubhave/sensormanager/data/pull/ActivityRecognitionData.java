@@ -27,7 +27,6 @@ public class ActivityRecognitionData
         activityText.append(DetectedActivity.TILTING, "Tilting");
         activityText.append(DetectedActivity.UNKNOWN, "Unknown");
         activityText.append(DetectedActivity.WALKING, "Walking");
-        Log.d("act: ", String.valueOf(type) + " " + String.valueOf(timestamp * 60 * 60));
 
     }
 

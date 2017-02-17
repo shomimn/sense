@@ -15,6 +15,8 @@ import com.mnm.sense.adapters.VisualizationAdapter;
 import com.mnm.sense.models.PieChartModel;
 import com.mnm.sense.trackers.Tracker;
 import com.ubhave.sensormanager.data.SensorData;
+import com.ubhave.sensormanager.data.pull.ActivityRecognitionDataList;
+import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
 
 import java.util.ArrayList;
 

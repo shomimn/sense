@@ -3,6 +3,8 @@ package com.ubhave.sensormanager.data.pull;
 
 import android.graphics.drawable.Drawable;
 
+import java.util.concurrent.TimeUnit;
+
 public class RunningApplicationData
 {
     private String name;
@@ -34,7 +36,7 @@ public class RunningApplicationData
 
     public float getForegroundTimeMins()
     {
-        return (float)foregroundTime / 60f / 60f;
+        return TimeUnit.MILLISECONDS.toMinutes(foregroundTime);
     }
 
     public Drawable getIcon()

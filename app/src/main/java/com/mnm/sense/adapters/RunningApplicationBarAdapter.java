@@ -7,6 +7,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.mnm.sense.Colors;
@@ -15,6 +16,8 @@ import com.ubhave.sensormanager.data.pull.RunningApplicationData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
 
 import java.util.ArrayList;
+
+import static com.mnm.sense.adapters.RunningApplicationPieAdapter.MAX_APPLICATION;
 
 
 public class RunningApplicationBarAdapter extends VisualizationAdapter<BarChart,BarData>
@@ -36,18 +39,35 @@ public class RunningApplicationBarAdapter extends VisualizationAdapter<BarChart,
     {
         RunningApplicationDataList appDataList = (RunningApplicationDataList)data;
 
-        int i = 0;
+
         BarData barData = new BarData();
 
-        for (RunningApplicationData appData : appDataList.getMostUsedApplications())
+        ArrayList<RunningApplicationData> sorted = appDataList.sort();
+        int bound = sorted.size() < MAX_APPLICATION ? sorted.size() : MAX_APPLICATION;
+
+        for(int i = 0; i < bound; i++)
         {
             ArrayList<BarEntry> barEntries = new ArrayList<>();
 
-            barEntries.add(new BarEntry(i++, appData.getForegroundTimeMins()));
-            BarDataSet dataSet = new BarDataSet(barEntries, appData.getName());
-            dataSet.setColor(Colors.CUSTOM_COLORS[i % appDataList.getMostUsedApplications().size()]);
+            barEntries.add(new BarEntry(i, sorted.get(i).getForegroundTimeMins()));
+            BarDataSet dataSet = new BarDataSet(barEntries, sorted.get(i).getName());
+            dataSet.setColor(Colors.CUSTOM_COLORS[i]);
             barData.addDataSet(dataSet);
         }
+
+        if(bound == MAX_APPLICATION)
+        {
+            long othersTime = 0;
+            for(int i = bound; i < sorted.size(); i++)
+                othersTime += sorted.get(i).getForegroundTimeMins();
+            ArrayList<BarEntry> barEntries = new ArrayList<>();
+
+            barEntries.add(new BarEntry(bound, othersTime));
+            BarDataSet dataSet = new BarDataSet(barEntries, "Other");
+            dataSet.setColor(Colors.CUSTOM_COLORS[bound]);
+            barData.addDataSet(dataSet);
+        }
+
 
         barData.setBarWidth(0.9f);
         barData.setValueTextSize(10f);

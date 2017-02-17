@@ -12,8 +12,8 @@ import com.ubhave.sensormanager.data.pull.RunningApplicationData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
 import com.ubhave.sensormanager.process.AbstractProcessor;
 
-import java.util.ArrayList;
 import java.util.List;
+
 
 public class RunningApplicationProcessor extends AbstractProcessor
 {

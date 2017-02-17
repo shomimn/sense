@@ -16,10 +16,13 @@ import com.ubhave.sensormanager.data.pull.RunningApplicationData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class RunningApplicationPieAdapter extends VisualizationAdapter<PieChart, PieData>
 {
+    public final static int MAX_APPLICATION = 7;
+
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {
@@ -39,12 +42,27 @@ public class RunningApplicationPieAdapter extends VisualizationAdapter<PieChart,
         List<PieEntry> entries = new ArrayList<>();
 
         long totalForegroundTime = appDataList.getTotalForegroundTime();
-
-        for(RunningApplicationData appData : appDataList.getMostUsedApplications())
+        if(totalForegroundTime > 0)
         {
-            float percentage = appData.getForegroundTime() * 100 / totalForegroundTime;
-            entries.add(new PieEntry(percentage, appData.getName()));
+            ArrayList<RunningApplicationData> sorted = appDataList.sort();
+            int bound = sorted.size() < MAX_APPLICATION ? sorted.size() : MAX_APPLICATION;
+
+            for(int i = 0; i < bound; i++)
+            {
+                float percentage = sorted.get(i).getForegroundTime() * 100 / totalForegroundTime;
+                entries.add(new PieEntry(percentage, sorted.get(i).getName()));
+            }
+
+            if(bound == MAX_APPLICATION)
+            {
+                long othersTime = 0;
+                for(int i = bound; i < sorted.size(); i++)
+                    othersTime += sorted.get(i).getForegroundTime();
+                float percentage = othersTime * 100 / totalForegroundTime;
+                entries.add(new PieEntry(percentage, "Other"));
+            }
         }
+
 
         PieDataSet dataSet = new PieDataSet(entries, "");
         dataSet.setColors(Colors.CUSTOM_COLORS);

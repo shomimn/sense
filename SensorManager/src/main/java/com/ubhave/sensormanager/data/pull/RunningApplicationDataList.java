@@ -21,7 +21,6 @@ import java.util.Comparator;
 
 public class RunningApplicationDataList extends SensorData
 {
-    public static final int TIME_THRESHOLD_MINS = 100;
     private ArrayList<RunningApplicationData> runningApplications;
     private long totalForegroundTime;
 
@@ -48,24 +47,17 @@ public class RunningApplicationDataList extends SensorData
         return this.runningApplications;
     }
 
-    @TargetApi(21)
-    public ArrayList<RunningApplicationData> getMostUsedApplications()
+    public ArrayList<RunningApplicationData> sort()
     {
-        ArrayList<RunningApplicationData> result = new ArrayList<>();
-        long otherForegroundTime = 0;
-        for(RunningApplicationData data : runningApplications)
+        Collections.sort(runningApplications, new Comparator<RunningApplicationData>()
         {
-            if(data.getForegroundTimeMins() >= TIME_THRESHOLD_MINS)
-                result.add(data);
-            else
-                otherForegroundTime += data.getForegroundTime();
-        }
-
-        Drawable icon = ESSensorManager.getSensorManager().getApplicationContext().getDrawable(R.drawable.ic_group_work_black_48dp);
-        RunningApplicationData other = new RunningApplicationData("Other", otherForegroundTime, icon, 0, 0, 0);
-
-        result.add(other);
-        return result;
+            @Override
+            public int compare(RunningApplicationData t1, RunningApplicationData t2)
+            {
+                return (int)(t2.getForegroundTime() - t1.getForegroundTime());
+            }
+        });
+        return runningApplications;
     }
 
     @Override

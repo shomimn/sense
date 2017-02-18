@@ -36,7 +36,6 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
     };
 
     private GoogleApiClient mApiClient;
-
     private static ActivityRecognitionSensor activityRecognitionSensor;
     private static Object lock = new Object();
 

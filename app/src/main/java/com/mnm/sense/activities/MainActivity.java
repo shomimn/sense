@@ -190,6 +190,9 @@ public class MainActivity extends AppCompatActivity
 
                     tracker.updateCallbacks.remove(data.visualization);
                     tracker.updateCallbacks.remove(dashboardKey);
+                    tracker.clearCallbacks.remove(data.visualization);
+                    tracker.clearCallbacks.remove(dashboardKey);
+
                     dashboardFragment.grid.removeItem(item);
                     iterator.remove();
                 }

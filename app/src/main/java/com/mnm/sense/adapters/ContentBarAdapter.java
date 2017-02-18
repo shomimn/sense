@@ -5,6 +5,7 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.mnm.sense.ColorGenerator;
+import com.mnm.sense.Colors;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public abstract class ContentBarAdapter extends ContentAdapter<BarChart, BarData
             barEntries.add(barEntry);
             BarDataSet dataSet = new BarDataSet(barEntries, entry.getKey());
 //            dataSet.setColor(colors[i]);
+            dataSet.setColor(Colors.CUSTOM_COLORS[i]);
 
             barData.addDataSet(dataSet);
 

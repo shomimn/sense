@@ -35,6 +35,7 @@ public class LineChartInitializer extends ViewInitializer<LineChart, LineChartMo
         Description desc = new Description();
         desc.setText("");
         view.setDescription(desc);
+        view.getLegend().setWordWrapEnabled(true);
 
         XAxis xAxis = view.getXAxis();
         xAxis.setDrawGridLines(false);
@@ -48,11 +49,15 @@ public class LineChartInitializer extends ViewInitializer<LineChart, LineChartMo
         leftYAxis.setGranularity(1);
         leftYAxis.setDrawGridLines(false);
 
+        leftYAxis.setAxisMinimum(70);
+
         YAxis rightYAxis = view.getAxisRight();
         rightYAxis.setGranularityEnabled(true);
         rightYAxis.setGranularity(1);
         rightYAxis.setDrawGridLines(false);
         rightYAxis.setDrawLabels(false);
+
+        rightYAxis.setAxisMinimum(70);
 
         adapter.prepareView(view);
 
@@ -77,6 +82,16 @@ public class LineChartInitializer extends ViewInitializer<LineChart, LineChartMo
                             view.invalidate();
                         }
                     });
+                }
+            });
+
+            tracker.clearCallbacks.put(visualization, new Tracker.ClearCallback()
+            {
+                @Override
+                public void clear()
+                {
+                    view.clear();
+                    view.invalidate();
                 }
             });
         }

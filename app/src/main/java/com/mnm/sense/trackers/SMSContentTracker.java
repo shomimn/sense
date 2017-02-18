@@ -8,6 +8,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.adapters.BatteryLineAdapter;
 import com.mnm.sense.adapters.ContentAdapter;
 import com.mnm.sense.adapters.SMSBarAdapter;
 import com.mnm.sense.adapters.SMSPersonTextAdapter;
@@ -62,6 +63,25 @@ public class SMSContentTracker extends Tracker
 
         adapters.put(ATTRIBUTE_TYPE, typeAdapters);
         adapters.put(ATTRIBUTE_PERSON, personAdapters);
+
+//        build()
+//            .text(new Visualization(1, 1, false))
+//            .barChart(new Visualization(2, 3, false))
+//            .pieChart(new Visualization(2, 3, false))
+//            .attribute(ATTRIBUTE_TYPE)
+//            .adapters(new SMSTypeTextAdapter(),
+//                    new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
+//                    new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY))
+//            .attribute(ATTRIBUTE_PERSON)
+//            .adapters(new SMSPersonTextAdapter(),
+//                    new SMSBarAdapter("person"),
+//                    new SMSPieAdapter("person"));
+
+    }
+
+    private VisualizationBuilder build()
+    {
+        return new VisualizationBuilder(this);
     }
 
     @Override

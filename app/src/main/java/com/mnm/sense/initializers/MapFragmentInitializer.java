@@ -68,6 +68,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
             {
                 googleMap.getUiSettings().setScrollGesturesEnabled(model.scrollEnabled);
 
+                final AppCompatActivity activity = (AppCompatActivity) context;
                 final Tracker tracker = model.tracker;
                 final ArrayList<Marker> markers = new ArrayList<>();
                 final PolylineOptions polylineOptions = new PolylineOptions();
@@ -138,7 +139,6 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                         @Override
                         public void update(ArrayList<SensorData> with)
                         {
-                            final AppCompatActivity activity = (AppCompatActivity) context;
                             final LatLng latLng = (LatLng) tracker.adapter(model.attribute, visualization).adaptOne(with.get(with.size() - 1));
 
                             builder.include(latLng);
@@ -165,6 +165,16 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                                     googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
                                 }
                             });
+                        }
+                    });
+
+                    tracker.clearCallbacks.put(visualization, new Tracker.ClearCallback()
+                    {
+                        @Override
+                        public void clear()
+                        {
+                            googleMap.clear();
+                            markers.clear();
                         }
                     });
                 }

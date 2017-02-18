@@ -54,6 +54,15 @@ public class TextViewInitializer extends ViewInitializer<TextView, TextModel>
                     });
                 }
             });
+
+            tracker.clearCallbacks.put(visualization, new Tracker.ClearCallback()
+            {
+                @Override
+                public void clear()
+                {
+                    view.setText("No data yet");
+                }
+            });
         }
     }
 }

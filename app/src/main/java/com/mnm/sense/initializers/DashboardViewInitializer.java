@@ -89,6 +89,15 @@ public class DashboardViewInitializer extends ViewInitializer<DashboardView, Das
 
                 }
             });
+
+            tracker.clearCallbacks.put(key, new Tracker.ClearCallback()
+            {
+                @Override
+                public void clear()
+                {
+                    textView.setText("0 / " + String.valueOf(tracker.limit.value));
+                }
+            });
         }
     }
 

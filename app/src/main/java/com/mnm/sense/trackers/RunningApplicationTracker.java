@@ -24,6 +24,9 @@ public class RunningApplicationTracker extends Tracker
         resource = R.drawable.ic_dashboard_black_48dp;
         isOn = false;
 
+        accent = R.color.greenColorAccent;
+        theme = R.style.GreenTheme;
+
         attributes = new String[]{ATTRIBUTE_TOTAL};
 
         visualizations.put(Visualization.LIST_VIEW, new Visualization(2, 3, false));

@@ -76,6 +76,7 @@ public class RunningApplicationPieAdapter extends VisualizationAdapter<PieChart,
 
         PieData pieData = new PieData(dataSet);
         pieData.setValueFormatter(new PercentFormatter());
+
         return pieData;
     }
 

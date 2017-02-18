@@ -28,8 +28,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import static java.security.AccessController.getContext;
 
@@ -39,7 +41,7 @@ public class SenseApp extends Application
     public static final String INSTALLED_DATE_KEY = "installedDate";
 
     private static SenseApp instance_;
-    public HashMap<Integer, Tracker> trackers = new HashMap<>();
+    public LinkedHashMap<Integer, Tracker> trackers = new LinkedHashMap<>();
     private static Handler handler = new Handler();
 
     Runnable purgeTask = new Runnable()
@@ -63,17 +65,17 @@ public class SenseApp extends Application
         try
         {
             trackers.put(SensorUtils.SENSOR_TYPE_STEP_COUNTER, new StepsTracker());
-//            trackers.put(SensorUtils.SENSOR_TYPE_WIFI, new WifiTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_BATTERY, new BatteryTracker());
+            trackers.put(SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION, new ActivityTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_LOCATION, new LocationTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_SMS_CONTENT_READER, new SMSContentTracker());
-//            trackers.put(SensorUtils.SENSOR_TYPE_BLUETOOTH, new BluetoothTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER, new CallLogTracker());
+            trackers.put(SensorUtils.SENSOR_TYPE_RUNNING_APP, new RunningApplicationTracker());
+            trackers.put(SensorUtils.SENSOR_TYPE_BATTERY, new BatteryTracker());
+            trackers.put(SensorUtils.SENSOR_TYPE_SCREEN, new ScreenTracker());
+            trackers.put(SensorUtils.SENSOR_TYPE_WIFI, new WifiTracker());
+//            trackers.put(SensorUtils.SENSOR_TYPE_BLUETOOTH, new BluetoothTracker());
 //            trackers.put(SensorUtils.SENSOR_TYPE_LIGHT, new LightTracker());
 //            trackers.put(SensorUtils.SENSOR_TYPE_PROXIMITY, new ProximityTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_SCREEN, new ScreenTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_RUNNING_APP, new RunningApplicationTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION, new ActivityTracker());
         }
         catch (ESException e)
         {
@@ -87,7 +89,7 @@ public class SenseApp extends Application
 
         setTrackerDefaults();
 
-//        schedulePurging();
+        schedulePurging();
     }
 
     public static SenseApp instance()
@@ -139,8 +141,11 @@ public class SenseApp extends Application
         Calendar cal = Calendar.getInstance();
 
         long now = cal.getTimeInMillis();
-//        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.add(Calendar.MINUTE, 2);
+        cal.add(Calendar.DAY_OF_MONTH, 1);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+//        cal.add(Calendar.MINUTE, 2);
         long then = cal.getTimeInMillis();
 
         Log.d("Purge", "Purging data at " + cal.getTime().toString());

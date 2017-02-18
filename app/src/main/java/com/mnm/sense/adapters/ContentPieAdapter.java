@@ -5,6 +5,7 @@ import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.mnm.sense.Colors;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.SMSContentListData;
 
@@ -29,7 +30,7 @@ public abstract class ContentPieAdapter extends ContentAdapter<PieChart, PieData
             entries.add(new PieEntry(entry.getValue().floatValue(), entry.getKey()));
 
         PieDataSet pieDataSet = new PieDataSet(entries, "");
-        pieDataSet.setColors(ColorTemplate.MATERIAL_COLORS);
+        pieDataSet.setColors(Colors.CUSTOM_COLORS);
         pieDataSet.setValueTextSize(10f);
         pieDataSet.setSliceSpace(3f);
 //        pieDataSet.setXValuePosition(PieDataSet.ValuePosition.OUTSIDE_SLICE);

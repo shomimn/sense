@@ -12,6 +12,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.mnm.sense.Colors;
 import com.mnm.sense.R;
 import com.mnm.sense.SenseApp;
 import com.ubhave.sensormanager.data.SensorData;
@@ -19,6 +20,7 @@ import com.ubhave.sensormanager.data.push.BatteryData;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -88,6 +90,9 @@ public class BatteryLineAdapter extends VisualizationAdapter<LineChart, LineData
     @Override
     public void prepareView(LineChart view)
     {
+        view.setPinchZoom(false);
+        view.setDoubleTapToZoomEnabled(false);
+
         XAxis xAxis = view.getXAxis();
         xAxis.setAxisMinimum(X_MIN);
         xAxis.setAxisMaximum(X_MAX);
@@ -128,7 +133,7 @@ public class BatteryLineAdapter extends VisualizationAdapter<LineChart, LineData
 
         yAxis = view.getAxisRight();
         yAxis.setGranularity(10);
-        yAxis.setAxisMinimum(Math.max(yMin - 9, 0));
+        yAxis.setAxisMinimum(Math.min(yMin - 9, 0));
         yAxis.setAxisMaximum(100);
 
         yMin = 0;
@@ -148,14 +153,12 @@ public class BatteryLineAdapter extends VisualizationAdapter<LineChart, LineData
         LineDataSet dataSet = new LineDataSet(entries, "Percentage");
         dataSet.setDrawFilled(true);
         dataSet.setDrawValues(false);
-//        dataSet.setDrawCircles(false);
         dataSet.setDrawCircleHole(false);
-//        dataSet.setCircleColor(ColorTemplate.MATERIAL_COLORS[0]);
-//        dataSet.setColor(ColorTemplate.MATERIAL_COLORS[0]);
-//        dataSet.setFillColor(ColorTemplate.MATERIAL_COLORS[0]);
 
-//        dataSet.setFillColor(SenseApp.context().getResources().getColor(R.color.redColorAccent));
-//        dataSet.setColor(SenseApp.context().getResources().getColor(android.R.color.holo_red_light));
+        int color = Colors.CUSTOM_COLORS[0];
+        dataSet.setColor(color);
+        dataSet.setCircleColor(color);
+        dataSet.setFillColor(color);
 
         yMin = dataSet.getYMin();
 
@@ -174,8 +177,37 @@ public class BatteryLineAdapter extends VisualizationAdapter<LineChart, LineData
     }
 
     @Override
+    public boolean isAggregating()
+    {
+        return true;
+    }
+
+    @Override
     public Object aggregate(ArrayList<SensorData> data)
     {
-        return adapt(data);
+        HashMap<String, ArrayList<SensorData>> dataByDays = partitionByDays(data);
+
+        int i = 0;
+        float min = 100;
+        LineData lineData = new LineData();
+        ArrayList<LineDataSet> dataSets = new ArrayList<>(dataByDays.size());
+
+        for (Map.Entry<String, ArrayList<SensorData>> entry : dataByDays.entrySet())
+        {
+            LineData dayLineData = (LineData) adapt(entry.getValue());
+            LineDataSet dayDataSet = (LineDataSet) dayLineData.getDataSetByIndex(0);
+            int color = Colors.CUSTOM_COLORS[i++ % Colors.CUSTOM_COLORS.length];
+
+            dayDataSet.setLabel(entry.getKey());
+            dayDataSet.setFillColor(color);
+            min = Math.min(min, dayDataSet.getYMin());
+            dayDataSet.setColor(color);
+
+            lineData.addDataSet(dayDataSet);
+        }
+
+        yMin = min;
+
+        return lineData;
     }
 }

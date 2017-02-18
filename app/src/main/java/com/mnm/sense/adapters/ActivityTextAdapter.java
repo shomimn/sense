@@ -10,8 +10,6 @@ import java.util.ArrayList;
 
 public class ActivityTextAdapter extends VisualizationAdapter<TextView, String>
 {
-    private static final int CONFIDENCE_THRESHOLD = 50;
-
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {

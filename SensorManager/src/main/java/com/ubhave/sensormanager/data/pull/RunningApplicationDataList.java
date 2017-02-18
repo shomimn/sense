@@ -33,7 +33,10 @@ public class RunningApplicationDataList extends SensorData
 
     public void setRunningApplications(ArrayList<RunningApplicationData> runningApplications)
     {
+        totalForegroundTime = 0;
         this.runningApplications = runningApplications;
+        for(RunningApplicationData data : runningApplications)
+            totalForegroundTime += data.getForegroundTime();
     }
 
     public void addRunningApplication(RunningApplicationData appData)

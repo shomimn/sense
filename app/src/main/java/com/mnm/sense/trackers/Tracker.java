@@ -29,14 +29,11 @@ import com.ubhave.sensormanager.config.pull.PullSensorConfig;
 import com.ubhave.sensormanager.data.SensorData;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public abstract class Tracker implements SensorDataListener
 {
@@ -226,10 +223,15 @@ public abstract class Tracker implements SensorDataListener
         }
         else if (mode == MODE_REMOTE)
         {
+            VisualizationAdapter newAdapter = adapter.newInstance();
+
+            if(newAdapter.useLimit())
+                newAdapter.setLimit(limit.value);
+
             if (adapter.isAggregating())
-                adaptedData = adapter.newInstance().aggregate(data);
+                adaptedData = newAdapter.aggregate(data);
             else
-                adaptedData = adapter.newInstance().adapt(data);
+                adaptedData = newAdapter.adapt(data);
         }
 
         switch (visualizationType)
@@ -337,5 +339,15 @@ public abstract class Tracker implements SensorDataListener
         sensorData.clear();
 
         updateViews();
+    }
+
+    public void setLimit(int value)
+    {
+        limit.value = value;
+
+        for(HashMap<String, VisualizationAdapter> hashMapAdapters: adapters.values())
+            for(VisualizationAdapter adapter : hashMapAdapters.values())
+                if(adapter.useLimit())
+                    adapter.setLimit(limit.value);
     }
 }

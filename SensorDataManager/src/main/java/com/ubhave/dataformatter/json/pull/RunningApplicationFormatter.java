@@ -65,8 +65,6 @@ public class RunningApplicationFormatter extends PullSensorJSONFormatter
                 appInfo.put(FOREGROUND_TIME, result.getForegroundTime());
                 appInfo.put(ICON, getStringFromDrawable(result.getIcon()));
                 appInfo.put(LAST_TIME_USED, result.getLastTimeUsed());
-                appInfo.put(BEGINNING_TIME_RANGE, result.getBeginningTimeRange());
-                appInfo.put(END_TIME_RANGE, result.getEndTimeRange());
                 resultJSON.put(appInfo);
             }
         }
@@ -109,10 +107,8 @@ public class RunningApplicationFormatter extends PullSensorJSONFormatter
                     String name = entry.getString(NAME);
                     long ft = entry.getLong(FOREGROUND_TIME);
                     long ltu = entry.getLong(LAST_TIME_USED);
-                    long btr = entry.getLong(BEGINNING_TIME_RANGE);
-                    long etr = entry.getLong(END_TIME_RANGE);
                     Drawable icon = getDrawableFromString(entry.getString(ICON));
-                    dataList.add(new RunningApplicationData(name, ft, icon, ltu, btr, etr ));
+                    dataList.add(new RunningApplicationData(name, ft, icon, ltu));
                 }
                 RunningApplicationDataList applicationDataList = new RunningApplicationDataList(senseStartTimestamp, sensorConfig);
                 applicationDataList.setRunningApplications(dataList);
@@ -130,7 +126,7 @@ public class RunningApplicationFormatter extends PullSensorJSONFormatter
     {
         Bitmap bitmap = getBitmapFromDrawable(d);
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return Base64.encodeToString(stream.toByteArray(), Base64.DEFAULT);
     }
 

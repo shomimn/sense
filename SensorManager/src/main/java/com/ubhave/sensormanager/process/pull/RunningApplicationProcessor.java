@@ -42,13 +42,11 @@ public class RunningApplicationProcessor extends AbstractProcessor
                 if (ft == 0)
                     continue;
 
-                long btr = stats.getFirstTimeStamp();
-                long etr = stats.getLastTimeStamp();
                 long ltu = stats.getLastTimeUsed();
                 String name = (String) packageManager.getApplicationLabel(appInfo);
                 Drawable icon = packageManager.getApplicationIcon(appInfo);
 
-                RunningApplicationData appData = new RunningApplicationData(name, ft, icon, ltu, btr, etr);
+                RunningApplicationData appData = new RunningApplicationData(name, ft, icon, ltu);
 
                 runningApplicationDataList.addRunningApplication(appData);
             }

@@ -7,8 +7,6 @@ import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.ActivityPieAdapter;
 import com.mnm.sense.adapters.ActivityTextAdapter;
-import com.mnm.sense.adapters.RunningApplicationBarAdapter;
-import com.mnm.sense.adapters.RunningApplicationTextAdapter;
 import com.mnm.sense.adapters.VisualizationAdapter;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.data.SensorData;
@@ -38,10 +36,11 @@ public class ActivityTracker extends Tracker
 
         HashMap<String, VisualizationAdapter> activityAdapters = new HashMap<>();
 
-        activityAdapters.put(Visualization.TEXT, new ActivityTextAdapter());
-        activityAdapters.put(Visualization.PIE_CHART, new ActivityPieAdapter());
+        ActivityPieAdapter pieAdapter = new ActivityPieAdapter();
+        pieAdapter.setLimit(limit.value);
 
-        ((ActivityPieAdapter)activityAdapters.get(Visualization.PIE_CHART)).setActivityGoal(limit.value);
+        activityAdapters.put(Visualization.TEXT, new ActivityTextAdapter());
+        activityAdapters.put(Visualization.PIE_CHART, pieAdapter);
 
         adapters.put(ATTRIBUTE_ACTIVITY, activityAdapters);
 
@@ -55,10 +54,9 @@ public class ActivityTracker extends Tracker
     }
 
 
-    public void checkGoal()
+    private void checkGoal()
     {
-        ActivityPieAdapter pieAdapter = (ActivityPieAdapter)adapters.get(ATTRIBUTE_ACTIVITY).get(Visualization.PIE_CHART);
-        pieAdapter.setActivityGoal(limit.value);
+        ActivityPieAdapter pieAdapter = (ActivityPieAdapter)adapter(ATTRIBUTE_ACTIVITY, Visualization.PIE_CHART);
 
         int totalTime = pieAdapter.getTotalTime();
 

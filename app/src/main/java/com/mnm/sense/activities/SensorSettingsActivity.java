@@ -231,7 +231,7 @@ public class SensorSettingsActivity extends AppCompatActivity
             @Override
             public void onClick(View view)
             {
-                tracker.limit.value = limitView.intervalSlider.getProgress();
+                tracker.setLimit(limitView.intervalSlider.getProgress());
                 limitView.hideButtons();
             }
         });

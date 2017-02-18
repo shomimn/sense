@@ -110,6 +110,8 @@ public abstract class AbstractMotionFormatter extends PullSensorJSONFormatter
 			boolean setProcessedData = false;
 			try
 			{
+
+				
 				ArrayList<Double> xs = getJSONArray(jsonData, X_AXIS, Double.class);
 				ArrayList<Double> ys = getJSONArray(jsonData, Y_AXIS, Double.class);
 				ArrayList<Double> zs = getJSONArray(jsonData, Z_AXIS, Double.class);

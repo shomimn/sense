@@ -11,17 +11,13 @@ public class RunningApplicationData
     private long foregroundTime;
     private Drawable icon;
     private long lastTimeUsed;
-    private long beginningTimeRange;
-    private long endTimeRange;
 
-    public RunningApplicationData(String n, long ft, Drawable i, long ltu, long btr, long etr)
+    public RunningApplicationData(String n, long ft, Drawable i, long ltu)
     {
         this.name = n;
         this.foregroundTime = ft;
         this.icon = i;
         this.lastTimeUsed = ltu;
-        this.beginningTimeRange = btr;
-        this.endTimeRange = etr;
     }
 
     public String getName()
@@ -49,18 +45,13 @@ public class RunningApplicationData
         return lastTimeUsed;
     }
 
-    public long getBeginningTimeRange()
-    {
-        return beginningTimeRange;
-    }
-
-    public long getEndTimeRange()
-    {
-        return endTimeRange;
-    }
-
     public void setForegroundTime(long foregroundTime)
     {
         this.foregroundTime = foregroundTime;
+    }
+
+    public void setLastTimeUsed(long lastTimeUsed)
+    {
+        this.lastTimeUsed = lastTimeUsed;
     }
 }

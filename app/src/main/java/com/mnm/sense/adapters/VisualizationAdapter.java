@@ -1,5 +1,6 @@
 package com.mnm.sense.adapters;
 
+import com.mnm.sense.trackers.Tracker;
 import com.ubhave.sensormanager.data.SensorData;
 
 import java.text.SimpleDateFormat;
@@ -59,5 +60,15 @@ public abstract class VisualizationAdapter<T, U>
         }
 
         return dataByDays;
+    }
+
+    public boolean useLimit()
+    {
+        return false;
+    }
+    
+    public void setLimit(int limit)
+    {
+        
     }
 }

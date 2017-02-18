@@ -79,7 +79,7 @@ public class ActivityRecognitionFormatter extends PullSensorJSONFormatter
             {
                 ArrayList<ActivityRecognitionData> dataList = new ArrayList<>();
                 JSONArray jsonArray = jsonData.getJSONArray(ACTIVITY_RECOGNITION);
-
+                Log.d("json: " , jsonArray.toString(1));
                 for(int i = 0; i < jsonArray.length(); i++)
                 {
                     JSONObject entry = jsonArray.getJSONObject(i);

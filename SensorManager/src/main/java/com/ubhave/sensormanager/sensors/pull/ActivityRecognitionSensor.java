@@ -94,7 +94,7 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
     @Override
     public void onConnected(@Nullable Bundle bundle)
     {
-      Log.d("Connection success", "onConnected called");
+        Log.d("Connection success", "onConnected called");
     }
 
     @Override
@@ -121,17 +121,17 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
                 @Override
                 public void run()
                 {
-                    // try
+                    try
                     {
                         Intent intent = new Intent(applicationContext, ActivityRecognizedService.class);
                         pendingIntent = PendingIntent.getService(applicationContext, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-                        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mApiClient, 0, pendingIntent);
+                        ActivityRecognition.ActivityRecognitionApi.requestActivityUpdates(mApiClient, (long)getSensorConfig(PullSensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS), pendingIntent);
 
                     }
-//                catch (ESException e)
-//                {
-//                    e.printStackTrace();
-//                }
+                    catch (ESException e)
+                    {
+                        e.printStackTrace();
+                    }
                 }
             }.start();
             return true;

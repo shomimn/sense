@@ -17,7 +17,7 @@ import static com.ubhave.sensormanager.sensors.SensorUtils.getSensorName;
 
 public class Repository extends AbstractAsyncTransferLogger implements DataUploadCallback
 {
-    public static final String baseUrl = "http://192.168.0.103/api";
+    public static final String baseUrl = "http://192.168.0.104/api";
 
     private static Repository _instance;
 

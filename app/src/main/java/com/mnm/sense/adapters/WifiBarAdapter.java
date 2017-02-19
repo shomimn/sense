@@ -8,16 +8,36 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.mnm.sense.Colors;
+import com.mnm.sense.Util;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.WifiData;
 import com.ubhave.sensormanager.data.pull.WifiScanResult;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class WifiBarAdapter extends VisualizationAdapter<BarChart, BarData>
 {
+    public static final int MAX_BARS = 16;
+
+    class IntPair extends Pair<Integer, Integer> implements Comparable<IntPair>
+    {
+        public IntPair(int f, int s)
+        {
+            super(f, s);
+        }
+
+        @Override
+        public int compareTo(IntPair intPair)
+        {
+            return second < intPair.second ? -1 : second.equals(intPair.second) ? 0 : 1;
+        }
+    }
+
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {
@@ -36,7 +56,7 @@ public class WifiBarAdapter extends VisualizationAdapter<BarChart, BarData>
     @Override
     public ArrayList<BarData> adaptAll(ArrayList<SensorData> data)
     {
-        HashMap<String, Pair<Integer, Integer>> averages = new HashMap<>();
+        HashMap<String, IntPair> averages = new HashMap<>();
         ArrayList<BarData> result = new ArrayList<>();
 //        WifiManager wifiManager = (WifiManager) SenseApp.context().getSystemService(Context.WIFI_SERVICE);
 
@@ -53,17 +73,22 @@ public class WifiBarAdapter extends VisualizationAdapter<BarChart, BarData>
                 Pair<Integer, Integer> pair = averages.get(ssid);
 
                 if (pair == null)
-                    averages.put(ssid, Pair.create(level, 1));
+                    averages.put(ssid, new IntPair(level, 1));
                 else
-                    averages.put(ssid, Pair.create(pair.first + level, pair.second + 1));
+                    averages.put(ssid, new IntPair(pair.first + level, pair.second + 1));
             }
         }
 
         int i = 0;
         BarData barData = new BarData();
 
-        for (Map.Entry<String, Pair<Integer, Integer>> entry : averages.entrySet())
+        Map<String, IntPair> sortedData = Util.sortByValue(averages);
+
+        for (Map.Entry<String, IntPair> entry : sortedData.entrySet())
         {
+//            if (i == MAX_BARS)
+//                break;
+
             ArrayList<BarEntry> entries = new ArrayList<>();
             Pair<Integer, Integer> pair = entry.getValue();
             int average = pair.first / pair.second;

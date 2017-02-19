@@ -119,8 +119,6 @@ public class SecondActivity extends AppCompatActivity
         slidingLayout.addPanelSlideListener(this);
 
         setupDatePickers();
-
-        confirmButton.setVisibility(View.VISIBLE);
     }
 
     private void setupViewPager(final ViewPager viewPager, final Tracker tracker, String defaultVisualization)
@@ -253,8 +251,8 @@ public class SecondActivity extends AppCompatActivity
 
             dateRange.setText(String.format("%s - %s", begin, end));
 
-//            if (confirmButton.getVisibility() == View.VISIBLE)
-//                confirmButton.setVisibility(View.INVISIBLE);
+            if (confirmButton.getVisibility() == View.VISIBLE)
+                confirmButton.setVisibility(View.INVISIBLE);
         }
     }
 

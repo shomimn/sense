@@ -13,6 +13,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.mnm.sense.R;
 import com.mnm.sense.Repository;
 import com.mnm.sense.SenseApp;
+import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.VisualizationAdapter;
 import com.mnm.sense.models.BarChartModel;
@@ -229,6 +230,23 @@ public abstract class Tracker implements SensorDataListener
         }
         else if (mode == MODE_REMOTE)
         {
+            ArrayList<SensorData> unsynced = sensorData;
+
+            if (data.size() > 0)
+            {
+                final long lastTimestamp = data.get(data.size() - 1).getTimestamp();
+                unsynced = Util.filter(sensorData, new Util.Predicate<SensorData>()
+                {
+                    @Override
+                    public boolean test(SensorData data)
+                    {
+                        return data.getTimestamp() > lastTimestamp;
+                    }
+                });
+            }
+
+            data.addAll(unsynced);
+
             VisualizationAdapter newAdapter = adapter.newInstance();
 
             if(newAdapter.useLimit())
@@ -351,6 +369,8 @@ public abstract class Tracker implements SensorDataListener
         sensorData.clear();
 
         clearViews();
+
+        restart();
     }
 
     public void setLimit(int value)

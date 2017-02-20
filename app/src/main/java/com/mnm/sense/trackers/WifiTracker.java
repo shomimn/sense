@@ -26,12 +26,10 @@ public class WifiTracker extends Tracker
 
         attributes = new String[] { ATTRIBUTE_LEVEL };
 
-        visualizations.put(Visualization.BAR_CHART, new Visualization(1, 3, false));
-
-        HashMap<String, VisualizationAdapter> levelAdapters = new HashMap<>();
-        levelAdapters.put(Visualization.BAR_CHART, new WifiBarAdapter());
-
-        adapters.put(ATTRIBUTE_LEVEL, levelAdapters);
+        build()
+            .barChart(new Visualization(1, 3, false))
+            .attribute(ATTRIBUTE_LEVEL)
+            .adapters(new WifiBarAdapter());
     }
 }
 

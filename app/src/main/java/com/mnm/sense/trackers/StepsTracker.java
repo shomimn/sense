@@ -24,7 +24,7 @@ public class StepsTracker extends Tracker
     public static final String ATTRIBUTE_HOURLY = "Hourly";
     public static final String ATTRIBUTE_DAILY = "Daily";
 
-    float firstCount = 0;
+    float prevCount = 0;
     float steps = 0;
 
     public StepsTracker() throws ESException
@@ -37,21 +37,14 @@ public class StepsTracker extends Tracker
 
         limit = new Limit("Daily goal", 1000, 100, 20000);
 
-        attributes = new String[] { ATTRIBUTE_HOURLY, ATTRIBUTE_DAILY };
+        attributes = new String[] { ATTRIBUTE_HOURLY };
 
-        visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
-        visualizations.put(Visualization.BAR_CHART, new Visualization(1, 3, false));
-
-        HashMap<String, VisualizationAdapter> hourlyAdapters = new HashMap<>();
-        hourlyAdapters.put(Visualization.TEXT, new StepsTextAdapter());
-        hourlyAdapters.put(Visualization.BAR_CHART, new StepsHourlyBarAdapter());
-
-        HashMap<String, VisualizationAdapter> dailyAdapters = new HashMap<>();
-        dailyAdapters.put(Visualization.TEXT, new StepsTextAdapter());
-        dailyAdapters.put(Visualization.BAR_CHART, new StepsDailyBarAdapter());
-
-        adapters.put(ATTRIBUTE_HOURLY, hourlyAdapters);
-        adapters.put(ATTRIBUTE_DAILY, dailyAdapters);
+        build()
+            .text(new Visualization(1, 1, false))
+            .barChart(new Visualization(1, 3, false))
+            .attribute(ATTRIBUTE_HOURLY)
+            .adapters(new StepsTextAdapter(),
+                    new StepsHourlyBarAdapter());
 
 //        getConfig().edit().clear().commit();
     }
@@ -82,25 +75,22 @@ public class StepsTracker extends Tracker
     public void correctData(SensorData data)
     {
         StepCounterData stepsData = (StepCounterData) data;
-        float lastCount = stepsData.getNumSteps();
+        float count = stepsData.getNumSteps();
 
-        if (firstCount == 0)
-        {
-            firstCount = lastCount;
-            stepsData.setNumSteps(0);
+        if (prevCount == 0)
+            prevCount = count;
 
-            return;
-        }
-
-        steps = lastCount - firstCount;
+        steps = count - prevCount;
         stepsData.setNumSteps(steps);
+
+        prevCount = count;
     }
 
     @Override
     public void purge()
     {
         steps = 0;
-        firstCount = 0;
+        prevCount = 0;
 
         super.purge();
     }

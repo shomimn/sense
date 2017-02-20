@@ -1,6 +1,7 @@
 package com.mnm.sense.trackers;
 
 import com.mnm.sense.R;
+import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.CallsBarAdapter;
 import com.mnm.sense.adapters.CallsPersonTextAdapter;
@@ -32,34 +33,24 @@ public class CallLogTracker extends Tracker
 
         attributes = new String[]{ ATTRIBUTE_TYPE, ATTRIBUTE_PERSON };
 
-        visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
-        visualizations.put(Visualization.PIE_CHART, new Visualization(2, 3, false));
-        visualizations.put(Visualization.BAR_CHART, new Visualization(1, 3, false));
-
-        HashMap<String, VisualizationAdapter> typeAdapters = new HashMap<>();
-        typeAdapters.put(Visualization.TEXT, new CallsTypeTextAdapter());
-        typeAdapters.put(Visualization.PIE_CHART, new CallsPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
-        typeAdapters.put(Visualization.BAR_CHART, new CallsBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
-
-        HashMap<String, VisualizationAdapter> personAdapters = new HashMap<>();
-        personAdapters.put(Visualization.TEXT, new CallsPersonTextAdapter());
-        personAdapters.put(Visualization.PIE_CHART, new CallsPieAdapter("person"));
-        personAdapters.put(Visualization.BAR_CHART, new CallsBarAdapter("person"));
-
-        adapters.put(ATTRIBUTE_TYPE, typeAdapters);
-        adapters.put(ATTRIBUTE_PERSON, personAdapters);
+        build()
+            .text(new Visualization(1, 1, false))
+            .pieChart(new Visualization(2, 3, false))
+            .barChart(new Visualization(1, 3, false))
+            .attribute(ATTRIBUTE_TYPE)
+            .adapters(new CallsTypeTextAdapter(),
+                    new CallsPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
+                    new CallsBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY))
+            .attribute(ATTRIBUTE_PERSON)
+            .adapters(new CallsPersonTextAdapter(),
+                    new CallsPieAdapter("person"),
+                    new CallsBarAdapter("person"));
     }
 
     @Override
     public void start() throws ESException
     {
-        Calendar cal = Calendar.getInstance();
-//        cal.add(Calendar.DATE, -1);
-        cal.set(Calendar.HOUR, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-
-        sensorManager().setSensorConfig(type, ContentReaderConfig.TIME_LIMIT_MILLIS, cal.getTimeInMillis());
+        sensorManager().setSensorConfig(type, ContentReaderConfig.TIME_LIMIT_MILLIS, Util.today());
 
         super.start();
     }

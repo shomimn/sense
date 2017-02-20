@@ -29,18 +29,13 @@ public class RunningApplicationTracker extends Tracker
 
         attributes = new String[]{ATTRIBUTE_TOTAL};
 
-        visualizations.put(Visualization.LIST_VIEW, new Visualization(2, 3, false));
-        visualizations.put(Visualization.BAR_CHART, new Visualization(2, 3, false));
-        visualizations.put(Visualization.PIE_CHART, new Visualization(2, 3, false));
-
-        HashMap<String, VisualizationAdapter> totalTimeAdapters = new HashMap<>();
-
-        totalTimeAdapters.put(Visualization.LIST_VIEW, new RunningApplicationTextAdapter());
-        totalTimeAdapters.put(Visualization.BAR_CHART, new RunningApplicationBarAdapter());
-        totalTimeAdapters.put(Visualization.PIE_CHART, new RunningApplicationPieAdapter());
-
-
-
-        adapters.put(ATTRIBUTE_TOTAL, totalTimeAdapters);
+        build()
+            .listView(new Visualization(2, 3, false))
+            .barChart(new Visualization(2, 3, false))
+            .pieChart(new Visualization(2, 3, false))
+                .attribute(ATTRIBUTE_TOTAL)
+                    .adapters(new RunningApplicationTextAdapter(),
+                            new RunningApplicationBarAdapter(),
+                            new RunningApplicationPieAdapter());
     }
 }

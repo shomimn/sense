@@ -54,20 +54,17 @@ public class ScreenTracker extends Tracker
 
         attributes = new String[] { ATTRIBUTE_TIME };
 
-        visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
-        visualizations.put(Visualization.PIE_CHART, new Visualization(1, 3, false));
-
         limit = new Limit("Daily limit", 4, 1, 12);
 
-//        accent = android.R.color.holo_red_dark;
         accent = R.color.redColorAccent;
         theme = R.style.RedTheme;
 
-        HashMap<String, VisualizationAdapter> timeAdapters = new HashMap<>();
-        timeAdapters.put(Visualization.TEXT, new ScreenTextAdapter());
-        timeAdapters.put(Visualization.PIE_CHART, new ScreenPieAdapter());
-
-        adapters.put(ATTRIBUTE_TIME, timeAdapters);
+        build()
+            .text(new Visualization(1, 1, false))
+            .pieChart(new Visualization(1, 3, false))
+            .attribute(ATTRIBUTE_TIME)
+            .adapters(new ScreenTextAdapter(),
+                    new ScreenPieAdapter());
     }
 
     @Override

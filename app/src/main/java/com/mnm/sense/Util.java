@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.ubhave.sensormanager.data.SensorData;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -119,5 +120,15 @@ public class Util
             result.put( entry.getKey(), entry.getValue() );
 
         return result;
+    }
+
+    public static long today()
+    {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+
+        return cal.getTimeInMillis();
     }
 }

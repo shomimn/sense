@@ -170,6 +170,9 @@ public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarDat
             for (int i = 0; i < 24; ++i)
                 totalCounter[i] += counter[i];
 
+//        for (int i = 0; i < 24; ++i)
+//            totalCounter[i] /= dataByDay.size();
+
         return createFrom(totalCounter);
     }
 }

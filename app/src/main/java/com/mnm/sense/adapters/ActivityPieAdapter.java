@@ -78,7 +78,7 @@ public class ActivityPieAdapter extends VisualizationAdapter<PieChart, PieData>
         return null;
     }
 
-    private void resetTimes()
+    public void resetTimes()
     {
         activityTimes.put(DetectedActivity.WALKING, 0l);
         activityTimes.put(DetectedActivity.RUNNING, 0l);

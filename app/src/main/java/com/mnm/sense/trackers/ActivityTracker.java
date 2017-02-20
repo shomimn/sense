@@ -29,22 +29,17 @@ public class ActivityTracker extends Tracker
 
         attributes = new String[]{ATTRIBUTE_ACTIVITY};
 
-        visualizations.put(Visualization.TEXT, new Visualization(1, 3, false));
-        visualizations.put(Visualization.PIE_CHART, new Visualization(2, 3, false));
-
         limit = new Limit("Daily goal", 45, 1, 500);
-
-        HashMap<String, VisualizationAdapter> activityAdapters = new HashMap<>();
 
         ActivityPieAdapter pieAdapter = new ActivityPieAdapter();
         pieAdapter.setLimit(limit.value);
 
-        activityAdapters.put(Visualization.TEXT, new ActivityTextAdapter());
-        activityAdapters.put(Visualization.PIE_CHART, pieAdapter);
-
-        adapters.put(ATTRIBUTE_ACTIVITY, activityAdapters);
-
-
+        build()
+            .text(new Visualization(1, 3, false))
+            .pieChart(new Visualization(2, 3, false))
+            .attribute(ATTRIBUTE_ACTIVITY)
+            .adapters(new ActivityTextAdapter(),
+                    pieAdapter);
     }
 
     @Override
@@ -65,5 +60,15 @@ public class ActivityTracker extends Tracker
             first = false;
             NotificationCreator.create(resource, "Sense", "Congrats, you reached your daily goal!");
         }
+    }
+
+    @Override
+    public void purge()
+    {
+        first = true;
+        ActivityPieAdapter pieAdapter = (ActivityPieAdapter)adapter(ATTRIBUTE_ACTIVITY, Visualization.PIE_CHART);
+        pieAdapter.resetTimes();
+
+        super.purge();
     }
 }

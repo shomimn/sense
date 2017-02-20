@@ -138,18 +138,11 @@ public class SenseApp extends Application
 
     private void schedulePurging()
     {
-        Calendar cal = Calendar.getInstance();
+        Timestamp now = Timestamp.now();
+        Timestamp then = Timestamp.startOfToday().advance(Calendar.DAY_OF_MONTH, 1);
 
-        long now = cal.getTimeInMillis();
-        cal.add(Calendar.DAY_OF_MONTH, 1);
-        cal.set(Calendar.HOUR_OF_DAY, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-//        cal.add(Calendar.MINUTE, 2);
-        long then = cal.getTimeInMillis();
+        Log.d("Purge", "Purging data at " + then.time());
 
-        Log.d("Purge", "Purging data at " + cal.getTime().toString());
-
-        handler.postDelayed(purgeTask, then - now);
+        handler.postDelayed(purgeTask, then.millis() - now.millis());
     }
 }

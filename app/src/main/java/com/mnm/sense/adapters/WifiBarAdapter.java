@@ -70,7 +70,7 @@ public class WifiBarAdapter extends VisualizationAdapter<BarChart, BarData>
                 String ssid = scanResult.getSsid();
                 int level = WifiManager.calculateSignalLevel(scanResult.getLevel(), 100);
 
-                Pair<Integer, Integer> pair = averages.get(ssid);
+                IntPair pair = averages.get(ssid);
 
                 if (pair == null)
                     averages.put(ssid, new IntPair(level, 1));

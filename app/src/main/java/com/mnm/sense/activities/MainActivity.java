@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity
         long now = System.currentTimeMillis();
         long diff = now - backTimestamp;
 
-        Toast.makeText(this, "Press back again if you want to exit the application and stop sensing.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Press back again to exit the application and stop sensing.", Toast.LENGTH_SHORT).show();
 
         backTimestamp = now;
 

@@ -30,7 +30,7 @@ public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarDat
             counter[i] = 0f;
     }
 
-    private BarData createFrom(float[] counter)
+    private BarData createFrom(float[] counter, String label)
     {
         BarData barData = new BarData();
         ArrayList<BarEntry> entries = new ArrayList<>();
@@ -38,7 +38,7 @@ public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarDat
         for (int i = 0; i < 24; ++i)
             entries.add(new BarEntry(i, counter[i]));
 
-        BarDataSet dataSet = new BarDataSet(entries, "Steps");
+        BarDataSet dataSet = new BarDataSet(entries, label);
         dataSet.setColor(SenseApp.context().getResources().getColor(R.color.colorAccent));
         dataSet.setValueFormatter(new IValueFormatter()
         {
@@ -83,7 +83,7 @@ public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarDat
         if (counter[hour] < steps)
             counter[hour] = steps;
 
-        return createFrom(counter);
+        return createFrom(counter, "Steps");
     }
 
     @Override
@@ -142,8 +142,8 @@ public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarDat
             return null;
 
         HashMap<String, ArrayList<SensorData>> dataByDay = partitionByDays(data);
-        ArrayList<float[]> counters = new ArrayList<>(dataByDay.size());
         Calendar cal = Calendar.getInstance();
+        float[] totalCounter = new float[24];
 
         for (ArrayList<SensorData> dailyData : dataByDay.values())
         {
@@ -161,19 +161,14 @@ public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarDat
                     counter[hour] = steps;
             }
 
-            counters.add(counter);
-        }
-
-        float[] totalCounter = new float[24];
-
-        for (float[] counter : counters)
             for (int i = 0; i < 24; ++i)
                 totalCounter[i] += counter[i];
+        }
 
-//        for (int i = 0; i < 24; ++i)
-//            totalCounter[i] /= dataByDay.size();
+        for (int i = 0; i < 24; ++i)
+            totalCounter[i] /= dataByDay.size();
 
-        return createFrom(totalCounter);
+        return createFrom(totalCounter, "Average steps");
     }
 }
 

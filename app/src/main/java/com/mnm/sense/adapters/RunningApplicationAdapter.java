@@ -36,12 +36,14 @@ public abstract class RunningApplicationAdapter<T,U> extends VisualizationAdapte
     @Override
     public Object aggregate(ArrayList<SensorData> data)
     {
+        if(data.size() == 0)
+            return null;
+
         HashMap<String, ArrayList<SensorData>> dataByDay = partitionByDays(data);
 
         HashMap<String, RunningApplicationData> dataMap = new HashMap<>();
 
-        if(data.size() == 0)
-            return null;
+
 
         for(ArrayList<SensorData> dataList : dataByDay.values())
         {

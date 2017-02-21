@@ -11,9 +11,11 @@ public class RunningApplicationData
     private long foregroundTime;
     private Drawable icon;
     private long lastTimeUsed;
+    private String packageName;
 
-    public RunningApplicationData(String n, long ft, Drawable i, long ltu)
+    public RunningApplicationData(String packageName, String n, long ft, Drawable i, long ltu)
     {
+        this.packageName = packageName;
         this.name = n;
         this.foregroundTime = ft;
         this.icon = i;
@@ -53,5 +55,15 @@ public class RunningApplicationData
     public void setLastTimeUsed(long lastTimeUsed)
     {
         this.lastTimeUsed = lastTimeUsed;
+    }
+
+    public String getPackageName()
+    {
+        return packageName;
+    }
+
+    public void setIcon(Drawable i)
+    {
+        icon = i;
     }
 }

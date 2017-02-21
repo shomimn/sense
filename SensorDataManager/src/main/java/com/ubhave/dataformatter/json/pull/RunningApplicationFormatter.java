@@ -18,6 +18,8 @@ import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
 import com.ubhave.sensormanager.process.AbstractProcessor;
+import com.ubhave.sensormanager.process.pull.ActivityRecognitionProcessor;
+import com.ubhave.sensormanager.process.pull.PhoneRadioProcessor;
 import com.ubhave.sensormanager.process.pull.RunningApplicationProcessor;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
@@ -27,11 +29,14 @@ import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 import java.util.concurrent.ExecutionException;
 
 public class RunningApplicationFormatter extends PullSensorJSONFormatter
 {
     private final static String RUNNING_APPS = "runningApplications";
+    private final static String PACKAGE_NAME = "packageName";
     private final static String NAME = "name";
     private final static String FOREGROUND_TIME = "foregroundTime";
     private final static String ICON = "icon";
@@ -61,9 +66,9 @@ public class RunningApplicationFormatter extends PullSensorJSONFormatter
             {
                 JSONObject appInfo = new JSONObject();
 
+                appInfo.put(PACKAGE_NAME, result.getPackageName());
                 appInfo.put(NAME, result.getName());
                 appInfo.put(FOREGROUND_TIME, result.getForegroundTime());
-                appInfo.put(ICON, getStringFromDrawable(result.getIcon()));
                 appInfo.put(LAST_TIME_USED, result.getLastTimeUsed());
                 resultJSON.put(appInfo);
             }
@@ -95,24 +100,26 @@ public class RunningApplicationFormatter extends PullSensorJSONFormatter
             long senseStartTimestamp = super.parseTimeStamp(jsonData);
             SensorConfig sensorConfig = super.getGenericConfig(jsonData);
 
+            boolean setRawData = true;
+            boolean setProcessedData = true;
+
             try
             {
-                ArrayList<RunningApplicationData> dataList = new ArrayList<>();
+                List<RunningApplicationData> dataList = new ArrayList<>();
 
                 JSONArray jsonArray = (JSONArray) jsonData.get(RUNNING_APPS);
 
                 for(int i = 0; i < jsonArray.length(); i++)
                 {
                     JSONObject entry = jsonArray.getJSONObject(i);
+                    String packageName = entry.getString(PACKAGE_NAME);
                     String name = entry.getString(NAME);
                     long ft = entry.getLong(FOREGROUND_TIME);
                     long ltu = entry.getLong(LAST_TIME_USED);
-                    Drawable icon = getDrawableFromString(entry.getString(ICON));
-                    dataList.add(new RunningApplicationData(name, ft, icon, ltu));
+                    dataList.add(new RunningApplicationData(packageName, name, ft, null, ltu));
                 }
-                RunningApplicationDataList applicationDataList = new RunningApplicationDataList(senseStartTimestamp, sensorConfig);
-                applicationDataList.setRunningApplications(dataList);
-                return applicationDataList;
+                RunningApplicationProcessor processor = (RunningApplicationProcessor) AbstractProcessor.getProcessor(applicationContext, sensorType, setRawData, setProcessedData);
+                return processor.process(senseStartTimestamp, dataList, sensorConfig);
             }
             catch (Exception e)
             {

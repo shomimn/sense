@@ -116,8 +116,8 @@ public class WifiFormatter extends PullSensorJSONFormatter
 					String ssid = (String)jsonObject.get(SSID);
 					String bssid = (String)jsonObject.get(BSSID);
 					String capabilities = (String)jsonObject.get(CAPABILITIES);
-					int level = ((Long)jsonObject.get(LEVEL)).intValue();
-					int frequency = ((Long)jsonObject.get(FREQUENCY)).intValue();
+					int level = ((Integer)jsonObject.get(LEVEL)).intValue();
+					int frequency = ((Integer)jsonObject.get(FREQUENCY)).intValue();
 					
 					WifiScanResult scanResult = new WifiScanResult(ssid, bssid, capabilities, level, frequency);
 					wifiList.add(scanResult);

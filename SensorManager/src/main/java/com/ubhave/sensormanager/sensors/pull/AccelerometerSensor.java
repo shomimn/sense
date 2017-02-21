@@ -64,7 +64,7 @@ public class AccelerometerSensor extends AbstractMotionSensor
 		return SensorUtils.SENSOR_TYPE_ACCELEROMETER;
 	}
 
-	protected void processSensorData()
+	public void processSensorData()
 	{
 		synchronized (sensorReadings)
 		{

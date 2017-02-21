@@ -7,6 +7,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.mnm.sense.R;
+import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.BatteryLineAdapter;
 import com.mnm.sense.adapters.ContentAdapter;
@@ -47,53 +48,25 @@ public class SMSContentTracker extends Tracker
 
         attributes = new String[]{ ATTRIBUTE_TYPE, ATTRIBUTE_PERSON };
 
-        visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
-        visualizations.put(Visualization.BAR_CHART, new Visualization(1, 3, false));
-        visualizations.put(Visualization.PIE_CHART, new Visualization(2, 3, false));
+        build()
+            .text(new Visualization(1, 1, false))
+            .barChart(new Visualization(2, 3, false))
+            .pieChart(new Visualization(2, 3, false))
+            .attribute(ATTRIBUTE_TYPE)
+            .adapters(new SMSTypeTextAdapter(),
+                    new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
+                    new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY))
+            .attribute(ATTRIBUTE_PERSON)
+            .adapters(new SMSPersonTextAdapter(),
+                    new SMSBarAdapter("person"),
+                    new SMSPieAdapter("person"));
 
-        HashMap<String, VisualizationAdapter> typeAdapters = new HashMap<>();
-        typeAdapters.put(Visualization.TEXT, new SMSTypeTextAdapter());
-        typeAdapters.put(Visualization.BAR_CHART, new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
-        typeAdapters.put(Visualization.PIE_CHART, new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY));
-
-        HashMap<String, VisualizationAdapter> personAdapters = new HashMap<>();
-        personAdapters.put(Visualization.TEXT, new SMSPersonTextAdapter());
-        personAdapters.put(Visualization.BAR_CHART, new SMSBarAdapter("person"));
-        personAdapters.put(Visualization.PIE_CHART, new SMSPieAdapter("person"));
-
-        adapters.put(ATTRIBUTE_TYPE, typeAdapters);
-        adapters.put(ATTRIBUTE_PERSON, personAdapters);
-
-//        build()
-//            .text(new Visualization(1, 1, false))
-//            .barChart(new Visualization(2, 3, false))
-//            .pieChart(new Visualization(2, 3, false))
-//            .attribute(ATTRIBUTE_TYPE)
-//            .adapters(new SMSTypeTextAdapter(),
-//                    new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
-//                    new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY))
-//            .attribute(ATTRIBUTE_PERSON)
-//            .adapters(new SMSPersonTextAdapter(),
-//                    new SMSBarAdapter("person"),
-//                    new SMSPieAdapter("person"));
-
-    }
-
-    private VisualizationBuilder build()
-    {
-        return new VisualizationBuilder(this);
     }
 
     @Override
     public void start() throws ESException
     {
-        Calendar cal = Calendar.getInstance();
-//        cal.add(Calendar.DATE, -1);
-        cal.set(Calendar.HOUR, 0);
-        cal.set(Calendar.MINUTE, 0);
-        cal.set(Calendar.SECOND, 0);
-
-        sensorManager().setSensorConfig(type, ContentReaderConfig.TIME_LIMIT_MILLIS, cal.getTimeInMillis());
+        sensorManager().setSensorConfig(type, ContentReaderConfig.TIME_LIMIT_MILLIS, Util.today());
 
         super.start();
     }

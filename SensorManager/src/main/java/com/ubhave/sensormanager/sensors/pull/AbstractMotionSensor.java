@@ -111,7 +111,7 @@ public abstract class AbstractMotionSensor extends AbstractPullSensor
 		};
 	}
 
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
 		sensorReadings = new ArrayList<float[]>();
 		sensorReadingTimestamps = new ArrayList<Long>();
@@ -121,12 +121,12 @@ public abstract class AbstractMotionSensor extends AbstractPullSensor
 		return registrationSuccess;
 	}
 
-	protected void stopSensing()
+	public void stopSensing()
 	{
 		sensorManager.unregisterListener(listener);
 	}
 	
-	protected AbstractMotionData getMostRecentRawData()
+	public AbstractMotionData getMostRecentRawData()
 	{
 		return data;
 	}

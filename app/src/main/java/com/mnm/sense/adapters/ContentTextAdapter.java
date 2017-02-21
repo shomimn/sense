@@ -19,6 +19,9 @@ public abstract class ContentTextAdapter extends ContentAdapter<TextView, String
     @Override
     protected String createFrom(HashMap<String, Integer> counter)
     {
+        if (counter.size() == 0)
+            return null;
+
         String result = "";
 
         for (Map.Entry<String, Integer> entry : counter.entrySet())

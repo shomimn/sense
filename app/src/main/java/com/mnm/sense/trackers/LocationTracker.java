@@ -30,23 +30,13 @@ public class LocationTracker extends Tracker
 
         attributes = new String[] { ATTRIBUTE_MARKER, ATTRIBUTE_PATH, ATTRIBUTE_HEATMAP };
 
-        visualizations.put(Visualization.MAP, new Visualization(2, 3, false));
-        visualizations.put(Visualization.TEXT, new Visualization(1, 1, false));
-
-        HashMap<String, VisualizationAdapter> markerAdapters = new HashMap<>();
-        markerAdapters.put(Visualization.MAP, new LocationLatLngAdapter());
-        markerAdapters.put(Visualization.TEXT, new LocationTextAdapter());
-
-        HashMap<String, VisualizationAdapter> pathAdapters = new HashMap<>();
-        pathAdapters.put(Visualization.MAP, new LocationLatLngAdapter());
-        pathAdapters.put(Visualization.TEXT, new LocationTextAdapter());
-
-        HashMap<String, VisualizationAdapter> heatmapAdapters = new HashMap<>();
-        heatmapAdapters.put(Visualization.MAP, new LocationLatLngAdapter());
-        heatmapAdapters.put(Visualization.TEXT, new LocationTextAdapter());
-
-        adapters.put(ATTRIBUTE_MARKER, markerAdapters);
-        adapters.put(ATTRIBUTE_PATH, pathAdapters);
-        adapters.put(ATTRIBUTE_HEATMAP, heatmapAdapters);
+        build()
+            .map(new Visualization(2, 3, false))
+            .attribute(ATTRIBUTE_MARKER)
+            .adapters(new LocationLatLngAdapter())
+            .attribute(ATTRIBUTE_PATH)
+            .adapters(new LocationLatLngAdapter())
+            .attribute(ATTRIBUTE_HEATMAP)
+            .adapters(new LocationLatLngAdapter());
     }
 }

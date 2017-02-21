@@ -17,9 +17,12 @@ public class StepsTextAdapter extends VisualizationAdapter<TextView, String>
         if (data.size() == 0)
             return null;
 
-        int count = data.size();
+        int sum = 0;
 
-        return adaptOne(data.get(count - 1));
+        for (SensorData sensorData : data)
+            sum += ((StepCounterData) sensorData).getNumSteps();
+
+        return String.valueOf(sum);
     }
 
     @Override

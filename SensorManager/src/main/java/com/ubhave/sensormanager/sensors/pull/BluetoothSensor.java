@@ -155,7 +155,7 @@ public class BluetoothSensor extends AbstractPullSensor
 		return SensorUtils.SENSOR_TYPE_BLUETOOTH;
 	}
 
-	protected BluetoothData getMostRecentRawData()
+	public BluetoothData getMostRecentRawData()
 	{
 		return bluetoothData;
 	}
@@ -173,13 +173,13 @@ public class BluetoothSensor extends AbstractPullSensor
 		}
 	}
 
-	protected void processSensorData()
+	public void processSensorData()
 	{
 		BluetoothProcessor processor = (BluetoothProcessor) getProcessor();
 		bluetoothData = processor.process(pullSenseStartTimestamp, btDevices, sensorConfig.clone());
 	}
 
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
 		btDevices.clear();
 		sensorStartState = bluetooth.getState();
@@ -223,7 +223,7 @@ public class BluetoothSensor extends AbstractPullSensor
 	}
 
 	// Called when a scan is finished
-	protected void stopSensing()
+	public void stopSensing()
 	{
 		if (bluetooth != null)
 		{

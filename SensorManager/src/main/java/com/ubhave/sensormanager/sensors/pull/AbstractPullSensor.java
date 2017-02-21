@@ -43,13 +43,18 @@ public abstract class AbstractPullSensor extends AbstractSensor implements PullS
 		super(context);
 	}
 
-	protected abstract SensorData getMostRecentRawData();
+	public abstract SensorData getMostRecentRawData();
 	
-	protected abstract void processSensorData();
+	public abstract void processSensorData();
 
 	public void onSleepWindowLengthChanged(long sleepWindowLengthMillis)
 	{
 		sensorConfig.setParameter(PullSensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, sleepWindowLengthMillis);
+	}
+
+	public void setTimestamp()
+	{
+		pullSenseStartTimestamp = System.currentTimeMillis();
 	}
 
 	public SensorData sense() throws ESException

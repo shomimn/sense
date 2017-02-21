@@ -64,7 +64,7 @@ public class MagneticFieldSensor extends AbstractMotionSensor
 		return SensorUtils.SENSOR_TYPE_MAGNETIC_FIELD;
 	}
 	
-	protected void processSensorData()
+	public void processSensorData()
 	{
 		synchronized (sensorReadings)
 		{

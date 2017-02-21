@@ -13,7 +13,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.mnm.sense.R;
 import com.mnm.sense.Repository;
 import com.mnm.sense.SenseApp;
+import com.mnm.sense.Timestamp;
+import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.VisualizationBuilder;
 import com.mnm.sense.adapters.VisualizationAdapter;
 import com.mnm.sense.models.BarChartModel;
 import com.mnm.sense.models.LineChartModel;
@@ -229,6 +232,25 @@ public abstract class Tracker implements SensorDataListener
         }
         else if (mode == MODE_REMOTE)
         {
+            ArrayList<SensorData> unsynced = new ArrayList<>();
+
+            if (data.size() > 0)
+            {
+                final long lastTimestamp = data.get(data.size() - 1).getTimestamp();
+
+                if (lastTimestamp >= Timestamp.startOfToday().millis())
+                    unsynced = Util.filter(sensorData, new Util.Predicate<SensorData>()
+                    {
+                        @Override
+                        public boolean test(SensorData data)
+                        {
+                            return data.getTimestamp() > lastTimestamp;
+                        }
+                    });
+            }
+
+            data.addAll(unsynced);
+
             VisualizationAdapter newAdapter = adapter.newInstance();
 
             if(newAdapter.useLimit())
@@ -271,13 +293,8 @@ public abstract class Tracker implements SensorDataListener
 
     private void updateViews()
     {
-        for (HashMap.Entry entry : updateCallbacks.entrySet())
-        {
-            String key = (String) entry.getKey();
-            UpdateCallback callback = (UpdateCallback) entry.getValue();
-
+        for (UpdateCallback callback : updateCallbacks.values())
             callback.update(sensorData);
-        }
     }
 
     private void clearViews()
@@ -351,6 +368,8 @@ public abstract class Tracker implements SensorDataListener
         sensorData.clear();
 
         clearViews();
+
+        restart();
     }
 
     public void setLimit(int value)
@@ -361,5 +380,10 @@ public abstract class Tracker implements SensorDataListener
             for(VisualizationAdapter adapter : hashMapAdapters.values())
                 if(adapter.useLimit())
                     adapter.setLimit(limit.value);
+    }
+
+    protected VisualizationBuilder build()
+    {
+        return new VisualizationBuilder(this);
     }
 }

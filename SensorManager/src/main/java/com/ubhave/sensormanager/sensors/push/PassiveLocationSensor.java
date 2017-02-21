@@ -132,7 +132,7 @@ public class PassiveLocationSensor extends AbstractPushSensor
 	}
 
 	@Override
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
 		LocationManager locationManager = (LocationManager) applicationContext.getSystemService(Context.LOCATION_SERVICE);
 		try
@@ -152,7 +152,7 @@ public class PassiveLocationSensor extends AbstractPushSensor
 	}
 
 	@Override
-	protected void stopSensing()
+	public void stopSensing()
 	{
 		LocationManager locationManager = (LocationManager) applicationContext.getSystemService(Context.LOCATION_SERVICE);
 		locationManager.removeUpdates(locationListener);

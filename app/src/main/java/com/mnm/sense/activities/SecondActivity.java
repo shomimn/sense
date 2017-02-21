@@ -28,6 +28,7 @@ import com.mnm.sense.Repository;
 import com.mnm.sense.SenseApp;
 import com.mnm.sense.Task;
 import com.mnm.sense.TaskManager;
+import com.mnm.sense.Timestamp;
 import com.mnm.sense.ViewPagerAdapter;
 import com.mnm.sense.ZoomOutPageTransformer;
 import com.mnm.sense.fragments.VisualizationFragment;
@@ -119,8 +120,6 @@ public class SecondActivity extends AppCompatActivity
         slidingLayout.addPanelSlideListener(this);
 
         setupDatePickers();
-
-        confirmButton.setVisibility(View.VISIBLE);
     }
 
     private void setupViewPager(final ViewPager viewPager, final Tracker tracker, String defaultVisualization)
@@ -253,8 +252,8 @@ public class SecondActivity extends AppCompatActivity
 
             dateRange.setText(String.format("%s - %s", begin, end));
 
-//            if (confirmButton.getVisibility() == View.VISIBLE)
-//                confirmButton.setVisibility(View.INVISIBLE);
+            if (confirmButton.getVisibility() == View.VISIBLE)
+                confirmButton.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -321,17 +320,16 @@ public class SecondActivity extends AppCompatActivity
                 long begin = 1487026800000L;
                 long end = 1487113200000L;
 
-                Calendar cal = Calendar.getInstance();
-                cal.set(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth(), 0, 0, 0);
+                Timestamp startTs = Timestamp.startOf(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth());
+                String beginStr = startTs.date();
+                begin = startTs.millis();
 
-                String beginStr = dateFormat.format(cal.getTime());
-                begin = cal.getTimeInMillis();
                 prevStart = begin;
 
-                cal.set(endDate.getYear(), endDate.getMonth(), endDate.getDayOfMonth(), 23, 59, 59);
+                Timestamp endTs = Timestamp.endOf(endDate.getYear(), endDate.getMonth(), endDate.getDayOfMonth());
+                String endStr = endTs.date();
+                end = endTs.millis();
 
-                String endStr = dateFormat.format(cal.getTime());;
-                end = cal.getTimeInMillis();
                 prevEnd = end;
 
                 dateRange.setText(String.format("%s - %s", beginStr, endStr));

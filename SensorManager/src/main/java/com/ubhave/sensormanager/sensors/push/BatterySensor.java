@@ -89,13 +89,13 @@ public class BatterySensor extends AbstractPushSensor
 		return filters;
 	}
 
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
 		// nothing to do
 		return true;
 	}
 
-	protected void stopSensing()
+	public void stopSensing()
 	{
 		// nothing to do
 	}

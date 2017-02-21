@@ -205,7 +205,8 @@ public abstract class JSONFormatter extends DataFormatter
 			String dateString = (String) json.get(SENSE_TIME);
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTime(formatter.parse(dateString));
-			return calendar.getTimeInMillis();
+//			return calendar.getTimeInMillis();
+			return json.getLong(SENSE_TIME_MILLIS);
 		}
 		catch (Exception e)
 		{

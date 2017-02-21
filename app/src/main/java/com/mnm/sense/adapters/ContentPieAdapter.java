@@ -4,6 +4,7 @@ import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.mnm.sense.Colors;
 import com.ubhave.sensormanager.data.SensorData;
@@ -26,8 +27,13 @@ public abstract class ContentPieAdapter extends ContentAdapter<PieChart, PieData
         PieData pieData = new PieData();
         ArrayList<PieEntry> entries = new ArrayList<>();
 
+        float total = 0;
+
+        for (Integer count : counter.values())
+            total += count;
+
         for (Map.Entry<String, Integer> entry : counter.entrySet())
-            entries.add(new PieEntry(entry.getValue().floatValue(), entry.getKey()));
+            entries.add(new PieEntry(entry.getValue().floatValue() * 100 / total, entry.getKey()));
 
         PieDataSet pieDataSet = new PieDataSet(entries, "");
         pieDataSet.setColors(Colors.CUSTOM_COLORS);
@@ -38,6 +44,7 @@ public abstract class ContentPieAdapter extends ContentAdapter<PieChart, PieData
 
         pieData.addDataSet(pieDataSet);
         pieData.setValueTextSize(10f);
+        pieData.setValueFormatter(new PercentFormatter());
 
         return pieData;
     }

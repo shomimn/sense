@@ -36,8 +36,7 @@ public class Colors
             Color.rgb(191, 134, 134), Color.rgb(179, 48, 80)
     };
     public static final int[] COLORFUL_COLORS = {
-            Color.rgb(193, 37, 82), Color.rgb(255, 102, 0), Color.rgb(245, 199, 0),
-            Color.rgb(106, 150, 31), Color.rgb(179, 100, 53)
+
     };
     public static final int[] VORDIPLOM_COLORS = {
             Color.rgb(192, 255, 140), Color.rgb(255, 247, 140), Color.rgb(255, 208, 140),
@@ -54,6 +53,12 @@ public class Colors
             rgb("#BB9D49"), rgb("#8ECA6A"), rgb("#AC435B"), rgb("#3E4381"),
             rgb("#E7C979"), rgb("#65A340"), rgb("#72001B"), rgb("#5F62A0"),
             rgb("#7C5B00"), rgb("#296D00"), rgb("#D46F87"), rgb("#232862"),
+            Color.rgb(193, 37, 82), Color.rgb(255, 102, 0), Color.rgb(245, 199, 0),
+            Color.rgb(106, 150, 31), Color.rgb(179, 100, 53),
+            Color.rgb(192, 255, 140), Color.rgb(255, 247, 140), Color.rgb(255, 208, 140),
+            Color.rgb(140, 234, 255), Color.rgb(255, 140, 157),
+            Color.rgb(217, 80, 138), Color.rgb(254, 149, 7), Color.rgb(254, 247, 120),
+            Color.rgb(106, 167, 134), Color.rgb(53, 194, 209)
     };
 
     /**

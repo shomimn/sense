@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.utils.Utils;
 import com.mnm.sense.DepthPageTransformer;
@@ -42,9 +43,13 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity
 {
+    public static final long BACK_THRESHOLD = 1000;
+
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+
+    private long backTimestamp = 0;
 
     public DashboardFragment dashboardFragment;
     public TrackersFragment trackersFragment;
@@ -215,5 +220,17 @@ public class MainActivity extends AppCompatActivity
         dashboardFragment.layoutDashboard();
     }
 
+    @Override
+    public void onBackPressed()
+    {
+        long now = System.currentTimeMillis();
+        long diff = now - backTimestamp;
 
+        Toast.makeText(this, "Press back again to exit the application and stop sensing.", Toast.LENGTH_SHORT).show();
+
+        backTimestamp = now;
+
+        if (diff <= BACK_THRESHOLD)
+            super.onBackPressed();
+    }
 }

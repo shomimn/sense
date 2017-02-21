@@ -22,7 +22,6 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.sensormanager.tasks;
 
-import android.os.Debug;
 import android.util.Log;
 
 import com.ubhave.sensormanager.ESException;
@@ -32,7 +31,8 @@ import com.ubhave.sensormanager.config.pull.PullSensorConfig;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.sensors.SensorInterface;
 import com.ubhave.sensormanager.sensors.SensorUtils;
-import com.ubhave.sensormanager.sensors.pull.PullSensor;
+import com.ubhave.sensormanager.sensors.pull.AbstractPullSensor;
+import com.ubhave.sensormanager.sensors.pull.StepCounterSensor;
 
 public class PullSensorTask extends AbstractSensorTask
 {
@@ -42,9 +42,29 @@ public class PullSensorTask extends AbstractSensorTask
 		super(sensor);
 	}
 
-	public SensorData getCurrentSensorData(boolean oneOffSensing) throws ESException
+	public SensorData getCurrentSensorData(boolean oneOffSensing) throws ESException, InterruptedException
 	{
-		SensorData sensorData = ((PullSensor) sensor).sense();
+		SensorData sensorData = null;
+
+		synchronized (sensor)
+		{
+			AbstractPullSensor abs = (AbstractPullSensor) sensor;
+
+			abs.setTimestamp();
+
+			abs.startSensing();
+
+//			if (abs instanceof StepCounterSensor)
+//				abs.wait(5000);
+//			else
+				abs.wait();
+			abs.stopSensing();
+
+			abs.processSensorData();
+			sensorData = abs.getMostRecentRawData();
+		}
+
+//		SensorData sensorData = ((PullSensor) sensor).sense();
 		// since this is a one-off query for sensor data, sleep interval
 		// is not relevant in this case
 		if (sensorData != null)

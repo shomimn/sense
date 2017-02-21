@@ -23,6 +23,8 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 package com.ubhave.sensormanager.sensors.pull;
 
 import java.util.Calendar;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -50,6 +52,7 @@ public class StepCounterSensor extends AbstractPullSensor
 	private StepCounterData data;
 	private float numSteps = 0;
 	private long lastBoot;
+	private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
 
 	public static StepCounterSensor getSensor(final Context context) throws ESException
 	{
@@ -117,7 +120,7 @@ public class StepCounterSensor extends AbstractPullSensor
 //								++numSteps;
 								long millisSinceSystemBoot = SystemClock.elapsedRealtime();
 								lastBoot = System.currentTimeMillis() - millisSinceSystemBoot;
-								
+
 								Calendar calendar = Calendar.getInstance();
 								calendar.setTimeInMillis(lastBoot);
 								Log.d(TAG, "Num steps: "+numSteps);
@@ -135,16 +138,31 @@ public class StepCounterSensor extends AbstractPullSensor
 	}
 
 	@Override
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
+		isSensing = true;
 		int sensorDelay = (Integer) sensorConfig.getParameter(MotionSensorConfig.SAMPLING_DELAY);
 		boolean registrationSuccess = sensorManager.registerListener(listener, getSensor(), sensorDelay);
+
+		executor.schedule(new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				synchronized (StepCounterSensor.this)
+				{
+					StepCounterSensor.this.notify();
+				}
+			}
+		}, 5, TimeUnit.SECONDS);
+
 		return registrationSuccess;
 	}
 
 	@Override
-	protected void stopSensing()
+	public void stopSensing()
 	{
+		isSensing = false;
 		sensorManager.unregisterListener(listener);
 	}
 
@@ -155,15 +173,20 @@ public class StepCounterSensor extends AbstractPullSensor
 	}
 
 	@Override
-	protected void processSensorData()
+	public void processSensorData()
 	{
-		Log.d(TAG, "processSensorData()");
-		Calendar calendar = Calendar.getInstance();
-		calendar.setTimeInMillis(lastBoot);
-		Log.d(TAG, "Num steps: "+numSteps);
-		Log.d(TAG, "Last boot: "+calendar.getTime().toString());
-		StepCounterProcessor processor = (StepCounterProcessor) getProcessor();
-		data = processor.process(pullSenseStartTimestamp, numSteps, lastBoot, sensorConfig.clone());
+//		synchronized (this)
+//		{
+			Log.d(TAG, "processSensorData()");
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(lastBoot);
+			Log.d(TAG, "Num steps: " + numSteps);
+			Log.d(TAG, "Last boot: " + calendar.getTime().toString());
+			StepCounterProcessor processor = (StepCounterProcessor) getProcessor();
+			data = processor.process(pullSenseStartTimestamp, numSteps, lastBoot, sensorConfig.clone());
+
+//			notify();
+//		}
 	}
 
 	@Override
@@ -173,7 +196,7 @@ public class StepCounterSensor extends AbstractPullSensor
 	}
 
 	@Override
-	protected SensorData getMostRecentRawData()
+	public SensorData getMostRecentRawData()
 	{
 		Log.d(TAG, "getMostRecentRawData()");
 		return data;

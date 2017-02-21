@@ -109,7 +109,7 @@ public class ProximitySensor extends AbstractPushSensor
 		return null;
 	}
 
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
 		SensorManager sensorManager = (SensorManager) applicationContext.getSystemService(Context.SENSOR_SERVICE);
 		boolean registered = sensorManager.registerListener(sensorEventListener,
@@ -117,7 +117,7 @@ public class ProximitySensor extends AbstractPushSensor
 		return registered;
 	}
 
-	protected void stopSensing()
+	public void stopSensing()
 	{
 		SensorManager sensorManager = (SensorManager) applicationContext.getSystemService(Context.SENSOR_SERVICE);
 		sensorManager.unregisterListener(sensorEventListener);

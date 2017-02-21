@@ -68,7 +68,7 @@ public abstract class AbstractSensorTask extends Thread
 	}
 
 	protected SensorInterface sensor;
-	protected Object syncObject = new Object();
+	protected final Object syncObject = new Object();
 
 	protected int state;
 	protected long pauseTime;

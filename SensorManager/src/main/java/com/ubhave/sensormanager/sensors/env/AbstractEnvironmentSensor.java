@@ -83,7 +83,7 @@ public abstract class AbstractEnvironmentSensor extends AbstractPushSensor
 	protected abstract Sensor getSensor();
 
 	@Override
-	protected final boolean startSensing()
+	public final boolean startSensing()
 	{
 		Sensor sensor = getSensor();
 		if (sensor != null)
@@ -98,7 +98,7 @@ public abstract class AbstractEnvironmentSensor extends AbstractPushSensor
 	}
 
 	@Override
-	protected final void stopSensing()
+	public final void stopSensing()
 	{
 		sensorManager.unregisterListener(sensorEventListener);
 	}

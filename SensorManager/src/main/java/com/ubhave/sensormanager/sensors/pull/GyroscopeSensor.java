@@ -62,7 +62,7 @@ public class GyroscopeSensor extends AbstractMotionSensor
 		return SensorUtils.SENSOR_TYPE_GYROSCOPE;
 	}
 
-	protected void processSensorData()
+	public void processSensorData()
 	{
 		synchronized (sensorReadings)
 		{

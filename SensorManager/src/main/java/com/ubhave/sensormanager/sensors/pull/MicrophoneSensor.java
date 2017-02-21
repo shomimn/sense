@@ -142,7 +142,7 @@ public class MicrophoneSensor extends AbstractMediaSensor
 		}
 	}
 
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
 		isRecording = prepareToSense();
 		if (isRecording)
@@ -194,7 +194,7 @@ public class MicrophoneSensor extends AbstractMediaSensor
 		}
 	}
 
-	protected void stopSensing()
+	public void stopSensing()
 	{
 		synchronized (recorder)
 		{
@@ -219,12 +219,12 @@ public class MicrophoneSensor extends AbstractMediaSensor
 	}
 
 	@Override
-	protected SensorData getMostRecentRawData()
+	public SensorData getMostRecentRawData()
 	{
 		return micData;
 	}
 
-	protected void processSensorData()
+	public void processSensorData()
 	{
 		int[] maxAmpArray = new int[maxAmplitudeList.size()];
 		long[] timestampArray = new long[timestampList.size()];

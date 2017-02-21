@@ -145,14 +145,14 @@ public class ConnectionStrengthSensor extends AbstractPushSensor
 		return SensorUtils.SENSOR_TYPE_CONNECTION_STRENGTH;
 	}
 
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
 		TelephonyManager telephonyManager = (TelephonyManager) applicationContext.getSystemService(Context.TELEPHONY_SERVICE);
 		telephonyManager.listen(sensorEventListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
 		return true;
 	}
 
-	protected void stopSensing()
+	public void stopSensing()
 	{
 		TelephonyManager telephonyManager = (TelephonyManager) applicationContext.getSystemService(Context.TELEPHONY_SERVICE);
 

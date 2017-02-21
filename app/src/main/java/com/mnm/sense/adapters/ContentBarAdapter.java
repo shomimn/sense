@@ -21,9 +21,6 @@ public abstract class ContentBarAdapter extends ContentAdapter<BarChart, BarData
     @Override
     protected BarData createFrom(HashMap<String, Integer> counter)
     {
-        if (counter.size() == 0)
-            return null;
-
         BarData barData = new BarData();
         int i = 0;
         int[] colors = ColorGenerator.generateRandom(counter.size());

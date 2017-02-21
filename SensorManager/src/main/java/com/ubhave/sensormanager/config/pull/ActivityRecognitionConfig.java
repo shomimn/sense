@@ -7,7 +7,7 @@ import com.ubhave.sensormanager.config.pull.PullSensorConfig;
 public class ActivityRecognitionConfig
 {
     private static final long DEFAULT_SAMPLING_WINDOW_SIZE_MILLIS = 1 * 1000L;
-    private static final long DEFAULT_SLEEP_INTERVAL = 1 * 1000;
+    private static final long DEFAULT_SLEEP_INTERVAL = 1;
     private static final int ACTIVITY_RECOGNITION_SAMPLING_CYCLES = 1;
 
     public static SensorConfig getDefault()

@@ -65,9 +65,21 @@ public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarDat
         if (data.size() == 0)
             return null;
 
-        int count = data.size();
+        Calendar cal = Calendar.getInstance();
+        float[] counter = new float[24];
 
-        return adaptOne(data.get(count - 1));
+        for (SensorData sensorData : data)
+        {
+            StepCounterData stepsData = (StepCounterData) sensorData;
+            cal.setTimeInMillis(stepsData.getTimestamp());
+
+            int hour = cal.get(Calendar.HOUR_OF_DAY);
+            float steps = stepsData.getNumSteps();
+
+            counter[hour] += steps;
+        }
+
+        return createFrom(counter, "Steps");
     }
 
     @Override
@@ -80,8 +92,8 @@ public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarDat
         cal.setTimeInMillis(stepsData.getTimestamp());
         int hour = cal.get(Calendar.HOUR_OF_DAY);
 
-        if (counter[hour] < steps)
-            counter[hour] = steps;
+//        if (counter[hour] < steps)
+            counter[hour] += steps;
 
         return createFrom(counter, "Steps");
     }
@@ -157,8 +169,8 @@ public class StepsHourlyBarAdapter extends VisualizationAdapter<BarChart, BarDat
                 int hour = cal.get(Calendar.HOUR_OF_DAY);
                 float steps = stepsData.getNumSteps();
 
-                if (counter[hour] < steps)
-                    counter[hour] = steps;
+//                if (counter[hour] < steps)
+                    counter[hour] += steps;
             }
 
             for (int i = 0; i < 24; ++i)

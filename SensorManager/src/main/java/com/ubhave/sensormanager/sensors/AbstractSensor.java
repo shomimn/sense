@@ -73,9 +73,9 @@ public abstract class AbstractSensor implements SensorInterface
 		return false;
 	}
 
-	protected abstract boolean startSensing();
+	public abstract boolean startSensing();
 
-	protected abstract void stopSensing();
+	public abstract void stopSensing();
 
 	protected abstract String getLogTag();
 

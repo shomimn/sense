@@ -51,7 +51,7 @@ public abstract class AbstractContentReaderSensor extends AbstractPullSensor
 		super(context);
 	}
 
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
 		new Thread()
 		{
@@ -113,7 +113,12 @@ public abstract class AbstractContentReaderSensor extends AbstractPullSensor
 				finally
 				{
 					// sensing complete
-					notifySenseCyclesComplete();
+//					notifySenseCyclesComplete();
+
+					synchronized (AbstractContentReaderSensor.this)
+					{
+						AbstractContentReaderSensor.this.notify();
+					}
 				}
 			}
 		}.start();
@@ -159,19 +164,19 @@ public abstract class AbstractContentReaderSensor extends AbstractPullSensor
 	protected abstract String getDateKey();
 
 	// Called when a scan is finished
-	protected void stopSensing()
+	public void stopSensing()
 	{
 	}
 
 	@Override
-	protected SensorData getMostRecentRawData()
+	public SensorData getMostRecentRawData()
 	{
 		ContentReaderProcessor processor = (ContentReaderProcessor) super.getProcessor();
 		return processor.process(pullSenseStartTimestamp, getSensorType(), contentList, sensorConfig);
 	}
 
 	@Override
-	protected void processSensorData()
+	public void processSensorData()
 	{
 	}
 }

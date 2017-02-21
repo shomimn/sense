@@ -87,18 +87,18 @@ public class PhoneRadioSensor extends AbstractPullSensor
 		return SensorUtils.SENSOR_TYPE_PHONE_RADIO;
 	}
 
-	protected PhoneRadioDataList getMostRecentRawData()
+	public PhoneRadioDataList getMostRecentRawData()
 	{
 		return phoneRadioDataList;
 	}
 
-	protected void processSensorData()
+	public void processSensorData()
 	{
 		PhoneRadioProcessor processor = (PhoneRadioProcessor) getProcessor();
 		phoneRadioDataList = processor.process(pullSenseStartTimestamp, visibleCells, sensorConfig.clone());
 	}
 
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
 		new Thread()
 		{
@@ -149,7 +149,7 @@ public class PhoneRadioSensor extends AbstractPullSensor
 	}
 
 	// Called when a scan is finished
-	protected void stopSensing()
+	public void stopSensing()
 	{
 	}
 

@@ -89,9 +89,13 @@ public class LocationSensor extends AbstractPullSensor
 
 			public void onLocationChanged(Location loc)
 			{
-				if (isSensing)
+				synchronized (LocationSensor.this)
 				{
-					locationList.add(loc);
+					if (isSensing)
+					{
+						locationList.add(loc);
+						LocationSensor.this.notify();
+					}
 				}
 			}
 
@@ -122,8 +126,10 @@ public class LocationSensor extends AbstractPullSensor
 		return SensorUtils.SENSOR_TYPE_LOCATION;
 	}
 
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
+		isSensing = true;
+		pullSenseStartTimestamp = System.currentTimeMillis();
 		locationList = new ArrayList<Location>();
 		try
 		{
@@ -170,17 +176,18 @@ public class LocationSensor extends AbstractPullSensor
 		}
 	}
 
-	protected void stopSensing()
+	public void stopSensing()
 	{
+		isSensing = false;
 		locationManager.removeUpdates(locListener);
 	}
 
-	protected SensorData getMostRecentRawData()
+	public SensorData getMostRecentRawData()
 	{
 		return locationData;
 	}
 
-	protected void processSensorData()
+	public void processSensorData()
 	{
 		LocationProcessor processor = (LocationProcessor) getProcessor();
 		locationData = processor.process(pullSenseStartTimestamp, locationList, sensorConfig.clone());

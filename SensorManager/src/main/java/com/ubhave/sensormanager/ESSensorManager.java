@@ -210,7 +210,14 @@ public class ESSensorManager implements ESSensorManagerInterface, SensorDataList
 		}
 		else
 		{
-			sensorData = ((PullSensorTask) sensorTask).getCurrentSensorData(true);
+			try
+			{
+				sensorData = ((PullSensorTask) sensorTask).getCurrentSensorData(true);
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		return sensorData;
 	}

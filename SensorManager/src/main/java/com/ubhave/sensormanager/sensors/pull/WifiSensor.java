@@ -102,7 +102,11 @@ public class WifiSensor extends AbstractPullSensor
 				}
 				else
 				{
-					notifySenseCyclesComplete();
+//					notifySenseCyclesComplete();
+					synchronized (WifiSensor.this)
+					{
+						WifiSensor.this.notify();
+					}
 				}
 			}
 
@@ -119,19 +123,20 @@ public class WifiSensor extends AbstractPullSensor
 		return SensorUtils.SENSOR_TYPE_WIFI;
 	}
 
-	protected WifiData getMostRecentRawData()
+	public WifiData getMostRecentRawData()
 	{
 		return wifiData;
 	}
 
-	protected void processSensorData()
+	public void processSensorData()
 	{
 		WifiProcessor processor = (WifiProcessor) getProcessor();
 		wifiData = processor.process(pullSenseStartTimestamp, wifiScanResults, sensorConfig.clone());
 	}
 
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
+		isSensing = true;
 		try
 		{
 			wifiScanResults = null;
@@ -152,8 +157,9 @@ public class WifiSensor extends AbstractPullSensor
 	}
 
 	// Called when a scan is finished
-	protected void stopSensing()
+	public void stopSensing()
 	{
+		isSensing = false;
 		applicationContext.unregisterReceiver(wifiReceiver);
 	}
 

@@ -6,8 +6,6 @@ import android.annotation.TargetApi;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
-import android.content.Intent;
-import android.provider.Settings;
 
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
@@ -56,20 +54,20 @@ public class RunningApplicationSensor extends AbstractPullSensor
     }
 
     @Override
-    protected RunningApplicationDataList getMostRecentRawData()
+    public RunningApplicationDataList getMostRecentRawData()
     {
         return runningApplicationDataList;
     }
 
     @Override
-    protected void processSensorData()
+    public void processSensorData()
     {
         RunningApplicationProcessor processor = (RunningApplicationProcessor) getProcessor();
         runningApplicationDataList = processor.process(pullSenseStartTimestamp, runningAppsUsageStats, sensorConfig.clone());
     }
 
     @Override
-    protected boolean startSensing()
+    public boolean startSensing()
     {
         new Thread()
         {
@@ -78,10 +76,13 @@ public class RunningApplicationSensor extends AbstractPullSensor
             {
                 try
                 {
-                    runningAppsUsageStats = null;
+                    synchronized (RunningApplicationSensor.this)
+                    {
+                        runningAppsUsageStats = null;
 
-                    runningAppsUsageStats = getUsageStatsList();
-
+                        runningAppsUsageStats = getUsageStatsList();
+                        RunningApplicationSensor.this.notify();
+                    }
                 }
                 catch (Exception exp)
                 {
@@ -99,7 +100,7 @@ public class RunningApplicationSensor extends AbstractPullSensor
     }
 
     @Override
-    protected void stopSensing()
+    public void stopSensing()
     {
 
     }

@@ -27,6 +27,8 @@ public class Repository extends AbstractAsyncTransferLogger implements DataUploa
     protected Repository(Context context) throws DataHandlerException, ESException
     {
         super(context, DataStorageConfig.STORAGE_TYPE_DB);
+
+        configureDataStorage();
     }
 
     public static Repository instance() throws ESException, DataHandlerException

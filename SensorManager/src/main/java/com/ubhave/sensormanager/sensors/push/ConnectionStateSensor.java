@@ -117,13 +117,13 @@ public class ConnectionStateSensor extends AbstractPushSensor
 		return SensorUtils.SENSOR_TYPE_CONNECTION_STATE;
 	}
 
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
 		// nothing to do
 		return true;
 	}
 
-	protected void stopSensing()
+	public void stopSensing()
 	{
 		// nothing to do
 	}

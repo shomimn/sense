@@ -228,14 +228,14 @@ public class PhoneStateSensor extends AbstractPushSensor
 		return SensorUtils.SENSOR_TYPE_PHONE_STATE;
 	}
 
-	protected boolean startSensing()
+	public boolean startSensing()
 	{
 		int interestedEvents = PhoneStateListener.LISTEN_CALL_STATE | PhoneStateListener.LISTEN_CELL_LOCATION | PhoneStateListener.LISTEN_DATA_ACTIVITY | PhoneStateListener.LISTEN_DATA_CONNECTION_STATE | PhoneStateListener.LISTEN_SERVICE_STATE;
 		telephonyManager.listen(phoneStateListener, interestedEvents);
 		return true;
 	}
 
-	protected void stopSensing()
+	public void stopSensing()
 	{
 		telephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
 	}

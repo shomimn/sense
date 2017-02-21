@@ -17,7 +17,7 @@ public class LocationConfig
 		SensorConfig sensorConfig = new SensorConfig();
 		sensorConfig.setParameter(PullSensorConfig.POST_SENSE_SLEEP_LENGTH_MILLIS, DEFAULT_SLEEP_INTERVAL);
 		sensorConfig.setParameter(PullSensorConfig.SENSE_WINDOW_LENGTH_MILLIS, DEFAULT_SAMPLING_WINDOW_SIZE_MILLIS);
-		sensorConfig.setParameter(LocationConfig.ACCURACY_TYPE, LOCATION_ACCURACY_COARSE);
+		sensorConfig.setParameter(LocationConfig.ACCURACY_TYPE, LOCATION_ACCURACY_FINE);
 		return sensorConfig;
 	}
 }

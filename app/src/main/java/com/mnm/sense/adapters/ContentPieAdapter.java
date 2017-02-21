@@ -24,9 +24,6 @@ public abstract class ContentPieAdapter extends ContentAdapter<PieChart, PieData
     @Override
     protected PieData createFrom(HashMap<String, Integer> counter)
     {
-        if (counter.size() == 0)
-            return null;
-
         PieData pieData = new PieData();
         ArrayList<PieEntry> entries = new ArrayList<>();
 

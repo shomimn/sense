@@ -32,15 +32,11 @@ public class LocationTracker extends Tracker
 
         build()
             .map(new Visualization(2, 3, false))
-            .text(new Visualization(1, 1, false))
             .attribute(ATTRIBUTE_MARKER)
-            .adapters(new LocationLatLngAdapter(),
-                    new LocationTextAdapter())
+            .adapters(new LocationLatLngAdapter())
             .attribute(ATTRIBUTE_PATH)
-            .adapters(new LocationLatLngAdapter(),
-                    new LocationTextAdapter())
+            .adapters(new LocationLatLngAdapter())
             .attribute(ATTRIBUTE_HEATMAP)
-            .adapters(new LocationLatLngAdapter(),
-                    new LocationTextAdapter());
+            .adapters(new LocationLatLngAdapter());
     }
 }

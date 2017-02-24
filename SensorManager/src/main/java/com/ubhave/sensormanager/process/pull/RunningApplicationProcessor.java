@@ -12,6 +12,7 @@ import com.ubhave.sensormanager.data.pull.RunningApplicationData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
 import com.ubhave.sensormanager.process.AbstractProcessor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,31 +27,55 @@ public class RunningApplicationProcessor extends AbstractProcessor
     }
 
     @TargetApi(21)
-    public RunningApplicationDataList process(long pullSenseStartTimestamp, List<UsageStats> runningAppsUsageStats, SensorConfig sensorConfig)
+    public <T> RunningApplicationDataList process(long pullSenseStartTimestamp, List<T> runningAppsData, SensorConfig sensorConfig)
     {
         RunningApplicationDataList runningApplicationDataList = new RunningApplicationDataList(pullSenseStartTimestamp, sensorConfig);
-
-        for(UsageStats stats : runningAppsUsageStats)
+        if(runningAppsData.size() == 0)
+            return null;
+        if(setProcessedData)
         {
-            String packageName = stats.getPackageName();
-            ApplicationInfo appInfo = getApplicationInfo(packageName);
-
-            if (appInfo != null)
+            ArrayList<RunningApplicationData> runningAppsDataList = (ArrayList<RunningApplicationData>)runningAppsData;
+            for(RunningApplicationData data : runningAppsDataList)
             {
-                long ft = stats.getTotalTimeInForeground();
+                String packageName = data.getPackageName();
+                ApplicationInfo appInfo = getApplicationInfo(packageName);
 
-                if (ft == 0)
-                    continue;
+                if (appInfo != null)
+                {
+                    String name = (String) packageManager.getApplicationLabel(appInfo);
+                    Drawable icon = packageManager.getApplicationIcon(appInfo);
 
-                long ltu = stats.getLastTimeUsed();
-                String name = (String) packageManager.getApplicationLabel(appInfo);
-                Drawable icon = packageManager.getApplicationIcon(appInfo);
+                    data.setIcon(icon);
+                }
+            }
+            runningApplicationDataList.setRunningApplications(runningAppsDataList);
+        }
+        else
+        {
+            ArrayList<UsageStats> runningAppsUsageStats = (ArrayList<UsageStats>)runningAppsData;
+            for(UsageStats stats : runningAppsUsageStats)
+            {
+                String packageName = stats.getPackageName();
+                ApplicationInfo appInfo = getApplicationInfo(packageName);
 
-                RunningApplicationData appData = new RunningApplicationData(name, ft, icon, ltu);
+                if (appInfo != null)
+                {
+                    long ft = stats.getTotalTimeInForeground();
 
-                runningApplicationDataList.addRunningApplication(appData);
+                    if (ft == 0)
+                        continue;
+
+                    long ltu = stats.getLastTimeUsed();
+                    String name = (String) packageManager.getApplicationLabel(appInfo);
+                    Drawable icon = packageManager.getApplicationIcon(appInfo);
+
+                    RunningApplicationData appData = new RunningApplicationData(packageName, name, ft, icon, ltu);
+
+                    runningApplicationDataList.addRunningApplication(appData);
+                }
             }
         }
+
         return runningApplicationDataList;
     }
 

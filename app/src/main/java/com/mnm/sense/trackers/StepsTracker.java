@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 
 import com.mnm.sense.NotificationCreator;
 import com.mnm.sense.R;
+import com.mnm.sense.Timestamp;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.StepsDailyBarAdapter;
 import com.mnm.sense.adapters.StepsHourlyBarAdapter;
@@ -26,6 +27,7 @@ public class StepsTracker extends Tracker
 
     float prevCount = 0;
     float steps = 0;
+    float totalSteps = 0;
 
     public StepsTracker() throws ESException
     {
@@ -54,20 +56,16 @@ public class StepsTracker extends Tracker
     {
         SharedPreferences prefs = getConfig();
 
-        Calendar calendar = Calendar.getInstance();
-        Date date = calendar.getTime();
-        DateFormat dateFormat = DateFormat.getDateInstance();
-        String stringDate = dateFormat.format(date);
+        String date = Timestamp.now().date();
 
-        if (prefs.getBoolean(stringDate, false))
+        if (prefs.getBoolean(date, false))
             return;
 
-        StepCounterData stepsData = (StepCounterData) data;
-        if (stepsData.getNumSteps() >= limit.value)
+        if (totalSteps >= limit.value)
         {
             NotificationCreator.create(resource, "Sense", "Well done, you've reached your daily steps goal!");
 
-            prefs.edit().putBoolean(stringDate, true).commit();
+            prefs.edit().putBoolean(date, true).commit();
         }
     }
 
@@ -83,12 +81,15 @@ public class StepsTracker extends Tracker
         steps = count - prevCount;
         stepsData.setNumSteps(steps);
 
+        totalSteps += steps;
+
         prevCount = count;
     }
 
     @Override
     public void purge()
     {
+        totalSteps = 0;
         steps = 0;
         prevCount = 0;
 

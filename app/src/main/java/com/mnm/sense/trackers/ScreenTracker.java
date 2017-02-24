@@ -1,9 +1,11 @@
 package com.mnm.sense.trackers;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.mnm.sense.NotificationCreator;
 import com.mnm.sense.R;
+import com.mnm.sense.Timestamp;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.ScreenPieAdapter;
 import com.mnm.sense.adapters.ScreenTextAdapter;
@@ -94,17 +96,21 @@ public class ScreenTracker extends Tracker
 
     public void checkLimit(long time)
     {
+        SharedPreferences prefs = getConfig();
+
+        String date = Timestamp.now().date();
+
+        if (prefs.getBoolean(date, false))
+            return;
+
         long timeOnSeconds = time / 1000;
         long limitSeconds = limit.value * 60 * 60;
-//        long limitSeconds = 60;
-
-//        Seconds timeOnSeconds = Seconds.seconds((int) timeOn / 1000);
-//        Seconds limitSeconds = Hours.hours(limit.value).toStandardSeconds();
 
         if (timeOnSeconds >= limitSeconds)
-//        if (timeOnSeconds.isGreaterThan(limitSeconds))
         {
             NotificationCreator.create(resource, "Sense", "Whoa, you've been using your phone too much! You should take a walk!");
+
+            prefs.edit().putBoolean(date, true).commit();
         }
     }
 

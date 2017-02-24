@@ -21,6 +21,12 @@ public class ActivityRecognizedService extends IntentService
 
     @Override
     protected void onHandleIntent(Intent intent) {
+        if (sensor == null)
+        {
+            stopSelf();
+            return;
+        }
+
         if(ActivityRecognitionResult.hasResult(intent)) {
             Log.d("ARS", "onHandleIntent");
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);

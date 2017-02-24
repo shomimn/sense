@@ -44,17 +44,72 @@ public class WifiBarAdapter extends VisualizationAdapter<BarChart, BarData>
         if (data.size() == 0)
             return null;
 
-        return first(adaptAll(data));
+        return adaptOne(data.get(data.size() - 1));
     }
 
     @Override
     public BarData adaptOne(SensorData data)
     {
-        return null;
+        HashMap<String, Integer> levels = new HashMap<>();
+
+        WifiData wifiData = (WifiData) data;
+        ArrayList<WifiScanResult> scanResults = wifiData.getWifiScanData();
+
+        for (WifiScanResult scanResult : scanResults)
+        {
+            String ssid = scanResult.getSsid();
+            int level = WifiManager.calculateSignalLevel(scanResult.getLevel(), 100);
+
+            levels.put(ssid, level);
+        }
+
+        int i = 0;
+        BarData barData = new BarData();
+
+        for (Map.Entry<String, Integer> entry : levels.entrySet())
+        {
+            ArrayList<BarEntry> entries = new ArrayList<>();
+
+            entries.add(new BarEntry(i, entry.getValue()));
+            BarDataSet dataSet = new BarDataSet(entries, entry.getKey());
+            dataSet.setColor(Colors.CUSTOM_COLORS[i % Colors.CUSTOM_COLORS.length]);
+
+            barData.addDataSet(dataSet);
+            ++i;
+        }
+
+        barData.setBarWidth(0.9f);
+        barData.setValueTextSize(10f);
+        barData.setValueTextSize(10f);
+
+        return barData;
     }
 
     @Override
     public ArrayList<BarData> adaptAll(ArrayList<SensorData> data)
+    {
+        return null;
+    }
+
+    private BarData first(ArrayList<BarData> data)
+    {
+        return data.get(0);
+    }
+
+    @Override
+    public VisualizationAdapter<BarChart, BarData> newInstance()
+    {
+        return new WifiBarAdapter();
+    }
+
+    @Override
+    public boolean isAggregating()
+    {
+        return true;
+    }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
     {
         HashMap<String, IntPair> averages = new HashMap<>();
         ArrayList<BarData> result = new ArrayList<>();
@@ -108,22 +163,5 @@ public class WifiBarAdapter extends VisualizationAdapter<BarChart, BarData>
         result.add(barData);
 
         return result;
-    }
-
-    private BarData first(ArrayList<BarData> data)
-    {
-        return data.get(0);
-    }
-
-    @Override
-    public VisualizationAdapter<BarChart, BarData> newInstance()
-    {
-        return new WifiBarAdapter();
-    }
-
-    @Override
-    public Object aggregate(ArrayList<SensorData> data)
-    {
-        return null;
     }
 }

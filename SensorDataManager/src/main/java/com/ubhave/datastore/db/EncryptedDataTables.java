@@ -3,6 +3,7 @@ package com.ubhave.datastore.db;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import net.sqlcipher.database.SQLiteDatabase;
 import net.sqlcipher.database.SQLiteOpenHelper;
@@ -21,12 +22,12 @@ public class EncryptedDataTables extends SQLiteOpenHelper implements DataTablesI
 	private final static String DATABASE_NAME = "encrypted_sensor_datastore";
 
 	private String dataPassword;
-	private final HashMap<String, EncryptedDataTable> dataTableMap;
+	private final ConcurrentHashMap<String, EncryptedDataTable> dataTableMap;
 
 	public EncryptedDataTables(final Context context, final String dataPassword)
 	{
 		super(context, DATABASE_NAME, null, dbVersion);
-		this.dataTableMap = new HashMap<String, EncryptedDataTable>();
+		this.dataTableMap = new ConcurrentHashMap<String, EncryptedDataTable>();
 		if (dataPassword == null)
 		{
 			this.dataPassword = "";

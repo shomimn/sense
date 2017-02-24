@@ -17,11 +17,11 @@ import static com.ubhave.sensormanager.sensors.SensorUtils.getSensorName;
 
 public class Repository extends AbstractAsyncTransferLogger implements DataUploadCallback
 {
-    public static final String baseUrl = "http://192.168.0.10/api";
+    public static final String baseUrl = "http://24.135.29.176/api";
 
     private static Repository _instance;
 
-    private int updateInterval = 10 * 60000;
+    private int updateInterval = 3 * 60 * 60000;
     private String deviceId = null;
 
     protected Repository(Context context) throws DataHandlerException, ESException

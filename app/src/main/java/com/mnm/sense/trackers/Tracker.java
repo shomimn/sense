@@ -109,30 +109,6 @@ public abstract class Tracker implements SensorDataListener
     {
         Log.d("data", "sensed");
 
-        Locator locator = Locator.instance();
-        Location location = locator.locateAt(data.getTimestamp());
-
-        if (location == null)
-        {
-            synchronized (locator)
-            {
-                try
-                {
-                    locator.wait();
-                    location = locator.lastLocation();
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        AbstractContentReaderListData listData = (AbstractContentReaderListData) data;
-        listData.setLocation(Pair.create(location.getLatitude(), location.getLongitude()));
-
-        Log.d("onDataSensed", location.toString());
-
         correctData(data);
 
         sensorData.add(data);

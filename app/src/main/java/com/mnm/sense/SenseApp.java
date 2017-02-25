@@ -20,6 +20,7 @@ import com.mnm.sense.trackers.BluetoothTracker;
 import com.mnm.sense.trackers.CallLogTracker;
 import com.mnm.sense.trackers.LightTracker;
 import com.mnm.sense.trackers.LocationTracker;
+import com.mnm.sense.trackers.MicrophoneTracker;
 import com.mnm.sense.trackers.ProximityTracker;
 import com.mnm.sense.trackers.RunningApplicationTracker;
 import com.mnm.sense.trackers.SMSContentTracker;
@@ -81,6 +82,7 @@ public class SenseApp extends Application
             trackers.put(SensorUtils.SENSOR_TYPE_BATTERY, new BatteryTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_SCREEN, new ScreenTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_WIFI, new WifiTracker());
+            trackers.put(SensorUtils.SENSOR_TYPE_MICROPHONE, new MicrophoneTracker());
 //            trackers.put(SensorUtils.SENSOR_TYPE_BLUETOOTH, new BluetoothTracker());
 //            trackers.put(SensorUtils.SENSOR_TYPE_LIGHT, new LightTracker());
 //            trackers.put(SensorUtils.SENSOR_TYPE_PROXIMITY, new ProximityTracker());

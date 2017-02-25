@@ -58,17 +58,14 @@ public class SMSContentTracker extends Tracker
             .text(new Visualization(1, 1, false))
             .barChart(new Visualization(2, 3, false))
             .pieChart(new Visualization(2, 3, false))
-            .map(new Visualization(2, 3, false))
             .attribute(ATTRIBUTE_TYPE)
             .adapters(new SMSTypeTextAdapter(),
                     new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
-                    new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
-                    new SMSLatLngAdapter())
+                    new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY))
             .attribute(ATTRIBUTE_PERSON)
             .adapters(new SMSPersonTextAdapter(),
                     new SMSBarAdapter("person"),
-                    new SMSPieAdapter("person"),
-                    new SMSLatLngAdapter());
+                    new SMSPieAdapter("person"));
 
     }
 

@@ -3,8 +3,10 @@ package com.mnm.sense.trackers;
 
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.adapters.MicrophoneLineAdapter;
 import com.mnm.sense.adapters.MicrophoneTextAdapter;
 import com.ubhave.sensormanager.ESException;
+import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
 public class MicrophoneTracker extends Tracker
@@ -25,9 +27,10 @@ public class MicrophoneTracker extends Tracker
         MicrophoneTextAdapter textAdapter = new MicrophoneTextAdapter();
 
         build()
+                .lineChart(new Visualization(2, 3, false))
                 .text(new Visualization(2, 3, false))
                 .attribute(ATTRIBUTE_NOISE)
-                .adapters(textAdapter);
+                .adapters(new MicrophoneLineAdapter(),textAdapter);
 
     }
 }

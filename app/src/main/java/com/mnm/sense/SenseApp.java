@@ -3,10 +3,17 @@ package com.mnm.sense;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
+import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.mnm.sense.trackers.ActivityTracker;
 import com.mnm.sense.trackers.BatteryTracker;
 import com.mnm.sense.trackers.BluetoothTracker;
@@ -33,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import static android.content.Context.LOCATION_SERVICE;
 import static java.security.AccessController.getContext;
 
 public class SenseApp extends Application

@@ -22,6 +22,8 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.sensormanager.data.pull;
 
+import android.util.Pair;
+
 import java.util.ArrayList;
 
 import com.ubhave.sensormanager.config.SensorConfig;
@@ -30,6 +32,7 @@ import com.ubhave.sensormanager.data.SensorData;
 public abstract class AbstractContentReaderListData extends SensorData
 {
 	private final ArrayList<AbstractContentReaderEntry> contentList;
+	private Pair<Double, Double> location;
 
 	public AbstractContentReaderListData(long sensorTimestamp, SensorConfig config)
 	{
@@ -70,5 +73,15 @@ public abstract class AbstractContentReaderListData extends SensorData
 			}
 		}
 		return count;
+	}
+
+	public Pair<Double, Double> getLocation()
+	{
+		return location;
+	}
+
+	public void setLocation(Pair<Double, Double> location)
+	{
+		this.location = location;
 	}
 }

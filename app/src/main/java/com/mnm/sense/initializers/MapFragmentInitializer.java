@@ -127,6 +127,18 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                             googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));
                         }
                         break;
+                    default:
+                        for (LatLng location : model.data)
+                        {
+                            builder.include(location);
+                            Marker marker = googleMap.addMarker(
+                                    new MarkerOptions()
+                                            .position(location)
+                            );
+
+                            markers.add(marker);
+                        }
+                        break;
                 }
 
                 if (model.data.size() > 0)
@@ -159,6 +171,9 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                                             googleMap.clear();
                                             polylineOptions.add(latLng);
                                             googleMap.addPolyline(polylineOptions);
+                                            break;
+                                        default:
+                                            markers.add(googleMap.addMarker(new MarkerOptions().position(latLng)));
                                             break;
                                     }
 

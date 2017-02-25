@@ -3,13 +3,18 @@ package com.mnm.sense.trackers;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
+import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.util.Pair;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
 import com.google.android.gms.maps.model.LatLng;
+import com.mnm.sense.Locator;
 import com.mnm.sense.R;
 import com.mnm.sense.Repository;
 import com.mnm.sense.SenseApp;
@@ -30,6 +35,8 @@ import com.ubhave.sensormanager.ESSensorManager;
 import com.ubhave.sensormanager.SensorDataListener;
 import com.ubhave.sensormanager.config.pull.PullSensorConfig;
 import com.ubhave.sensormanager.data.SensorData;
+import com.ubhave.sensormanager.data.pull.AbstractContentReaderEntry;
+import com.ubhave.sensormanager.data.pull.AbstractContentReaderListData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -101,6 +108,31 @@ public abstract class Tracker implements SensorDataListener
     public void onDataSensed(SensorData data)
     {
         Log.d("data", "sensed");
+
+        Locator locator = Locator.instance();
+        Location location = locator.locateAt(data.getTimestamp());
+
+        if (location == null)
+        {
+            synchronized (locator)
+            {
+                try
+                {
+                    locator.wait();
+                    location = locator.lastLocation();
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        AbstractContentReaderListData listData = (AbstractContentReaderListData) data;
+        listData.setLocation(Pair.create(location.getLatitude(), location.getLongitude()));
+
+        Log.d("onDataSensed", location.toString());
+
         correctData(data);
 
         sensorData.add(data);
@@ -369,7 +401,8 @@ public abstract class Tracker implements SensorDataListener
 
         clearViews();
 
-        restart();
+        if (isOn)
+            restart();
     }
 
     public void setLimit(int value)

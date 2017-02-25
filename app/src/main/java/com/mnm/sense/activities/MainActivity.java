@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.github.mikephil.charting.utils.Utils;
 import com.mnm.sense.DepthPageTransformer;
 import com.mnm.sense.GridItem;
+import com.mnm.sense.Locator;
 import com.mnm.sense.R;
 import com.mnm.sense.SenseApp;
 import com.mnm.sense.ViewPagerAdapter;
@@ -108,7 +109,8 @@ public class MainActivity extends AppCompatActivity
                         Manifest.permission.READ_CONTACTS,
                         Manifest.permission.READ_CALL_LOG,
                         Manifest.permission.READ_PHONE_STATE,
-                        Manifest.permission.PACKAGE_USAGE_STATS
+                        Manifest.permission.PACKAGE_USAGE_STATS,
+                        Manifest.permission.RECORD_AUDIO
                 }, 1);
 
         checkRunningAppsPermission();
@@ -138,21 +140,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-//        Tracker tracker = trackers.get(requestCode);
-//
-//        if (tracker != null)
-//        {
-//            boolean result = grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
-//
-//            try
-//            {
-//                tracker.onPermissionResponse(result);
-//            }
-//            catch (ESException e)
-//            {
-//                e.printStackTrace();
-//            }
-//        }
+        Locator.instance().requestLocationUpdates();
     }
 
     private void setupViewPager(ViewPager viewPager)

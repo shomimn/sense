@@ -1,11 +1,16 @@
 package com.mnm.sense.trackers;
 
+import android.location.Location;
+import android.util.Pair;
+
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
 import com.mnm.sense.R;
 import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
@@ -22,6 +27,7 @@ import com.mnm.sense.models.TextModel;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.config.pull.ContentReaderConfig;
 import com.ubhave.sensormanager.data.SensorData;
+import com.ubhave.sensormanager.data.pull.LocationData;
 import com.ubhave.sensormanager.data.pull.SMSContentListData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
@@ -52,14 +58,17 @@ public class SMSContentTracker extends Tracker
             .text(new Visualization(1, 1, false))
             .barChart(new Visualization(2, 3, false))
             .pieChart(new Visualization(2, 3, false))
+            .map(new Visualization(2, 3, false))
             .attribute(ATTRIBUTE_TYPE)
             .adapters(new SMSTypeTextAdapter(),
                     new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
-                    new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY))
+                    new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
+                    new SMSLatLngAdapter())
             .attribute(ATTRIBUTE_PERSON)
             .adapters(new SMSPersonTextAdapter(),
                     new SMSBarAdapter("person"),
-                    new SMSPieAdapter("person"));
+                    new SMSPieAdapter("person"),
+                    new SMSLatLngAdapter());
 
     }
 
@@ -69,6 +78,56 @@ public class SMSContentTracker extends Tracker
         sensorManager().setSensorConfig(type, ContentReaderConfig.TIME_LIMIT_MILLIS, Util.today());
 
         super.start();
+    }
+}
+
+class SMSLatLngAdapter extends VisualizationAdapter<GoogleMap, LatLng>
+{
+    @Override
+    public Object adapt(ArrayList<SensorData> data)
+    {
+        if (data.size() == 0)
+            return null;
+
+        LatLng latLng = adaptOne(data.get(data.size() - 1));
+        ArrayList<LatLng> result = new ArrayList<>();
+
+        result.add(latLng);
+
+        return result;
+    }
+
+    @Override
+    public LatLng adaptOne(SensorData data)
+    {
+        SMSContentListData smsData = (SMSContentListData) data;
+        Pair<Double, Double> location = smsData.getLocation();
+
+        return new LatLng(location.first, location.second);
+    }
+
+    @Override
+    public ArrayList<LatLng> adaptAll(ArrayList<SensorData> data)
+    {
+        return null;
+    }
+
+    @Override
+    public void prepareView(GoogleMap view)
+    {
+
+    }
+
+    @Override
+    public VisualizationAdapter<GoogleMap, LatLng> newInstance()
+    {
+        return new com.mnm.sense.adapters.LocationLatLngAdapter();
+    }
+
+    @Override
+    public Object aggregate(ArrayList<SensorData> data)
+    {
+        return null;
     }
 }
 

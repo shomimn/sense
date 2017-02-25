@@ -2,6 +2,7 @@ package com.ubhave.sensormanager.data.pull;
 
 
 import android.graphics.drawable.Drawable;
+import android.util.Pair;
 
 import java.util.concurrent.TimeUnit;
 
@@ -12,6 +13,7 @@ public class RunningApplicationData
     private Drawable icon;
     private long lastTimeUsed;
     private String packageName;
+    private Pair<Double, Double> location;
 
     public RunningApplicationData(String packageName, String n, long ft, Drawable i, long ltu)
     {
@@ -65,5 +67,15 @@ public class RunningApplicationData
     public void setIcon(Drawable i)
     {
         icon = i;
+    }
+
+    public Pair<Double, Double> getLocation()
+    {
+        return location;
+    }
+
+    public void setLocation(Pair<Double, Double> location)
+    {
+        this.location = location;
     }
 }

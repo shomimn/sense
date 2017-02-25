@@ -63,11 +63,20 @@ public class Locator implements LocationListener
         Long prev = locationMap.floorKey(timestamp);
         Long next = locationMap.ceilingKey(timestamp);
 
+        if (prev == null && next == null)
+            return null;
+
         if (prev == null)
-            return next;
+        {
+            long nextDiff = next - timestamp;
+            return nextDiff <= ACCURACY_THRESHOLD ? next : null;
+        }
 
         if (next == null)
-            return prev;
+        {
+            long prevDiff = timestamp - prev;
+            return prevDiff <= ACCURACY_THRESHOLD ? prev : null;
+        }
 
         long prevDiff = timestamp - prev;
         long nextDiff = next - timestamp;
@@ -95,7 +104,8 @@ public class Locator implements LocationListener
         String provider = locationManager.getBestProvider(criteria, true);
         try
         {
-            locationManager.requestLocationUpdates(provider, 5000, 0, this);
+//            locationManager.requestLocationUpdates(provider, 5000, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, this);
         }
         catch (SecurityException e)
         {

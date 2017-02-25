@@ -105,34 +105,11 @@ public abstract class Tracker implements SensorDataListener
     }
 
     @Override
-    public void onDataSensed(SensorData data)
+        public void onDataSensed(SensorData data)
     {
         Log.d("data", "sensed");
 
-        Locator locator = Locator.instance();
-        Location location = locator.locateAt(data.getTimestamp());
-
-        if (location == null)
-        {
-            synchronized (locator)
-            {
-                try
-                {
-                    locator.wait();
-                    location = locator.lastLocation();
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        AbstractContentReaderListData listData = (AbstractContentReaderListData) data;
-        listData.setLocation(Pair.create(location.getLatitude(), location.getLongitude()));
-
-        Log.d("onDataSensed", location.toString());
-
+        attachLocation(data);
         correctData(data);
 
         sensorData.add(data);
@@ -156,6 +133,30 @@ public abstract class Tracker implements SensorDataListener
     public void onCrossingLowBatteryThreshold(boolean isBelowThreshold)
     {
 
+    }
+
+    protected void attachLocation(SensorData data)
+    {
+        Locator locator = Locator.instance();
+        Location location = locator.locateAt(data.getTimestamp());
+
+        if (location == null)
+        {
+            synchronized (locator)
+            {
+                try
+                {
+                    locator.wait();
+                    location = locator.lastLocation();
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        Log.d("onDataSensed", location.toString());
     }
 
     // Avoid instantiating the sensor manager before getting all required permissions

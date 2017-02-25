@@ -144,6 +144,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                 if (model.data.size() > 0)
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
 
+                model.shouldUpdate = false;
                 if (model.shouldUpdate)
                 {
                     tracker.updateCallbacks.put(visualization, new Tracker.UpdateCallback()

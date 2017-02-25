@@ -22,6 +22,8 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.sensormanager.data.pull;
 
+import android.util.Pair;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -33,6 +35,8 @@ public abstract class AbstractContentReaderEntry
 	private final static SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS dd MM yyyy Z z", Locale.US);
 	private final static String LOCAL_TIME = "local_time_when_sensed";
 	protected HashMap<String, String> contentMap;
+
+	protected Pair<Double, Double> location = null;
 	
 	public AbstractContentReaderEntry()
 	{
@@ -78,4 +82,14 @@ public abstract class AbstractContentReaderEntry
 	}
 	
 	protected abstract String getTimestampKey();
+
+	public Pair<Double, Double> getLocation()
+	{
+		return location;
+	}
+
+	public void setLocation(Pair<Double, Double> location)
+	{
+		this.location = location;
+	}
 }

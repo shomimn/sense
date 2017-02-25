@@ -1,45 +1,34 @@
 package com.mnm.sense.trackers;
 
-import android.location.Location;
 import android.util.Pair;
 
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.data.PieData;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.mnm.sense.ContentLocator;
 import com.mnm.sense.R;
 import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
-import com.mnm.sense.adapters.BatteryLineAdapter;
-import com.mnm.sense.adapters.ContentAdapter;
 import com.mnm.sense.adapters.SMSBarAdapter;
 import com.mnm.sense.adapters.SMSPersonTextAdapter;
 import com.mnm.sense.adapters.SMSPieAdapter;
 import com.mnm.sense.adapters.SMSTypeTextAdapter;
 import com.mnm.sense.adapters.VisualizationAdapter;
-import com.mnm.sense.models.BarChartModel;
-import com.mnm.sense.models.PieChartModel;
-import com.mnm.sense.models.TextModel;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.config.pull.ContentReaderConfig;
 import com.ubhave.sensormanager.data.SensorData;
-import com.ubhave.sensormanager.data.pull.LocationData;
-import com.ubhave.sensormanager.data.pull.SMSContentListData;
+import com.ubhave.sensormanager.data.pull.AbstractContentReaderEntry;
+import com.ubhave.sensormanager.data.pull.AbstractContentReaderListData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
-import java.util.Map;
 
 public class SMSContentTracker extends Tracker
 {
     public static final String ATTRIBUTE_TYPE = "Type";
     public static final String ATTRIBUTE_PERSON = "Person";
+
+    private ContentLocator locator = new ContentLocator();
 
     public SMSContentTracker() throws ESException
     {
@@ -63,13 +52,14 @@ public class SMSContentTracker extends Tracker
             .adapters(new SMSTypeTextAdapter(),
                     new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
                     new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
-                    new SMSLatLngAdapter())
+                    new ContentLatLngAdapter()
+            )
             .attribute(ATTRIBUTE_PERSON)
             .adapters(new SMSPersonTextAdapter(),
                     new SMSBarAdapter("person"),
                     new SMSPieAdapter("person"),
-                    new SMSLatLngAdapter());
-
+                    new ContentLatLngAdapter()
+            );
     }
 
     @Override
@@ -79,9 +69,15 @@ public class SMSContentTracker extends Tracker
 
         super.start();
     }
+
+    @Override
+    protected void attachLocation(SensorData data)
+    {
+        locator.attachLocation((AbstractContentReaderListData) data);
+    }
 }
 
-class SMSLatLngAdapter extends VisualizationAdapter<GoogleMap, LatLng>
+class ContentLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<LatLng>>
 {
     @Override
     public Object adapt(ArrayList<SensorData> data)
@@ -89,25 +85,28 @@ class SMSLatLngAdapter extends VisualizationAdapter<GoogleMap, LatLng>
         if (data.size() == 0)
             return null;
 
-        LatLng latLng = adaptOne(data.get(data.size() - 1));
+        return adaptOne(data.get(data.size() - 1));
+    }
+
+    @Override
+    public ArrayList<LatLng> adaptOne(SensorData data)
+    {
+        AbstractContentReaderListData listData = (AbstractContentReaderListData) data;
         ArrayList<LatLng> result = new ArrayList<>();
 
-        result.add(latLng);
+        for (AbstractContentReaderEntry entry : listData.getContentList())
+        {
+            Pair<Double, Double> location = entry.getLocation();
+
+            if (location != null)
+                result.add(new LatLng(location.first, location.second));
+        }
 
         return result;
     }
 
     @Override
-    public LatLng adaptOne(SensorData data)
-    {
-        SMSContentListData smsData = (SMSContentListData) data;
-        Pair<Double, Double> location = smsData.getLocation();
-
-        return new LatLng(location.first, location.second);
-    }
-
-    @Override
-    public ArrayList<LatLng> adaptAll(ArrayList<SensorData> data)
+    public ArrayList<ArrayList<LatLng>> adaptAll(ArrayList<SensorData> data)
     {
         return null;
     }
@@ -119,15 +118,28 @@ class SMSLatLngAdapter extends VisualizationAdapter<GoogleMap, LatLng>
     }
 
     @Override
-    public VisualizationAdapter<GoogleMap, LatLng> newInstance()
+    public VisualizationAdapter<GoogleMap, ArrayList<LatLng>> newInstance()
     {
-        return new com.mnm.sense.adapters.LocationLatLngAdapter();
+        return new ContentLatLngAdapter();
+    }
+
+    @Override
+    public boolean isAggregating()
+    {
+        return true;
     }
 
     @Override
     public Object aggregate(ArrayList<SensorData> data)
     {
-        return null;
+        ArrayList<LatLng> result = new ArrayList<>();
+        HashMap<String, ArrayList<SensorData>> dataByDays = partitionByDays(data);
+
+        for (ArrayList<SensorData> dailyData : dataByDays.values())
+            for (SensorData sensorData : dailyData)
+                result.addAll(adaptOne(sensorData));
+
+        return result;
     }
 }
 

@@ -1,5 +1,6 @@
 package com.mnm.sense.trackers;
 
+import com.mnm.sense.ContentLocator;
 import com.mnm.sense.R;
 import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
@@ -7,18 +8,18 @@ import com.mnm.sense.adapters.CallsBarAdapter;
 import com.mnm.sense.adapters.CallsPersonTextAdapter;
 import com.mnm.sense.adapters.CallsPieAdapter;
 import com.mnm.sense.adapters.CallsTypeTextAdapter;
-import com.mnm.sense.adapters.VisualizationAdapter;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.config.pull.ContentReaderConfig;
+import com.ubhave.sensormanager.data.SensorData;
+import com.ubhave.sensormanager.data.pull.AbstractContentReaderListData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
-
-import java.util.Calendar;
-import java.util.HashMap;
 
 public class CallLogTracker extends Tracker
 {
     public static final String ATTRIBUTE_TYPE = "Type";
     public static final String ATTRIBUTE_PERSON = "Person";
+
+    private ContentLocator locator = new ContentLocator();
 
     public CallLogTracker() throws ESException
     {
@@ -37,14 +38,19 @@ public class CallLogTracker extends Tracker
             .text(new Visualization(1, 1, false))
             .pieChart(new Visualization(2, 3, false))
             .barChart(new Visualization(1, 3, false))
+            .map(new Visualization(2, 3, false))
             .attribute(ATTRIBUTE_TYPE)
             .adapters(new CallsTypeTextAdapter(),
                     new CallsPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
-                    new CallsBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY))
+                    new CallsBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
+                    new ContentLatLngAdapter()
+            )
             .attribute(ATTRIBUTE_PERSON)
             .adapters(new CallsPersonTextAdapter(),
                     new CallsPieAdapter("person"),
-                    new CallsBarAdapter("person"));
+                    new CallsBarAdapter("person"),
+                    new ContentLatLngAdapter()
+            );
     }
 
     @Override
@@ -53,6 +59,12 @@ public class CallLogTracker extends Tracker
         sensorManager().setSensorConfig(type, ContentReaderConfig.TIME_LIMIT_MILLIS, Util.today());
 
         super.start();
+    }
+
+    @Override
+    protected void attachLocation(SensorData data)
+    {
+        locator.attachLocation((AbstractContentReaderListData) data);
     }
 }
 

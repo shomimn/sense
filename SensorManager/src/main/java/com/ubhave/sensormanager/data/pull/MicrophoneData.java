@@ -38,7 +38,7 @@ public class MicrophoneData extends SensorData
 	private long[] timestampArray;
 	private String mediaFilePath;
 	private Pair<Double, Double> location = null;
-
+	private int averageDecibels = 0;
 
 	public MicrophoneData(long senseStartTimestamp, SensorConfig sensorConfig)
 	{
@@ -48,6 +48,17 @@ public class MicrophoneData extends SensorData
 	public void setMaxAmplitudeArray(int[] maxAmplitudeArray)
 	{
 		this.maxAmplitudeArray = maxAmplitudeArray;
+
+		averageDecibels = 0;
+
+		ArrayList<Integer> decibelsArray = getDecibelsArray();
+
+		for(int decibel : decibelsArray)
+			averageDecibels += decibel;
+
+		averageDecibels /= decibelsArray.size();
+
+
 	}
 
 	public int[] getAmplitudeArray()
@@ -106,5 +117,15 @@ public class MicrophoneData extends SensorData
 	public void setLocation(Pair<Double, Double> location)
 	{
 		this.location = location;
+	}
+
+	public int getAverageDecibels()
+	{
+		return averageDecibels;
+	}
+
+	public void setAverageDecibels(int averageDecibels)
+	{
+		this.averageDecibels = averageDecibels;
 	}
 }

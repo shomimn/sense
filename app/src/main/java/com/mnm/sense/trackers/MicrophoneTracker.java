@@ -7,6 +7,7 @@ import android.util.Pair;
 import com.mnm.sense.Locator;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.adapters.MicrophoneLatLngAdapter;
 import com.mnm.sense.adapters.MicrophoneLineAdapter;
 import com.mnm.sense.adapters.MicrophoneTextAdapter;
 import com.ubhave.sensormanager.ESException;
@@ -27,28 +28,26 @@ public class MicrophoneTracker extends Tracker
 
         attributes = new String[]{ATTRIBUTE_NOISE};
 
-        limit = new Limit("Noise threshold", 80, 1, 90);
+        limit = new Limit("Noise threshold", 70, 1, 90);
         limit.configurable = false;
 
-        MicrophoneTextAdapter textAdapter = new MicrophoneTextAdapter();
+        accent = R.color.redColorAccent;
+        theme = R.style.RedTheme;
 
         build()
                 .lineChart(new Visualization(2, 3, false))
-                .text(new Visualization(2, 3, false))
+                .map(new Visualization(2, 3, false))
                 .attribute(ATTRIBUTE_NOISE)
-                .adapters(new MicrophoneLineAdapter(),textAdapter);
-
+                .adapters(
+                        new MicrophoneLineAdapter(),
+                        new MicrophoneLatLngAdapter());
     }
 
     @Override
     public void limitNotification(SensorData data)
     {
         MicrophoneData micData = (MicrophoneData)data;
-        int average = 0;
-        for(int decibel : micData.getDecibelsArray())
-            average += decibel;
-
-        average /= micData.getDecibelsArray().size();
+        int average = micData.getAverageDecibels();
 
         if(average > limit.value)
         {

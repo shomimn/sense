@@ -147,7 +147,7 @@ public class SensorSettingsActivity extends AppCompatActivity
                     {
                         forInsertion.remove(key);
                         if (isDisplayed)
-                        forRemoval.add(key);
+                            forRemoval.add(key);
 
                         tracker.removeDefaultVisualization(key);
                     }
@@ -216,28 +216,27 @@ public class SensorSettingsActivity extends AppCompatActivity
         limitView.intervalSlider.setMax(tracker.limit.maxValue);
         limitView.intervalSlider.setProgress(tracker.limit.value);
 
-        if(tracker.limit.configurable)
+        limitView.cancel.setOnClickListener(new View.OnClickListener()
         {
-            limitView.cancel.setOnClickListener(new View.OnClickListener()
+            @Override
+            public void onClick(View view)
             {
-                @Override
-                public void onClick(View view)
-                {
-                    limitView.animateSlider(tracker.limit.value);
-                    limitView.hideButtons();
-                }
-            });
+                limitView.animateSlider(tracker.limit.value);
+                limitView.hideButtons();
+            }
+        });
 
-            limitView.confirm.setOnClickListener(new View.OnClickListener()
+        limitView.confirm.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
             {
-                @Override
-                public void onClick(View view)
-                {
-                    tracker.setLimit(limitView.intervalSlider.getProgress());
-                    limitView.hideButtons();
-                }
-            });
-        }
+                tracker.setLimit(limitView.intervalSlider.getProgress());
+                limitView.hideButtons();
+            }
+        });
+
+        limitView.setEnabled(tracker.limit.configurable);
     }
 
     public void setAccent()

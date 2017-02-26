@@ -26,8 +26,12 @@ import com.ubhave.sensormanager.config.SensorConfig;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
+import java.util.ArrayList;
+
 public class MicrophoneData extends SensorData
 {
+	public static final int LARGEST_AMPLITUDE_VALUE = 32767;
+
 	private int[] maxAmplitudeArray;
 	private long[] timestampArray;
 	private String mediaFilePath;
@@ -70,5 +74,23 @@ public class MicrophoneData extends SensorData
 	public int getSensorType()
 	{
 		return SensorUtils.SENSOR_TYPE_MICROPHONE;
+	}
+
+	public ArrayList<Integer> getDecibelsArray()
+	{
+		ArrayList<Integer> decibels = new ArrayList<>();
+
+		decibels.add(0);
+
+		for(int i = 1; i < maxAmplitudeArray.length; i++)
+			if(maxAmplitudeArray[i] != 0)
+				decibels.add(toDb(maxAmplitudeArray[i]));
+
+		return decibels;
+	}
+
+	private int toDb(int amplitude)
+	{
+		return 90 + (int)(20 * Math.log10((float)amplitude / (float)LARGEST_AMPLITUDE_VALUE));
 	}
 }

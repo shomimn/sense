@@ -24,13 +24,17 @@ package com.ubhave.sensormanager.sensors.pull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import android.Manifest;
 import android.content.Context;
 import android.media.MediaRecorder;
 
 import com.ubhave.sensormanager.ESException;
+import com.ubhave.sensormanager.config.SensorConfig;
 import com.ubhave.sensormanager.config.pull.MicrophoneConfig;
+import com.ubhave.sensormanager.config.pull.PullSensorConfig;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.MicrophoneData;
 import com.ubhave.sensormanager.process.pull.MicrophoneProcessor;
@@ -51,6 +55,7 @@ public class MicrophoneSensor extends AbstractMediaSensor
 	private ArrayList<Long> timestampList;
 	private MicrophoneData micData;
 	private boolean isRecording;
+	private ScheduledThreadPoolExecutor executor = new ScheduledThreadPoolExecutor(1);
 
 	public static MicrophoneSensor getSensor(Context context) throws ESException
 	{
@@ -145,8 +150,10 @@ public class MicrophoneSensor extends AbstractMediaSensor
 	public boolean startSensing()
 	{
 		isRecording = prepareToSense();
+
 		if (isRecording)
 		{
+			isSensing = true;
 			try
 			{
 				(new Thread()
@@ -168,6 +175,18 @@ public class MicrophoneSensor extends AbstractMediaSensor
 						}
 					}
 				}).start();
+				executor.schedule(new Runnable()
+				{
+					@Override
+					public void run()
+					{
+						synchronized (MicrophoneSensor.this)
+						{
+							MicrophoneSensor.this.notify();
+						}
+					}
+				}, (Long) sensorConfig.getParameter(PullSensorConfig.SENSE_WINDOW_LENGTH_MILLIS), TimeUnit.MILLISECONDS);
+
 				return true;
 			}
 			catch (Throwable e)
@@ -175,11 +194,15 @@ public class MicrophoneSensor extends AbstractMediaSensor
 				e.printStackTrace();
 				return false;
 			}
+
+
 		}
 		else
 		{
 			return false;
 		}
+
+
 	}
 
 	private static void sleep(long millis)
@@ -196,6 +219,8 @@ public class MicrophoneSensor extends AbstractMediaSensor
 
 	public void stopSensing()
 	{
+		isSensing = false;
+
 		synchronized (recorder)
 		{
 			try

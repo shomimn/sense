@@ -22,6 +22,7 @@ import com.ubhave.dataformatter.json.pull.SmsContentReaderFormatter;
 import com.ubhave.dataformatter.json.pull.StepCounterFormatter;
 import com.ubhave.dataformatter.json.pull.WifiFormatter;
 import com.ubhave.dataformatter.json.push.BatteryFormatter;
+import com.ubhave.dataformatter.json.push.CameraFormatter;
 import com.ubhave.dataformatter.json.push.ConnectionStateFormatter;
 import com.ubhave.dataformatter.json.push.ConnectionStrengthFormatter;
 import com.ubhave.dataformatter.json.push.PassiveLocationFormatter;
@@ -92,6 +93,8 @@ public abstract class DataFormatter
 				return new RunningApplicationFormatter(c);
 			case SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION:
 				return new ActivityRecognitionFormatter(c);
+			case SensorUtils.SENSOR_TYPE_CAMERA:
+				return new CameraFormatter(c);
 			default:
 				return null;
 		}

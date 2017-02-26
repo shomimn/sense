@@ -1,24 +1,26 @@
 package com.mnm.sense.adapters;
 
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.util.Pair;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.mnm.sense.R;
-import com.mnm.sense.SenseApp;
 import com.mnm.sense.Timestamp;
 import com.mnm.sense.Util;
 import com.mnm.sense.map.AttributedFeature;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.MicrophoneData;
+import com.ubhave.sensormanager.data.push.CameraData;
 
+import java.io.File;
 import java.util.ArrayList;
 
-public class MicrophoneLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<AttributedFeature>>
+public class CameraLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<AttributedFeature>>
 {
-
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {
@@ -45,24 +47,26 @@ public class MicrophoneLatLngAdapter extends VisualizationAdapter<GoogleMap, Arr
 
         for(SensorData data : dataList)
         {
-            MicrophoneData micData = (MicrophoneData) data;
+            CameraData cameraData = (CameraData) data;
 
-            Pair<Double, Double> location = micData.getLocation();
+            Pair<Double, Double> location = cameraData.getLocation();
 
             if(location != null)
             {
                 LatLng latLng = new LatLng(location.first, location.second);
 
-                Bitmap icon = Util.bitmapFromResource(R.drawable.ic_hearing_black_48dp, R.color.redColorAccent);
+                File image = new File(cameraData.getImagePath());
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                Bitmap icon = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
+                icon = Bitmap.createScaledBitmap(icon, 50, 50, true);
 
                 result.add(new AttributedFeature()
-                        .origin(R.drawable.ic_mic_black_48dp)
+                        .origin(R.drawable.ic_camera_alt_black_48dp)
                         .icon(icon)
-                        .text("Hearing damage")
+                        .text("Image taken at")
                         .latLng(latLng)
-                        .custom("Date:", Timestamp.from(micData.getTimestamp()).date())
-                        .custom("Time:", Timestamp.from(micData.getTimestamp()).time())
-                        .custom("Decibels:", String.valueOf(micData.getAverageDecibels() + " dBFS")));
+                        .custom("Date:", Timestamp.from(cameraData.getTimestamp()).date())
+                        .custom("Time:", Timestamp.from(cameraData.getTimestamp()).time()));
             }
         }
 

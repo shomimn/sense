@@ -51,6 +51,7 @@ import com.ubhave.sensormanager.sensors.pull.SMSContentReaderSensor;
 import com.ubhave.sensormanager.sensors.pull.StepCounterSensor;
 import com.ubhave.sensormanager.sensors.pull.WifiSensor;
 import com.ubhave.sensormanager.sensors.push.BatterySensor;
+import com.ubhave.sensormanager.sensors.push.CameraSensor;
 import com.ubhave.sensormanager.sensors.push.ConnectionStateSensor;
 import com.ubhave.sensormanager.sensors.push.ConnectionStrengthSensor;
 import com.ubhave.sensormanager.sensors.push.PassiveLocationSensor;
@@ -94,7 +95,7 @@ public class SensorUtils
 	public final static int SENSOR_TYPE_INTERACTION = 5026;
 	public final static int SENSOR_TYPE_RUNNING_APP = 5027;
 	public final static int SENSOR_TYPE_ACTIVITY_RECOGNITION = 5028;
-
+	public final static int SENSOR_TYPE_CAMERA = 5029;
 
 	public final static String SENSOR_NAME_ACCELEROMETER = "Accelerometer";
 	public final static String SENSOR_NAME_BATTERY = "Battery";
@@ -122,7 +123,7 @@ public class SensorUtils
 	public final static String SENSOR_NAME_INTERACTION = "Interaction";
 	public final static String SENSOR_NAME_RUNNING_APP = "RunningApplication";
 	public final static String SENSOR_NAME_ACTIVITY_RECOGNITION = "ActivityRecognition";
-
+	public final static String SENSOR_NAME_CAMERA = "Camera";
 
 	private static SensorEnum getSensor(int sensorType) throws ESException
 	{
@@ -233,6 +234,9 @@ public class SensorUtils
 				return RunningApplicationSensor.getSensor(context);
 			case SENSOR_TYPE_ACTIVITY_RECOGNITION:
 				return ActivityRecognitionSensor.getSensor(context);
+			case SENSOR_TYPE_CAMERA:
+				return CameraSensor.getSensor(context);
+
 			default:
 				throw new ESException(ESException.UNKNOWN_SENSOR_TYPE, "Unknown sensor id: " + id);
 		}

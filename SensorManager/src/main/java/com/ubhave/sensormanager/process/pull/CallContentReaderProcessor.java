@@ -15,10 +15,10 @@ import com.ubhave.sensormanager.data.pull.CallContentReaderEntry;
 
 public class CallContentReaderProcessor extends ContentReaderProcessor
 {
-	private final static String OUTGOING = "outgoing"; // CallLog.Calls.OUTGOING_TYPE
-	private final static String INCOMING = "incoming"; // CallLog.Calls.INCOMING_TYPE
-	private final static String MISSED = "missed"; // CallLog.Calls.MISSED_TYPE
-	private final static String REJECTED = "rejected"; // CallLog.Calls.REJECTED_TYPE
+	public final static String OUTGOING = "outgoing"; // CallLog.Calls.OUTGOING_TYPE
+	public final static String INCOMING = "incoming"; // CallLog.Calls.INCOMING_TYPE
+	public final static String MISSED = "missed"; // CallLog.Calls.MISSED_TYPE
+	public final static String REJECTED = "rejected"; // CallLog.Calls.REJECTED_TYPE
 	
 	public CallContentReaderProcessor(final Context c, boolean rw, boolean sp)
 	{

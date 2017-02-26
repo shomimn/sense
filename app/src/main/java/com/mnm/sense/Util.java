@@ -55,7 +55,13 @@ public class Util
         return coloredBitmap;
     }
 
-    public static Bitmap drawableToBitmap (Drawable drawable)
+    public static Bitmap bitmapFromResource(int resource, int colorResource)
+    {
+        return bitmapFromResource(SenseApp.context(), resource,
+                SenseApp.context().getResources().getColor(colorResource));
+    }
+
+    public static Bitmap drawableToBitmap(Drawable drawable)
     {
         Bitmap bitmap = null;
 

@@ -4,7 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -60,8 +62,48 @@ public class MarkerManager implements GoogleMap.OnMarkerClickListener
         int height = metrics.heightPixels;
         dialog.getWindow().setLayout((7 * width) / 8, height / 2);
 
+        final ImageView leftArrow = (ImageView) dialog.findViewById(R.id.left_arrow);
+        final ImageView rightArrow = (ImageView) dialog.findViewById(R.id.right_arrow);
+
+        final ArrayList<AttributedFeature> features = markers.get(marker.getPosition());
+
         ViewPager viewPager = (ViewPager) dialog.findViewById(R.id.marker_info);
-        viewPager.setAdapter(new MarkerInfoAdapter(context, markers.get(marker.getPosition())));
+        viewPager.setAdapter(new MarkerInfoAdapter(context, features));
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+            {
+                if (features.size() == 1)
+                {
+                    leftArrow.setVisibility(View.GONE);
+                    rightArrow.setVisibility(View.GONE);
+
+                    return;
+                }
+
+                leftArrow.setVisibility(View.VISIBLE);
+                rightArrow.setVisibility(View.VISIBLE);
+
+                if (position == 0)
+                    leftArrow.setVisibility(View.INVISIBLE);
+                else if (position == features.size() - 1)
+                    rightArrow.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onPageSelected(int position)
+            {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state)
+            {
+
+            }
+        });
 
         dialog.show();
 

@@ -14,13 +14,13 @@ import com.ubhave.sensormanager.data.pull.SMSContentReaderEntry;
 
 public class SMSContentReaderProcessor extends ContentReaderProcessor
 {
-	private static final String MESSAGE_TYPE_ALL    = "all";
-	private static final String MESSAGE_TYPE_INBOX  = "inbox";
-	private static final String MESSAGE_TYPE_SENT   = "sent";
-	private static final String MESSAGE_TYPE_DRAFT  = "draft";
-	private static final String MESSAGE_TYPE_OUTBOX = "outbox";
-	private static final String MESSAGE_TYPE_FAILED = "failed"; // for failed outgoing messages
-	private static final String MESSAGE_TYPE_QUEUED = "queued"; 
+	public static final String MESSAGE_TYPE_ALL    = "all";
+	public static final String MESSAGE_TYPE_INBOX  = "inbox";
+	public static final String MESSAGE_TYPE_SENT   = "sent";
+	public static final String MESSAGE_TYPE_DRAFT  = "draft";
+	public static final String MESSAGE_TYPE_OUTBOX = "outbox";
+	public static final String MESSAGE_TYPE_FAILED = "failed"; // for failed outgoing messages
+	public static final String MESSAGE_TYPE_QUEUED = "queued";
 	
 	public SMSContentReaderProcessor(final Context c, boolean rw, boolean sp)
 	{

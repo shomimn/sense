@@ -39,16 +39,17 @@ public abstract class ContentLatLngAdapter extends VisualizationAdapter<GoogleMa
             {
                 LatLng latLng = new LatLng(location.first, location.second);
                 String text = entry.toString();
+                String type = entry.get(ContentReaderConfig.SMS_CONTENT_TYPE_KEY);
                 long date = Long.parseLong(entry.get(ContentReaderConfig.SMS_CONTENT_DATE_KEY));
 
                 AttributedFeature attr = new AttributedFeature()
                         .latLng(latLng)
-                        .custom("Type:", entry.get(ContentReaderConfig.SMS_CONTENT_TYPE_KEY))
+                        .custom("Type:", type)
                         .custom("Contact:", entry.get("person"))
                         .custom("Date:", Timestamp.from(date).date())
                         .custom("Time:", Timestamp.from(date).time());
 
-                populate(attr, entry);
+                populate(attr, entry, type);
 
                 result.add(attr);
             }
@@ -83,13 +84,15 @@ public abstract class ContentLatLngAdapter extends VisualizationAdapter<GoogleMa
 
         for (ArrayList<SensorData> dailyData : dataByDays.values())
         {
-            SensorData last = dailyData.get(dailyData.size() - 1);
+//            SensorData last = dailyData.get(dailyData.size() - 1);
+//            result.addAll(adaptOne(last));
 
-            result.addAll(adaptOne(last));
+            for (SensorData sensorData : dailyData)
+                result.addAll(adaptOne(sensorData));
         }
 
         return result;
     }
 
-    public abstract void populate(AttributedFeature attr, AbstractContentReaderEntry entry);
+    public abstract void populate(AttributedFeature attr, AbstractContentReaderEntry entry, String type);
 }

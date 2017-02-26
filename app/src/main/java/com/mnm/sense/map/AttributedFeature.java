@@ -1,24 +1,27 @@
 package com.mnm.sense.map;
 
+import android.graphics.Bitmap;
+
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
-public class AttributedPosition
+public class AttributedFeature
 {
     private int origin;
-    private int icon;
+    private Bitmap icon;
     private String text;
     private LatLng latLng;
     private LinkedHashMap<String, String> customAttributes = new LinkedHashMap<>();
 
-    public int icon()
+    public Bitmap icon()
     {
         return icon;
     }
 
-    public AttributedPosition icon(int icon)
+    public AttributedFeature icon(Bitmap icon)
     {
         this.icon = icon;
 
@@ -30,7 +33,7 @@ public class AttributedPosition
         return text;
     }
 
-    public AttributedPosition text(String text)
+    public AttributedFeature text(String text)
     {
         this.text = text;
 
@@ -42,7 +45,7 @@ public class AttributedPosition
         return latLng;
     }
 
-    public AttributedPosition latLng(LatLng latLng)
+    public AttributedFeature latLng(LatLng latLng)
     {
         this.latLng = latLng;
 
@@ -54,7 +57,7 @@ public class AttributedPosition
         return origin;
     }
 
-    public AttributedPosition origin(int origin)
+    public AttributedFeature origin(int origin)
     {
         this.origin = origin;
 
@@ -66,7 +69,7 @@ public class AttributedPosition
         return customAttributes;
     }
 
-    public AttributedPosition custom(String key, String value)
+    public AttributedFeature custom(String key, String value)
     {
         customAttributes.put(key, value);
 

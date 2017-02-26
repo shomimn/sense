@@ -161,7 +161,7 @@
     <orderEntry type="library" exported="" name="appcompat-v7-25.1.0" level="project" />
     <orderEntry type="library" exported="" name="multislider-1.3" level="project" />
     <orderEntry type="library" exported="" name="recyclerview-v7-25.1.0" level="project" />
-    <orderEntry type="module" module-name="SensorDataManager" exported="" />
+    <orderEntry type="module" module-name="sensorDataManager" exported="" />
     <orderEntry type="module" module-name="SensorManager" exported="" />
     <orderEntry type="library" exported="" name="SensorDataManager-unspecified" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-24.0.0" level="project" />

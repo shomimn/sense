@@ -3,7 +3,6 @@ package com.mnm.sense.map;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v4.view.PagerAdapter;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.maps.model.Marker;
 import com.mnm.sense.R;
 
 import java.util.ArrayList;
@@ -21,9 +19,9 @@ import java.util.Map;
 public class MarkerInfoAdapter extends PagerAdapter
 {
     private Context context;
-    private ArrayList<Pair<Marker, AttributedPosition>> markerInfo;
+    private ArrayList<AttributedFeature> markerInfo;
 
-    public MarkerInfoAdapter(Context c, ArrayList<Pair<Marker, AttributedPosition>> info)
+    public MarkerInfoAdapter(Context c, ArrayList<AttributedFeature> info)
     {
         context = c;
         markerInfo = info;
@@ -32,7 +30,7 @@ public class MarkerInfoAdapter extends PagerAdapter
     @Override
     public Object instantiateItem(ViewGroup container, int position)
     {
-        AttributedPosition attr = markerInfo.get(position).second;
+        AttributedFeature attr = markerInfo.get(position);
         View view = LayoutInflater.from(container.getContext()).inflate(R.layout.marker_info_item, container, false);
 
         populateSubviews(view, attr);
@@ -59,7 +57,7 @@ public class MarkerInfoAdapter extends PagerAdapter
         return view == object;
     }
 
-    public void populateSubviews(View view, AttributedPosition attr)
+    public void populateSubviews(View view, AttributedFeature attr)
     {
         ImageView imageView = (ImageView) view.findViewById(R.id.marker_info_image);
         TextView textView = (TextView) view.findViewById(R.id.marker_info_text);

@@ -16,7 +16,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
-import com.mnm.sense.map.AttributedPosition;
+import com.mnm.sense.map.AttributedFeature;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.map.MarkerManager;
@@ -64,10 +64,12 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
 
                 googleMap.clear();
 
-                for (AttributedPosition attr : model.data)
+                for (AttributedFeature attr : model.data)
                 {
-                    renderer.renderMarker(attr);
+                    renderer.include(attr);
                 }
+
+                renderer.render();
 
                 googleMap.setOnMarkerClickListener(markerManager);
 

@@ -45,6 +45,15 @@
             </intent-filter>
         </activity>
 
+        <receiver
+            android:name=".CameraEventReceiver"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="android.hardware.action.NEW_PICTURE" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+        </receiver>
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDSvPNdlAUlfQlnRSoNquhA_CZkx23zXH8"/>

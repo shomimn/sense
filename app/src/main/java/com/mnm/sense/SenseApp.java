@@ -149,7 +149,7 @@ public class SenseApp extends Application
         Timestamp now = Timestamp.now();
         Timestamp then = Timestamp.startOfToday().advance(Calendar.DAY_OF_MONTH, 1);
 
-        Log.d("Purge", "Purging data at " + then.time());
+        Log.d("Purge", "Purging data at " + then.date() + " " + then.time());
 
         handler.postDelayed(purgeTask, then.millis() - now.millis());
     }

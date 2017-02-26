@@ -8,7 +8,8 @@ import java.util.Calendar;
 public class Timestamp
 {
     private Calendar calendar = Calendar.getInstance();
-    private SimpleDateFormat formatter = (SimpleDateFormat) DateFormat.getDateInstance();
+    private SimpleDateFormat dateFormatter = (SimpleDateFormat) DateFormat.getDateInstance();
+    private SimpleDateFormat timeFormatter = (SimpleDateFormat) DateFormat.getTimeInstance();
 
     private Timestamp()
     {
@@ -26,12 +27,12 @@ public class Timestamp
 
     public String date()
     {
-        return formatter.format(calendar.getTime());
+        return dateFormatter.format(calendar.getTime());
     }
 
     public String time()
     {
-        return calendar.getTime().toString();
+        return timeFormatter.format(calendar.getTime());
     }
 
     public Timestamp set(int what, int when)
@@ -53,10 +54,17 @@ public class Timestamp
         return new Timestamp();
     }
 
+    public static Timestamp from(long millis)
+    {
+        Timestamp timestamp = new Timestamp();
+        timestamp.calendar.setTimeInMillis(millis);
+
+        return timestamp;
+    }
+
     public static Timestamp startOfToday()
     {
         Timestamp today = new Timestamp();
-
         today.set(Calendar.HOUR_OF_DAY, 0)
                 .set(Calendar.MINUTE, 0)
                 .set(Calendar.SECOND, 0);
@@ -67,7 +75,6 @@ public class Timestamp
     public static Timestamp endOfToday()
     {
         Timestamp today = new Timestamp();
-
         today.set(Calendar.HOUR_OF_DAY, 23)
                 .set(Calendar.MINUTE, 59)
                 .set(Calendar.SECOND, 59);

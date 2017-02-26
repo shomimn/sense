@@ -22,4 +22,11 @@ public class Visualization
         cols = c;
         isDisplayed = displayed;
     }
+
+    public Visualization(int r, int c)
+    {
+        rows = r;
+        cols = c;
+        isDisplayed = false;
+    }
 }

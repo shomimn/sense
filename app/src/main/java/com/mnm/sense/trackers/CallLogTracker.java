@@ -43,13 +43,13 @@ public class CallLogTracker extends Tracker
             .adapters(new CallsTypeTextAdapter(),
                     new CallsPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
                     new CallsBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
-                    new ContentLatLngAdapter()
+                    new CallsLatLngAdapter()
             )
             .attribute(ATTRIBUTE_PERSON)
             .adapters(new CallsPersonTextAdapter(),
                     new CallsPieAdapter("person"),
                     new CallsBarAdapter("person"),
-                    new ContentLatLngAdapter()
+                    new CallsLatLngAdapter()
             );
     }
 

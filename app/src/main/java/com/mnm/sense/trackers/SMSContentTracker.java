@@ -4,8 +4,10 @@ import android.util.Pair;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.mnm.sense.AttributedPosition;
 import com.mnm.sense.ContentLocator;
 import com.mnm.sense.R;
+import com.mnm.sense.Timestamp;
 import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.SMSBarAdapter;
@@ -52,13 +54,13 @@ public class SMSContentTracker extends Tracker
             .adapters(new SMSTypeTextAdapter(),
                     new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
                     new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
-                    new ContentLatLngAdapter()
+                    new SMSLatLngAdapter()
             )
             .attribute(ATTRIBUTE_PERSON)
             .adapters(new SMSPersonTextAdapter(),
                     new SMSBarAdapter("person"),
                     new SMSPieAdapter("person"),
-                    new ContentLatLngAdapter()
+                    new SMSLatLngAdapter()
             );
     }
 
@@ -77,7 +79,7 @@ public class SMSContentTracker extends Tracker
     }
 }
 
-class ContentLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<LatLng>>
+abstract class ContentLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<AttributedPosition>>
 {
     @Override
     public Object adapt(ArrayList<SensorData> data)
@@ -89,24 +91,39 @@ class ContentLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<Lat
     }
 
     @Override
-    public ArrayList<LatLng> adaptOne(SensorData data)
+    public ArrayList<AttributedPosition> adaptOne(SensorData data)
     {
         AbstractContentReaderListData listData = (AbstractContentReaderListData) data;
-        ArrayList<LatLng> result = new ArrayList<>();
+        ArrayList<AttributedPosition> result = new ArrayList<>();
 
         for (AbstractContentReaderEntry entry : listData.getContentList())
         {
             Pair<Double, Double> location = entry.getLocation();
 
             if (location != null)
-                result.add(new LatLng(location.first, location.second));
+            {
+                LatLng latLng = new LatLng(location.first, location.second);
+                String text = entry.toString();
+                long date = Long.parseLong(entry.get(ContentReaderConfig.SMS_CONTENT_DATE_KEY));
+
+                AttributedPosition attr = new AttributedPosition()
+                        .latLng(latLng)
+                        .custom("Type:", entry.get(ContentReaderConfig.SMS_CONTENT_TYPE_KEY))
+                        .custom("Contact:", entry.get("person"))
+                        .custom("Date:", Timestamp.from(date).date())
+                        .custom("Time:", Timestamp.from(date).time());
+
+                populate(attr, entry);
+
+                result.add(attr);
+            }
         }
 
         return result;
     }
 
     @Override
-    public ArrayList<ArrayList<LatLng>> adaptAll(ArrayList<SensorData> data)
+    public ArrayList<ArrayList<AttributedPosition>> adaptAll(ArrayList<SensorData> data)
     {
         return null;
     }
@@ -118,12 +135,6 @@ class ContentLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<Lat
     }
 
     @Override
-    public VisualizationAdapter<GoogleMap, ArrayList<LatLng>> newInstance()
-    {
-        return new ContentLatLngAdapter();
-    }
-
-    @Override
     public boolean isAggregating()
     {
         return true;
@@ -132,7 +143,7 @@ class ContentLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<Lat
     @Override
     public Object aggregate(ArrayList<SensorData> data)
     {
-        ArrayList<LatLng> result = new ArrayList<>();
+        ArrayList<AttributedPosition> result = new ArrayList<>();
         HashMap<String, ArrayList<SensorData>> dataByDays = partitionByDays(data);
 
         for (ArrayList<SensorData> dailyData : dataByDays.values())
@@ -141,5 +152,41 @@ class ContentLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<Lat
 
         return result;
     }
+
+    public abstract void populate(AttributedPosition attr, AbstractContentReaderEntry entry);
 }
 
+class SMSLatLngAdapter extends ContentLatLngAdapter
+{
+    @Override
+    public void populate(AttributedPosition attr, AbstractContentReaderEntry entry)
+    {
+        attr.text("SMS")
+            .origin(R.drawable.ic_sms_black_48dp)
+            .custom("Length:", entry.get("bodyLength"))
+            .custom("Word count:", entry.get("bodyWordCount"));
+    }
+
+    @Override
+    public SMSLatLngAdapter newInstance()
+    {
+        return new SMSLatLngAdapter();
+    }
+}
+
+class CallsLatLngAdapter extends ContentLatLngAdapter
+{
+    @Override
+    public void populate(AttributedPosition attr, AbstractContentReaderEntry entry)
+    {
+        attr.text("Calls")
+            .origin(R.drawable.ic_phone_in_talk_black_48dp)
+            .custom("Duration:", entry.get("duration") + " s");
+    }
+
+    @Override
+    public CallsLatLngAdapter newInstance()
+    {
+        return new CallsLatLngAdapter();
+    }
+}

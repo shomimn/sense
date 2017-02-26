@@ -1,16 +1,6 @@
 package com.mnm.sense.initializers;
 
-
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -22,21 +12,17 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
-import com.google.android.gms.maps.model.TileOverlayOptions;
-import com.google.maps.android.SphericalUtil;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
+import com.mnm.sense.AttributedPosition;
 import com.mnm.sense.R;
-import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.map.MarkerManager;
 import com.mnm.sense.models.MapModel;
-import com.mnm.sense.trackers.LocationTracker;
 import com.mnm.sense.trackers.Tracker;
 import com.ubhave.sensormanager.data.SensorData;
 
@@ -70,76 +56,29 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
 
                 final AppCompatActivity activity = (AppCompatActivity) context;
                 final Tracker tracker = model.tracker;
-                final ArrayList<Marker> markers = new ArrayList<>();
+
+                final MarkerManager markerManager = new MarkerManager(context);
                 final PolylineOptions polylineOptions = new PolylineOptions();
                 final LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 final HeatmapTileProvider.Builder heatmapBuilder = new HeatmapTileProvider.Builder();
 
                 googleMap.clear();
 
-                switch (model.attribute)
+                for (AttributedPosition attr : model.data)
                 {
-                    case LocationTracker.ATTRIBUTE_MARKER:
-                        for (LatLng location : model.data)
-                        {
-                            builder.include(location);
-                            Marker marker = googleMap.addMarker(
-                                    new MarkerOptions()
-                                            .position(location)
-                            );
+                    LatLng latLng = attr.latLng();
 
-                            markers.add(marker);
-                        }
-                        break;
-                    case LocationTracker.ATTRIBUTE_PATH:
-                        Bitmap arrow = Util.bitmapFromResource(context, R.drawable.ic_navigation_black_24dp, Color.RED);
-//                        for (LatLng location : model.data)
-                        for (int i = 0; i < model.data.size(); ++i)
-                        {
-                            LatLng location = model.data.get(i);
+                    builder.include(latLng);
+                    Marker marker = googleMap.addMarker(
+                            new MarkerOptions()
+                                    .position(latLng)
+                                    .title(attr.text())
+                    );
 
-                            builder.include(location);
-                            polylineOptions.add(location);
-
-                            if (i == model.data.size() - 1)
-                                continue;
-
-                            LatLng nextLocation = model.data.get(i + 1);
-
-                            if (SphericalUtil.computeDistanceBetween(location, nextLocation) < 5)
-                                continue;
-
-                            float heading = (float) SphericalUtil.computeHeading(location, nextLocation);
-
-                            googleMap.addMarker(new MarkerOptions().position(location).flat(true).icon(BitmapDescriptorFactory.fromBitmap(arrow)).anchor(0.5f, 0.5f).rotation(heading));
-                        }
-                        googleMap.addPolyline(polylineOptions);
-                        break;
-                    case LocationTracker.ATTRIBUTE_HEATMAP:
-
-                        for (LatLng pos : model.data)
-                            builder.include(pos);
-
-                        if (model.data.size() > 0)
-                        {
-                            heatmapBuilder.data(model.data);
-                            HeatmapTileProvider provider = heatmapBuilder.build();
-                            googleMap.addTileOverlay(new TileOverlayOptions().tileProvider(provider));
-                        }
-                        break;
-                    default:
-                        for (LatLng location : model.data)
-                        {
-                            builder.include(location);
-                            Marker marker = googleMap.addMarker(
-                                    new MarkerOptions()
-                                            .position(location)
-                            );
-
-                            markers.add(marker);
-                        }
-                        break;
+                    markerManager.add(marker, attr);
                 }
+
+                googleMap.setOnMarkerClickListener(markerManager);
 
                 if (model.data.size() > 0)
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
@@ -163,20 +102,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                                 {
                                     Log.d("SENSE", "Updating map with " + latLng.toString());
 
-                                    switch (model.attribute)
-                                    {
-                                        case LocationTracker.ATTRIBUTE_MARKER:
-                                            markers.add(googleMap.addMarker(new MarkerOptions().position(latLng)));
-                                            break;
-                                        case LocationTracker.ATTRIBUTE_PATH:
-                                            googleMap.clear();
-                                            polylineOptions.add(latLng);
-                                            googleMap.addPolyline(polylineOptions);
-                                            break;
-                                        default:
-                                            markers.add(googleMap.addMarker(new MarkerOptions().position(latLng)));
-                                            break;
-                                    }
+//                                    markers.add(googleMap.addMarker(new MarkerOptions().position(latLng)));
 
                                     googleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
                                 }
@@ -190,7 +116,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                         public void clear()
                         {
                             googleMap.clear();
-                            markers.clear();
+                            markerManager.clear();
                         }
                     });
                 }

@@ -60,7 +60,7 @@ public class DashboardFragment extends Fragment
 
     public void addDashboardView(int rows, int cols, DashboardModel data)
     {
-        boolean isMap = data.visualization.equals(Visualization.MAP);
+        boolean isMap = data.visualization.equals(Visualization.MAP) || data.visualization.equals(Visualization.CLUSTERED_MAP);
         grid.addItem(new GridItem(rows, cols, data, isMap));
     }
 

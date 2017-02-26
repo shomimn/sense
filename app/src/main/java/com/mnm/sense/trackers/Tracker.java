@@ -4,16 +4,13 @@ package com.mnm.sense.trackers;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.location.Location;
-import android.location.LocationListener;
-import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.util.Pair;
 
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
-import com.google.android.gms.maps.model.LatLng;
+import com.mnm.sense.AttributedPosition;
 import com.mnm.sense.Locator;
 import com.mnm.sense.R;
 import com.mnm.sense.Repository;
@@ -35,8 +32,6 @@ import com.ubhave.sensormanager.ESSensorManager;
 import com.ubhave.sensormanager.SensorDataListener;
 import com.ubhave.sensormanager.config.pull.PullSensorConfig;
 import com.ubhave.sensormanager.data.SensorData;
-import com.ubhave.sensormanager.data.pull.AbstractContentReaderEntry;
-import com.ubhave.sensormanager.data.pull.AbstractContentReaderListData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -304,7 +299,7 @@ public abstract class Tracker implements SensorDataListener
             case Visualization.PIE_CHART:
                 return new PieChartModel(this, (PieData) adaptedData);
             case Visualization.MAP:
-                return new MapModel(this, (ArrayList<LatLng>) adaptedData, attribute);
+                return new MapModel(this, (ArrayList<AttributedPosition>) adaptedData, attribute);
             case Visualization.LINE_CHART:
                 return new LineChartModel(this, (LineData) adaptedData);
             case Visualization.LIST_VIEW:

@@ -5,8 +5,10 @@ import android.util.Pair;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.mnm.sense.AttributedPosition;
 import com.mnm.sense.Locator;
 import com.mnm.sense.R;
+import com.mnm.sense.Timestamp;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.RunningApplicationBarAdapter;
 import com.mnm.sense.adapters.RunningApplicationPieAdapter;
@@ -40,10 +42,10 @@ public class RunningApplicationTracker extends Tracker
         attributes = new String[]{ATTRIBUTE_TOTAL};
 
         build()
-            .listView(new Visualization(2, 3, false))
-            .barChart(new Visualization(2, 3, false))
-            .pieChart(new Visualization(2, 3, false))
-            .map(new Visualization(2, 3, false))
+            .listView(new Visualization(2, 3))
+            .barChart(new Visualization(2, 3))
+            .pieChart(new Visualization(2, 3))
+            .map(new Visualization(2, 3))
                 .attribute(ATTRIBUTE_TOTAL)
                     .adapters(new RunningApplicationTextAdapter(),
                             new RunningApplicationBarAdapter(),
@@ -71,7 +73,7 @@ public class RunningApplicationTracker extends Tracker
     }
 }
 
-class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<LatLng>>
+class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<AttributedPosition>>
 {
     @Override
     public Object adapt(ArrayList<SensorData> data)
@@ -83,9 +85,9 @@ class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList
     }
 
     @Override
-    public ArrayList<LatLng> adaptOne(SensorData data)
+    public ArrayList<AttributedPosition> adaptOne(SensorData data)
     {
-        ArrayList<LatLng> result = new ArrayList<>();
+        ArrayList<AttributedPosition> result = new ArrayList<>();
         RunningApplicationDataList listData = (RunningApplicationDataList) data;
 
         for (RunningApplicationData appData : listData.getRunningApplications())
@@ -93,7 +95,20 @@ class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList
             Pair<Double, Double> location = appData.getLocation();
 
             if (location != null)
-                result.add(new LatLng(location.first, location.second));
+            {
+                LatLng latLng = new LatLng(location.first, location.second);
+                String text = appData.getName();
+
+                result.add(new AttributedPosition()
+                        .origin(R.drawable.ic_dashboard_black_48dp)
+                        .text("Running Apps")
+                        .latLng(latLng)
+                        .custom("Name:", appData.getName())
+                        .custom("Date:", Timestamp.from(appData.getLastTimeUsed()).date())
+                        .custom("Time:", Timestamp.from(appData.getLastTimeUsed()).time())
+                        .custom("Foreground time:", String.valueOf(appData.getForegroundTimeMins()))
+                );
+            }
 
         }
 
@@ -101,13 +116,13 @@ class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList
     }
 
     @Override
-    public ArrayList<ArrayList<LatLng>> adaptAll(ArrayList<SensorData> data)
+    public ArrayList<ArrayList<AttributedPosition>> adaptAll(ArrayList<SensorData> data)
     {
         return null;
     }
 
     @Override
-    public VisualizationAdapter<GoogleMap, ArrayList<LatLng>> newInstance()
+    public VisualizationAdapter<GoogleMap, ArrayList<AttributedPosition>> newInstance()
     {
         return null;
     }

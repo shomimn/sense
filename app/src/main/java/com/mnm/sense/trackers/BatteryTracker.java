@@ -6,6 +6,7 @@ import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.BatteryLineAdapter;
 import com.mnm.sense.adapters.VisualizationAdapter;
 import com.ubhave.sensormanager.ESException;
+import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
 import java.util.ArrayList;
@@ -32,6 +33,12 @@ public class BatteryTracker extends Tracker
             .lineChart(new Visualization(2, 3, false))
             .attribute(ATTRIBUTE_PERCENT)
             .adapters(new BatteryLineAdapter());
+    }
+
+    @Override
+    protected void attachLocation(SensorData data)
+    {
+
     }
 }
 

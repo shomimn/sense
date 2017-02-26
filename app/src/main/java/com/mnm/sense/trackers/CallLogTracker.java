@@ -13,6 +13,8 @@ import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.config.pull.ContentReaderConfig;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.AbstractContentReaderListData;
+import com.ubhave.sensormanager.data.pull.CallContentListData;
+import com.ubhave.sensormanager.data.pull.CallContentReaderEntry;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
 public class CallLogTracker extends Tracker
@@ -66,6 +68,21 @@ public class CallLogTracker extends Tracker
     protected void attachLocation(SensorData data)
     {
         locator.attachLocation((AbstractContentReaderListData) data);
+    }
+
+    @Override
+    protected boolean isNewData(SensorData data)
+    {
+        if (sensorData.size() == 0)
+            return true;
+
+        AbstractContentReaderListData prevData = (AbstractContentReaderListData) sensorData.get(sensorData.size() - 1);
+        AbstractContentReaderListData newData = (AbstractContentReaderListData) data;
+
+        if (prevData.getContentList().size() < newData.getContentList().size())
+            return true;
+
+        return false;
     }
 }
 

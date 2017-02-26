@@ -67,5 +67,20 @@ public class SMSContentTracker extends Tracker
     {
         locator.attachLocation((AbstractContentReaderListData) data);
     }
+
+    @Override
+    protected boolean isNewData(SensorData data)
+    {
+        if (sensorData.size() == 0)
+            return true;
+
+        AbstractContentReaderListData prevData = (AbstractContentReaderListData) sensorData.get(sensorData.size() - 1);
+        AbstractContentReaderListData newData = (AbstractContentReaderListData) data;
+
+        if (prevData.getContentList().size() < newData.getContentList().size())
+            return true;
+
+        return false;
+    }
 }
 

@@ -104,6 +104,9 @@ public abstract class Tracker implements SensorDataListener
     {
         Log.d("data", "sensed");
 
+        if (!isNewData(data))
+            return;
+
         attachLocation(data);
         correctData(data);
 
@@ -128,6 +131,11 @@ public abstract class Tracker implements SensorDataListener
     public void onCrossingLowBatteryThreshold(boolean isBelowThreshold)
     {
 
+    }
+
+    protected boolean isNewData(SensorData data)
+    {
+        return true;
     }
 
     protected void attachLocation(SensorData data)

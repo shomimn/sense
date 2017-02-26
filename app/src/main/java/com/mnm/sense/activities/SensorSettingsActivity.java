@@ -147,7 +147,7 @@ public class SensorSettingsActivity extends AppCompatActivity
                     {
                         forInsertion.remove(key);
                         if (isDisplayed)
-                        forRemoval.add(key);
+                            forRemoval.add(key);
 
                         tracker.removeDefaultVisualization(key);
                     }
@@ -235,6 +235,8 @@ public class SensorSettingsActivity extends AppCompatActivity
                 limitView.hideButtons();
             }
         });
+
+        limitView.setEnabled(tracker.limit.configurable);
     }
 
     public void setAccent()

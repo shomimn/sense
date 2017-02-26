@@ -7,6 +7,8 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.mnm.sense.R;
+import com.mnm.sense.SenseApp;
 import com.mnm.sense.models.LineChartModel;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.MicrophoneData;
@@ -45,20 +47,23 @@ public class MicrophoneLineAdapter extends VisualizationAdapter<LineChart, LineD
 
         ArrayList<Integer> allDecibels = new ArrayList<>();
 
+
         for(SensorData data : dataList)
-            allDecibels.addAll(((MicrophoneData)data).getDecibelsArray());
+            allDecibels.add(((MicrophoneData)data).getAverageDecibels());
 
         List<Entry> entries = new ArrayList<>();
 
         int i = 0;
         for(int decibel : allDecibels)
-            entries.add(new Entry((float)i++, decibel));
+            entries.add(new Entry((float) i++, decibel));
 
         LineDataSet lineDataSet = new LineDataSet(entries, "Decibels fixed scale");
 
         lineDataSet.setDrawCircles(false);
         lineDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
         lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+
+        lineDataSet.setColor(SenseApp.context().getResources().getColor(R.color.redColorAccent));
 
         List<ILineDataSet> dataSets = new ArrayList<>();
         dataSets.add(lineDataSet);
@@ -89,10 +94,12 @@ public class MicrophoneLineAdapter extends VisualizationAdapter<LineChart, LineD
 
         YAxis yAxis = view.getAxisLeft();
 
-        yAxis.setAxisMaximum(90f);
+        yAxis.setAxisMaximum(120f);
         yAxis.setAxisMinimum(0f);
+        yAxis.setLabelCount(5, true);
         yAxis.setDrawAxisLine(true);
         yAxis.setEnabled(true);
         yAxis.setDrawLabels(true);
+        yAxis.setDrawGridLines(true);
     }
 }

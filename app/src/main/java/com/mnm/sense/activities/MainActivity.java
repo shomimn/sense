@@ -110,7 +110,8 @@ public class MainActivity extends AppCompatActivity
                         Manifest.permission.READ_CALL_LOG,
                         Manifest.permission.READ_PHONE_STATE,
                         Manifest.permission.PACKAGE_USAGE_STATS,
-                        Manifest.permission.RECORD_AUDIO
+                        Manifest.permission.RECORD_AUDIO,
+                        Manifest.permission.CAMERA
                 }, 1);
 
         checkRunningAppsPermission();

@@ -21,6 +21,7 @@ import com.ubhave.sensormanager.process.pull.SMSContentReaderProcessor;
 import com.ubhave.sensormanager.process.pull.StepCounterProcessor;
 import com.ubhave.sensormanager.process.pull.WifiProcessor;
 import com.ubhave.sensormanager.process.push.BatteryProcessor;
+import com.ubhave.sensormanager.process.push.CameraProcessor;
 import com.ubhave.sensormanager.process.push.ConnectionStateProcessor;
 import com.ubhave.sensormanager.process.push.ConnectionStrengthProcessor;
 import com.ubhave.sensormanager.process.push.PassiveLocationProcessor;
@@ -91,6 +92,8 @@ public abstract class AbstractProcessor
 				return new RunningApplicationProcessor(c, setRawData, setProcessedData);
 			case SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION:
 				return new ActivityRecognitionProcessor(c, setRawData, setProcessedData);
+			case SensorUtils.SENSOR_TYPE_CAMERA:
+				return new CameraProcessor(c, setRawData, setProcessedData);
 			default:
 				throw new ESException(ESException.UNKNOWN_SENSOR_TYPE, "No processor defined for this sensor id ("+sensorType+").");
 		}

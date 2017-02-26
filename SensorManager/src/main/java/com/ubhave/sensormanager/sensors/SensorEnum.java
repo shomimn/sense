@@ -24,6 +24,8 @@ package com.ubhave.sensormanager.sensors;
 
 import android.hardware.Sensor;
 
+import com.ubhave.sensormanager.data.SensorData;
+
 public enum SensorEnum
 {
 	ACCELEROMETER (SensorUtils.SENSOR_NAME_ACCELEROMETER, SensorUtils.SENSOR_TYPE_ACCELEROMETER, SensorUtils.SENSOR_GROUP_PULL),
@@ -51,7 +53,9 @@ public enum SensorEnum
 	STEP_COUNTER (SensorUtils.SENSOR_NAME_STEP_COUNTER, SensorUtils.SENSOR_TYPE_STEP_COUNTER, SensorUtils.SENSOR_GROUP_PULL),
 	USER_INTERACTION (SensorUtils.SENSOR_NAME_INTERACTION, SensorUtils.SENSOR_TYPE_INTERACTION, SensorUtils.SENSOR_GROUP_USER),
 	RUNNING_APP (SensorUtils.SENSOR_NAME_RUNNING_APP, SensorUtils.SENSOR_TYPE_RUNNING_APP, SensorUtils.SENSOR_GROUP_PULL),
-	ACTIVITY_RECOGNITION (SensorUtils.SENSOR_NAME_ACTIVITY_RECOGNITION, SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION, SensorUtils.SENSOR_GROUP_PULL);
+	ACTIVITY_RECOGNITION (SensorUtils.SENSOR_NAME_ACTIVITY_RECOGNITION, SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION, SensorUtils.SENSOR_GROUP_PULL),
+	CAMERA (SensorUtils.SENSOR_NAME_CAMERA, SensorUtils.SENSOR_TYPE_CAMERA, SensorUtils.SENSOR_GROUP_PUSH);
+
 	private final String name;
 	private final int type;
 	private final int group;

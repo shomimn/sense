@@ -22,6 +22,8 @@ IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
 package com.ubhave.sensormanager.data.pull;
 
+import android.util.Pair;
+
 import com.ubhave.sensormanager.config.SensorConfig;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
@@ -35,6 +37,8 @@ public class MicrophoneData extends SensorData
 	private int[] maxAmplitudeArray;
 	private long[] timestampArray;
 	private String mediaFilePath;
+	private Pair<Double, Double> location = null;
+	private int averageDecibels = 0;
 
 	public MicrophoneData(long senseStartTimestamp, SensorConfig sensorConfig)
 	{
@@ -44,6 +48,17 @@ public class MicrophoneData extends SensorData
 	public void setMaxAmplitudeArray(int[] maxAmplitudeArray)
 	{
 		this.maxAmplitudeArray = maxAmplitudeArray;
+
+		averageDecibels = 0;
+
+		ArrayList<Integer> decibelsArray = getDecibelsArray();
+
+		for(int decibel : decibelsArray)
+			averageDecibels += decibel;
+
+		averageDecibels /= decibelsArray.size();
+
+
 	}
 
 	public int[] getAmplitudeArray()
@@ -92,5 +107,25 @@ public class MicrophoneData extends SensorData
 	private int toDb(int amplitude)
 	{
 		return 90 + (int)(20 * Math.log10((float)amplitude / (float)LARGEST_AMPLITUDE_VALUE));
+	}
+
+	public Pair<Double, Double> getLocation()
+	{
+		return location;
+	}
+
+	public void setLocation(Pair<Double, Double> location)
+	{
+		this.location = location;
+	}
+
+	public int getAverageDecibels()
+	{
+		return averageDecibels;
+	}
+
+	public void setAverageDecibels(int averageDecibels)
+	{
+		this.averageDecibels = averageDecibels;
 	}
 }

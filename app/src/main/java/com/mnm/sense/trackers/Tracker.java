@@ -52,6 +52,7 @@ public abstract class Tracker implements SensorDataListener
         public int value;
         public int step;
         public int maxValue;
+        public boolean configurable;
 
         public Limit(String text, int val, int s, int max)
         {
@@ -59,6 +60,7 @@ public abstract class Tracker implements SensorDataListener
             value = val;
             step = s;
             maxValue = max;
+            configurable = true;
         }
     }
 

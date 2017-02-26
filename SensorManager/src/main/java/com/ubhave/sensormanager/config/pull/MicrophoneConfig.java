@@ -14,8 +14,8 @@ public class MicrophoneConfig
 	/*
 	 * Default values
 	 */
-	private static final long DEFAULT_SAMPLING_WINDOW_SIZE_MILLIS = 5000;
-	private static final long DEFAULT_SLEEP_INTERVAL = 2 * 60 * 1000;
+	private static final long DEFAULT_SAMPLING_WINDOW_SIZE_MILLIS = 3000;
+	private static final long DEFAULT_SLEEP_INTERVAL = 1 * 60 * 1000;
 	private static final int DEFAULT_SOUND_THRESHOLD = 800;
 	public static final int DEFAULT_SAMPLING_RATE = 20000;
 	

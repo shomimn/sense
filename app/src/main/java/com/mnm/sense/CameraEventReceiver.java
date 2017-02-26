@@ -15,13 +15,16 @@ public class CameraEventReceiver extends BroadcastReceiver
     public void onReceive(Context context, Intent intent)
     {
         Log.d("CAMERA", "PHOTO TAKEN");
-        String[] projection = {MediaStore.Images.Media.DATA};
-
-        Cursor cursor = context.getContentResolver().query(intent.getData(), projection, null, null, null);
-        cursor.moveToFirst();
-
-        String imagePath = cursor.getString(cursor.getColumnIndex("_data"));
-
-        cursor.close();
+        try
+        {
+            Cursor cursor = context.getContentResolver().query(intent.getData(), null,null, null, null);
+            cursor.moveToFirst();
+            String image_path = cursor.getString(cursor.getColumnIndex("_data"));
+            Log.d("CameraEventReceiver: ", "New Photo is Saved as : -" + image_path);
+        }
+        catch(Exception e)
+        {
+            Log.d("CameraEventReceiver: ", "New Photo without image path");
+        }
     }
 }

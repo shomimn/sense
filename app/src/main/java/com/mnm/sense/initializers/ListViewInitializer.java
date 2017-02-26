@@ -26,6 +26,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.mnm.sense.R;
+import com.mnm.sense.Timestamp;
 import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.VisualizationAdapter;
@@ -37,6 +38,7 @@ import com.ubhave.sensormanager.data.pull.RunningApplicationData;
 
 import org.w3c.dom.Text;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -138,17 +140,21 @@ public class ListViewInitializer extends ViewInitializer<ListView, ListViewModel
                 TextView nameView = (TextView)dialog.findViewById(R.id.app_name);
                 TextView foregroundTimeView = (TextView)dialog.findViewById(R.id.foreground_time);
                 TextView lastTimeUsedView = (TextView)dialog.findViewById(R.id.last_time_used);
+                TextView lastDateUsedView = (TextView)dialog.findViewById(R.id.last_date_used);
 
                 Drawable icon = model.data.getIconAt(i);
                 String name = model.data.getNameAt(i);
                 float foregroundTime = model.data.getForegroundTimeAt(i);
                 long lastTimeUsed = model.data.getLastTimeUsedAt(i);
 
-                String date = (DateFormat.format("dd-MM-yyyy hh:mm:ss", new java.util.Date(lastTimeUsed)).toString());
+                String date = Timestamp.from(lastTimeUsed).date();
+                String time = Timestamp.from(lastTimeUsed).time();
+
                 nameView.setText(name);
                 imageView.setImageDrawable(icon);
                 foregroundTimeView.setText(String.valueOf(foregroundTime) + " mins");
-                lastTimeUsedView.setText(date);
+                lastDateUsedView.setText(date);
+                lastTimeUsedView.setText(time);
 
                 dialog.show();
             }

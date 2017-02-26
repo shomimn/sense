@@ -1,12 +1,17 @@
 package com.mnm.sense.trackers;
 
 
+import android.location.Location;
+import android.util.Pair;
+
+import com.mnm.sense.Locator;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.MicrophoneLineAdapter;
 import com.mnm.sense.adapters.MicrophoneTextAdapter;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.data.SensorData;
+import com.ubhave.sensormanager.data.pull.MicrophoneData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
 public class MicrophoneTracker extends Tracker
@@ -22,7 +27,8 @@ public class MicrophoneTracker extends Tracker
 
         attributes = new String[]{ATTRIBUTE_NOISE};
 
-//        limit = new Limit("Noise threshold", );
+        limit = new Limit("Noise threshold", 80, 1, 90);
+        limit.configurable = false;
 
         MicrophoneTextAdapter textAdapter = new MicrophoneTextAdapter();
 
@@ -31,6 +37,47 @@ public class MicrophoneTracker extends Tracker
                 .text(new Visualization(2, 3, false))
                 .attribute(ATTRIBUTE_NOISE)
                 .adapters(new MicrophoneLineAdapter(),textAdapter);
+
+    }
+
+    @Override
+    public void limitNotification(SensorData data)
+    {
+        MicrophoneData micData = (MicrophoneData)data;
+        int average = 0;
+        for(int decibel : micData.getDecibelsArray())
+            average += decibel;
+
+        average /= micData.getDecibelsArray().size();
+
+        if(average > limit.value)
+        {
+            Locator locator = Locator.instance();
+            Location location = locator.locateAt(micData.getTimestamp());
+
+            if (location == null)
+            {
+                synchronized (locator)
+                {
+                    try
+                    {
+                        locator.wait();
+                        location = locator.lastLocation();
+                    }
+                    catch (InterruptedException e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            micData.setLocation(Pair.create(location.getLatitude(), location.getLongitude()));
+        }
+    }
+
+    @Override
+    protected void attachLocation(SensorData data)
+    {
 
     }
 }

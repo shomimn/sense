@@ -45,8 +45,15 @@ public class MicrophoneLineAdapter extends VisualizationAdapter<LineChart, LineD
 
         ArrayList<Integer> allDecibels = new ArrayList<>();
 
+
         for(SensorData data : dataList)
-            allDecibels.addAll(((MicrophoneData)data).getDecibelsArray());
+        {
+            int sum = 0;
+            for(int decibel : ((MicrophoneData)data).getDecibelsArray())
+                sum += decibel;
+
+            allDecibels.add(sum / ((MicrophoneData)data).getDecibelsArray().size());
+        }
 
         List<Entry> entries = new ArrayList<>();
 

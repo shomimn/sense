@@ -216,25 +216,28 @@ public class SensorSettingsActivity extends AppCompatActivity
         limitView.intervalSlider.setMax(tracker.limit.maxValue);
         limitView.intervalSlider.setProgress(tracker.limit.value);
 
-        limitView.cancel.setOnClickListener(new View.OnClickListener()
+        if(tracker.limit.configurable)
         {
-            @Override
-            public void onClick(View view)
+            limitView.cancel.setOnClickListener(new View.OnClickListener()
             {
-                limitView.animateSlider(tracker.limit.value);
-                limitView.hideButtons();
-            }
-        });
+                @Override
+                public void onClick(View view)
+                {
+                    limitView.animateSlider(tracker.limit.value);
+                    limitView.hideButtons();
+                }
+            });
 
-        limitView.confirm.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
+            limitView.confirm.setOnClickListener(new View.OnClickListener()
             {
-                tracker.setLimit(limitView.intervalSlider.getProgress());
-                limitView.hideButtons();
-            }
-        });
+                @Override
+                public void onClick(View view)
+                {
+                    tracker.setLimit(limitView.intervalSlider.getProgress());
+                    limitView.hideButtons();
+                }
+            });
+        }
     }
 
     public void setAccent()

@@ -10,7 +10,7 @@ import android.util.Log;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
-import com.mnm.sense.map.AttributedPosition;
+import com.mnm.sense.map.AttributedFeature;
 import com.mnm.sense.Locator;
 import com.mnm.sense.R;
 import com.mnm.sense.Repository;
@@ -100,7 +100,7 @@ public abstract class Tracker implements SensorDataListener
     }
 
     @Override
-        public void onDataSensed(SensorData data)
+    public void onDataSensed(SensorData data)
     {
         Log.d("data", "sensed");
 
@@ -299,7 +299,7 @@ public abstract class Tracker implements SensorDataListener
             case Visualization.PIE_CHART:
                 return new PieChartModel(this, (PieData) adaptedData);
             case Visualization.MAP:
-                return new MapModel(this, (ArrayList<AttributedPosition>) adaptedData, attribute);
+                return new MapModel(this, (ArrayList<AttributedFeature>) adaptedData, attribute);
             case Visualization.LINE_CHART:
                 return new LineChartModel(this, (LineData) adaptedData);
             case Visualization.LIST_VIEW:

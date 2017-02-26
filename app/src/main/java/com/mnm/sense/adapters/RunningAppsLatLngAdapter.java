@@ -3,17 +3,19 @@ package com.mnm.sense.adapters;
 import android.util.Pair;
 
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.mnm.sense.R;
 import com.mnm.sense.Timestamp;
-import com.mnm.sense.map.AttributedPosition;
+import com.mnm.sense.Util;
+import com.mnm.sense.map.AttributedFeature;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
 
 import java.util.ArrayList;
 
-public class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<AttributedPosition>>
+public class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<AttributedFeature>>
 {
     @Override
     public Object adapt(ArrayList<SensorData> data)
@@ -25,9 +27,9 @@ public class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, Ar
     }
 
     @Override
-    public ArrayList<AttributedPosition> adaptOne(SensorData data)
+    public ArrayList<AttributedFeature> adaptOne(SensorData data)
     {
-        ArrayList<AttributedPosition> result = new ArrayList<>();
+        ArrayList<AttributedFeature> result = new ArrayList<>();
         RunningApplicationDataList listData = (RunningApplicationDataList) data;
 
         for (RunningApplicationData appData : listData.getRunningApplications())
@@ -39,8 +41,9 @@ public class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, Ar
                 LatLng latLng = new LatLng(location.first, location.second);
                 String text = appData.getName();
 
-                result.add(new AttributedPosition()
+                result.add(new AttributedFeature()
                         .origin(R.drawable.ic_dashboard_black_48dp)
+                        .icon(Util.drawableToBitmap(appData.getIcon()))
                         .text("Running Apps")
                         .latLng(latLng)
                         .custom("Name:", appData.getName())
@@ -56,13 +59,13 @@ public class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, Ar
     }
 
     @Override
-    public ArrayList<ArrayList<AttributedPosition>> adaptAll(ArrayList<SensorData> data)
+    public ArrayList<ArrayList<AttributedFeature>> adaptAll(ArrayList<SensorData> data)
     {
         return null;
     }
 
     @Override
-    public VisualizationAdapter<GoogleMap, ArrayList<AttributedPosition>> newInstance()
+    public VisualizationAdapter<GoogleMap, ArrayList<AttributedFeature>> newInstance()
     {
         return null;
     }

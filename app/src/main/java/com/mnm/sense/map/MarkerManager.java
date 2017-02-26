@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.support.v4.view.ViewPager;
 import android.util.DisplayMetrics;
-import android.util.Pair;
 import android.view.Window;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -18,21 +17,21 @@ import java.util.HashMap;
 public class MarkerManager implements GoogleMap.OnMarkerClickListener
 {
     private Context context;
-    private HashMap<LatLng, ArrayList<Pair<Marker, AttributedPosition>>> markers = new HashMap<>();
+    private HashMap<LatLng, ArrayList<AttributedFeature>> markers = new HashMap<>();
 
     public MarkerManager(Context c)
     {
         context = c;
     }
 
-    public void add(Marker marker, AttributedPosition attr)
+    public void add(AttributedFeature attr)
     {
         LatLng latLng = attr.latLng();
 
         if (markers.get(latLng) == null)
-            markers.put(latLng, new ArrayList<Pair<Marker, AttributedPosition>>());
+            markers.put(latLng, new ArrayList<AttributedFeature>());
 
-        markers.get(latLng).add(Pair.create(marker, attr));
+        markers.get(latLng).add(attr);
     }
 
     public void clear()
@@ -40,12 +39,12 @@ public class MarkerManager implements GoogleMap.OnMarkerClickListener
         markers.clear();
     }
 
-    public ArrayList<Pair<Marker, AttributedPosition>> getMarkersAt(LatLng latLng)
+    public ArrayList<AttributedFeature> getMarkersAt(LatLng latLng)
     {
         return markers.get(latLng);
     }
 
-    public HashMap<LatLng, ArrayList<Pair<Marker, AttributedPosition>>> getMarkers()
+    public HashMap<LatLng, ArrayList<AttributedFeature>> getMarkers()
     {
         return markers;
     }

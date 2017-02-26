@@ -5,6 +5,7 @@ import com.mnm.sense.R;
 import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.CallsBarAdapter;
+import com.mnm.sense.adapters.CallsLatLngAdapter;
 import com.mnm.sense.adapters.CallsPersonTextAdapter;
 import com.mnm.sense.adapters.CallsPieAdapter;
 import com.mnm.sense.adapters.CallsTypeTextAdapter;

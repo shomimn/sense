@@ -63,11 +63,6 @@ public class VisualizationBuilder
         return visualization(Visualization.MAP, visualization);
     }
 
-    public VisualizationBuilder clusteredMap(Visualization visualization)
-    {
-        return visualization(Visualization.CLUSTERED_MAP, visualization);
-    }
-
     public VisualizationBuilder adapters(VisualizationAdapter... adapters)
     {
         for (int i = 0; i < adapters.length; ++i)

@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.Marker;
-import com.mnm.sense.AttributedPosition;
 import com.mnm.sense.R;
 
 import java.util.ArrayList;

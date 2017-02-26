@@ -5,7 +5,7 @@ import android.util.Pair;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.mnm.sense.AttributedPosition;
+import com.mnm.sense.map.AttributedPosition;
 import com.mnm.sense.Locator;
 import com.mnm.sense.R;
 import com.mnm.sense.Timestamp;
@@ -14,7 +14,6 @@ import com.mnm.sense.adapters.RunningApplicationBarAdapter;
 import com.mnm.sense.adapters.RunningApplicationPieAdapter;
 import com.mnm.sense.adapters.RunningApplicationTextAdapter;
 import com.mnm.sense.adapters.VisualizationAdapter;
-import com.mnm.sense.models.TextModel;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationData;
@@ -22,7 +21,6 @@ import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class RunningApplicationTracker extends Tracker
 {

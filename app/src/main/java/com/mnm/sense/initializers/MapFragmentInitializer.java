@@ -14,14 +14,13 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
-import com.mnm.sense.AttributedPosition;
+import com.mnm.sense.map.AttributedPosition;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.map.MarkerManager;
+import com.mnm.sense.map.SenseMapRenderer;
 import com.mnm.sense.models.MapModel;
 import com.mnm.sense.trackers.Tracker;
 import com.ubhave.sensormanager.data.SensorData;
@@ -58,6 +57,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                 final Tracker tracker = model.tracker;
 
                 final MarkerManager markerManager = new MarkerManager(context);
+                final SenseMapRenderer renderer = new SenseMapRenderer(markerManager, googleMap);
                 final PolylineOptions polylineOptions = new PolylineOptions();
                 final LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 final HeatmapTileProvider.Builder heatmapBuilder = new HeatmapTileProvider.Builder();
@@ -66,22 +66,13 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
 
                 for (AttributedPosition attr : model.data)
                 {
-                    LatLng latLng = attr.latLng();
-
-                    builder.include(latLng);
-                    Marker marker = googleMap.addMarker(
-                            new MarkerOptions()
-                                    .position(latLng)
-                                    .title(attr.text())
-                    );
-
-                    markerManager.add(marker, attr);
+                    renderer.renderMarker(attr);
                 }
 
                 googleMap.setOnMarkerClickListener(markerManager);
 
                 if (model.data.size() > 0)
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 15));
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(renderer.envelope(), 15));
 
                 model.shouldUpdate = false;
                 if (model.shouldUpdate)

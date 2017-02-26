@@ -10,7 +10,7 @@ import android.util.Log;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.PieData;
-import com.mnm.sense.AttributedPosition;
+import com.mnm.sense.map.AttributedPosition;
 import com.mnm.sense.Locator;
 import com.mnm.sense.R;
 import com.mnm.sense.Repository;

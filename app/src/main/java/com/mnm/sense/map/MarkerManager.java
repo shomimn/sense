@@ -10,7 +10,6 @@ import android.view.Window;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
-import com.mnm.sense.AttributedPosition;
 import com.mnm.sense.R;
 
 import java.util.ArrayList;

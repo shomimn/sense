@@ -1,7 +1,6 @@
 package com.mnm.sense.models;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.mnm.sense.AttributedPosition;
+import com.mnm.sense.map.AttributedPosition;
 import com.mnm.sense.trackers.Tracker;
 
 import java.util.ArrayList;

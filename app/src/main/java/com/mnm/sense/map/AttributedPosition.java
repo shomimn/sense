@@ -1,8 +1,7 @@
-package com.mnm.sense;
+package com.mnm.sense.map;
 
 import com.google.android.gms.maps.model.LatLng;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 

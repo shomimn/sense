@@ -76,11 +76,11 @@ public class MicrophoneData extends SensorData
 		return SensorUtils.SENSOR_TYPE_MICROPHONE;
 	}
 
-	public ArrayList<Double> getDecibelsArray()
+	public ArrayList<Integer> getDecibelsArray()
 	{
-		ArrayList<Double> decibels = new ArrayList<>();
+		ArrayList<Integer> decibels = new ArrayList<>();
 
-		decibels.add(0d);
+		decibels.add(0);
 
 		for(int i = 1; i < maxAmplitudeArray.length; i++)
 			if(maxAmplitudeArray[i] != 0)
@@ -89,8 +89,8 @@ public class MicrophoneData extends SensorData
 		return decibels;
 	}
 
-	private double toDb(int amplitude)
+	private int toDb(int amplitude)
 	{
-		return 20 * Math.log10((float)amplitude / (float)LARGEST_AMPLITUDE_VALUE);
+		return 90 + (int)(20 * Math.log10((float)amplitude / (float)LARGEST_AMPLITUDE_VALUE));
 	}
 }

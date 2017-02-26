@@ -27,9 +27,9 @@ public class MicrophoneTextAdapter extends VisualizationAdapter<TextView, String
         MicrophoneData micData = (MicrophoneData) data;
         String res = "";
 
-        for(int amplitude : micData.getAmplitudeArray())
+        for(double decibel : micData.getDecibelsArray())
         {
-            res += String.valueOf(amplitude) + "\n";
+            res += String.valueOf(decibel) + "\t";
         }
         return res;
     }

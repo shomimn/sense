@@ -43,7 +43,7 @@ public class MicrophoneLineAdapter extends VisualizationAdapter<LineChart, LineD
     public ArrayList<LineData> adaptAll(ArrayList<SensorData> dataList)
     {
 
-        ArrayList<Double> allDecibels = new ArrayList<>();
+        ArrayList<Integer> allDecibels = new ArrayList<>();
 
         for(SensorData data : dataList)
             allDecibels.addAll(((MicrophoneData)data).getDecibelsArray());
@@ -51,10 +51,13 @@ public class MicrophoneLineAdapter extends VisualizationAdapter<LineChart, LineD
         List<Entry> entries = new ArrayList<>();
 
         int i = 0;
-        for(Double decibel : allDecibels)
-            entries.add(new Entry((float)i++, decibel.floatValue()));
+        for(int decibel : allDecibels)
+            entries.add(new Entry((float)i++, decibel));
 
-        LineDataSet lineDataSet = new LineDataSet(entries, "Decibels");
+        LineDataSet lineDataSet = new LineDataSet(entries, "Decibels fixed scale");
+
+        lineDataSet.setDrawCircles(false);
+        lineDataSet.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
         lineDataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
 
         List<ILineDataSet> dataSets = new ArrayList<>();
@@ -83,6 +86,13 @@ public class MicrophoneLineAdapter extends VisualizationAdapter<LineChart, LineD
     @Override
     public void prepareView(LineChart view)
     {
-        super.prepareView(view);
+
+        YAxis yAxis = view.getAxisLeft();
+
+        yAxis.setAxisMaximum(90f);
+        yAxis.setAxisMinimum(0f);
+        yAxis.setDrawAxisLine(true);
+        yAxis.setEnabled(true);
+        yAxis.setDrawLabels(true);
     }
 }

@@ -28,7 +28,8 @@ public class MarkerManager implements GoogleMap.OnMarkerClickListener
 
     public void add(AttributedFeature attr)
     {
-        LatLng latLng = attr.latLng();
+//        LatLng latLng = attr.latLng();
+        LatLng latLng = attr.geometry().points.get(0);
 
         if (markers.get(latLng) == null)
             markers.put(latLng, new ArrayList<AttributedFeature>());

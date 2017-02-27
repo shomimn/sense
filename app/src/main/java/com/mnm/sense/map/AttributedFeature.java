@@ -3,77 +3,22 @@ package com.mnm.sense.map;
 import android.graphics.Bitmap;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mnm.sense.SenseApp;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 
+
 public class AttributedFeature
 {
-    public enum GeometryType
-    {
-        POINT,
-        POLYLINE,
-        POLYGON
-    }
-
-    public static abstract class Geometry
-    {
-        protected GeometryType type;
-        protected Points points;
-
-        public Geometry(GeometryType t, Points p)
-        {
-            type = t;
-            points = p;
-        }
-
-        public GeometryType type()
-        {
-            return type;
-        }
-
-        public Points points()
-        {
-            return points;
-        }
-    }
-
-    public static class SensePoint extends Geometry
-    {
-        private SensePoint(Points p)
-        {
-            super(GeometryType.POINT, p);
-        }
-
-        public SensePoint make(LatLng point)
-        {
-            Points points = new Points();
-            points.add(point);
-
-            return new SensePoint(points);
-        }
-    }
-
-    public static class SensePolyline extends Geometry
-    {
-        private SensePolyline(Points p)
-        {
-            super(GeometryType.POLYLINE, p);
-        }
-
-        public SensePolyline make(Points p)
-        {
-            return new SensePolyline(p);
-        }
-    }
-
     private int origin;
     private Bitmap icon;
     private String text;
-    private LatLng latLng;
+//    private LatLng latLng;
     private LinkedHashMap<String, String> customAttributes = new LinkedHashMap<>();
     private Bitmap image;
     private Geometry geometry;
+    private int accent;
 
     public Bitmap icon()
     {
@@ -95,18 +40,6 @@ public class AttributedFeature
     public AttributedFeature text(String text)
     {
         this.text = text;
-
-        return this;
-    }
-
-    public LatLng latLng()
-    {
-        return latLng;
-    }
-
-    public AttributedFeature latLng(LatLng latLng)
-    {
-        this.latLng = latLng;
 
         return this;
     }
@@ -162,5 +95,22 @@ public class AttributedFeature
         this.geometry = geometry;
 
         return this;
+    }
+
+    public int accent()
+    {
+        return accent;
+    }
+
+    public AttributedFeature accent(int color)
+    {
+        accent = SenseApp.context().getResources().getColor(color);
+
+        return this;
+    }
+
+    public boolean hasAccent()
+    {
+        return accent != 0;
     }
 }

@@ -11,6 +11,7 @@ import com.mnm.sense.SenseApp;
 import com.mnm.sense.Timestamp;
 import com.mnm.sense.Util;
 import com.mnm.sense.map.AttributedFeature;
+import com.mnm.sense.map.SensePoint;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.MicrophoneData;
 
@@ -53,13 +54,15 @@ public class MicrophoneLatLngAdapter extends VisualizationAdapter<GoogleMap, Arr
             {
                 LatLng latLng = new LatLng(location.first, location.second);
 
-                Bitmap icon = Util.bitmapFromResource(R.drawable.ic_hearing_black_48dp, R.color.redColorAccent);
+                Bitmap icon = Util.bitmapFromResource(R.drawable.ic_hearing_black_48dp);
 
                 result.add(new AttributedFeature()
                         .origin(R.drawable.ic_mic_black_48dp)
                         .icon(icon)
+                        .accent(R.color.redColorAccent)
                         .text("Hearing damage")
-                        .latLng(latLng)
+//                        .latLng(latLng)
+                        .geometry(SensePoint.make(latLng))
                         .custom("Date:", Timestamp.from(micData.getTimestamp()).date())
                         .custom("Time:", Timestamp.from(micData.getTimestamp()).time())
                         .custom("Decibels:", String.valueOf(micData.getAverageDecibels() + " dBFS")));

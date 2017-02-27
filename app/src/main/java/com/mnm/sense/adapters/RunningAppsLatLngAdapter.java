@@ -9,6 +9,7 @@ import com.mnm.sense.R;
 import com.mnm.sense.Timestamp;
 import com.mnm.sense.Util;
 import com.mnm.sense.map.AttributedFeature;
+import com.mnm.sense.map.SensePoint;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
@@ -45,7 +46,8 @@ public class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, Ar
                         .origin(R.drawable.ic_dashboard_black_48dp)
                         .icon(Util.drawableToBitmap(appData.getIcon()))
                         .text("Running Apps")
-                        .latLng(latLng)
+//                        .latLng(latLng)
+                        .geometry(SensePoint.make(latLng))
                         .custom("Name:", appData.getName())
                         .custom("Date:", Timestamp.from(appData.getLastTimeUsed()).date())
                         .custom("Time:", Timestamp.from(appData.getLastTimeUsed()).time())

@@ -29,7 +29,7 @@ public class SMSLatLngAdapter extends ContentLatLngAdapter
 
         attr.text("SMS")
             .origin(R.drawable.ic_sms_black_48dp)
-            .icon(Util.bitmapFromResource(resource, R.color.greenColorAccent))
+            .icon(Util.bitmapFromResource(resource))
             .custom("Length:", entry.get("bodyLength"))
             .custom("Word count:", entry.get("bodyWordCount"));
     }

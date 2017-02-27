@@ -15,6 +15,7 @@ import com.mnm.sense.R;
 import com.mnm.sense.Timestamp;
 import com.mnm.sense.Util;
 import com.mnm.sense.map.AttributedFeature;
+import com.mnm.sense.map.SensePoint;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.push.CameraData;
 
@@ -77,7 +78,8 @@ public class CameraLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayLi
                         .image(thumbnail)
                         .icon(icon)
                         .text("Image taken at")
-                        .latLng(latLng)
+//                        .latLng(latLng)
+                        .geometry(SensePoint.make(latLng))
                         .custom("Date:", Timestamp.from(cameraData.getTimestamp()).date())
                         .custom("Time:", Timestamp.from(cameraData.getTimestamp()).time()));
             }

@@ -19,6 +19,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.mnm.sense.R;
 import com.mnm.sense.SenseApp;
@@ -33,13 +34,15 @@ public class SenseMapRenderer
     private LatLngBounds.Builder boundsBuilder;
     private HeatmapTileProvider.Builder heatmapProvider;
     private MarkerManager markerManager;
+    private LineManager lineManager;
     private GoogleMap googleMap;
 
-    public SenseMapRenderer(MarkerManager manager, GoogleMap map)
+    public SenseMapRenderer(MarkerManager mManager, LineManager lManager, GoogleMap map)
     {
         heatmapProvider = new HeatmapTileProvider.Builder();
         boundsBuilder = new LatLngBounds.Builder();
-        markerManager = manager;
+        markerManager = mManager;
+        lineManager = lManager;
         googleMap = map;
     }
 
@@ -50,12 +53,37 @@ public class SenseMapRenderer
 
     public void include(AttributedFeature attr)
     {
-        boundsBuilder.include(attr.latLng());
-        markerManager.add(attr);
+        for (LatLng point : attr.geometry().points)
+            boundsBuilder.include(point);
+
+        switch (attr.geometry().type())
+        {
+            case POINT:
+                markerManager.add(attr);
+
+                break;
+            case POLYLINE:
+                lineManager.add(attr);
+
+                break;
+            case POLYGON:
+                break;
+        }
     }
 
     public void render()
     {
+        ArrayList<AttributedFeature> lines = lineManager.getLines();
+
+        for (AttributedFeature line : lines)
+        {
+            markerManager.add(line);
+
+            googleMap.addPolyline(new PolylineOptions()
+                    .addAll(line.geometry().points)
+                    .color(line.accent()));
+        }
+
         HashMap<LatLng, ArrayList<AttributedFeature>> markers = markerManager.getMarkers();
 
         for (Map.Entry<LatLng, ArrayList<AttributedFeature>> entry : markers.entrySet())
@@ -76,12 +104,9 @@ public class SenseMapRenderer
     {
         final int max = 3;
 
-        int size = Util.dp(100);
-        int segmentSize = size / 4;
+        int segmentSize = Util.dp(100) / (max + 1);
 
-        if (features.size() == 1)
-            return BitmapDescriptorFactory.fromBitmap(
-                    roundedCornerBitmap(features.get(0).icon(), segmentSize, segmentSize, segmentSize / 5));
+        int size = segmentSize * features.size();
 
         Bitmap bitmap = Bitmap.createBitmap(size, segmentSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
@@ -100,7 +125,16 @@ public class SenseMapRenderer
 //            white.setStyle(Paint.Style.FILL);
 
 //            canvas.drawRoundRect(0, 0, segmentSize, segmentSize, segmentSize / 5, segmentSize / 5, white);
-            drawTranslate(canvas, icon, segmentSize, segmentSize, 0);
+
+            Paint paint = null;
+
+            if (feature.hasAccent())
+            {
+                paint = new Paint();
+                paint.setColorFilter(new PorterDuffColorFilter(feature.accent(), PorterDuff.Mode.SRC_ATOP));
+            }
+
+            drawTranslate(canvas, icon, paint, segmentSize, segmentSize, 0);
         }
 
         if (drawMore)
@@ -121,12 +155,12 @@ public class SenseMapRenderer
         return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
-    private void drawTranslate(Canvas canvas, Bitmap bitmap, int scaledSize, int dx, int dy)
+    private void drawTranslate(Canvas canvas, Bitmap bitmap, Paint paint, int scaledSize, int dx, int dy)
     {
         Rect src = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         Rect dst = new Rect(0, 0, scaledSize, scaledSize);
 
-        canvas.drawBitmap(bitmap, src, dst, null);
+        canvas.drawBitmap(bitmap, src, dst, paint);
         canvas.translate(dx, dy);
     }
 

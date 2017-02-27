@@ -94,6 +94,7 @@ public abstract class Tracker implements SensorDataListener
     public String[] attributes = { };
 
     protected static Handler handler = new Handler();
+
 //    public Object lock = new Object();
 
     public Tracker(int t) throws ESException

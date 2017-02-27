@@ -24,21 +24,14 @@ import java.util.concurrent.TimeUnit;
 
 public class ActivityPieAdapter extends VisualizationAdapter<PieChart, PieData>
 {
-    private static final int CONFIDENCE_THRESHOLD = 30;
     private int activityGoal = 120;
-    private SparseArray<Long> activityTimes;
-    private long startTimestamp = 0;
-    private int activityType = -1;
-
-    private int totalTime = 0;
-
     private boolean readFromRepository = false;
 
-    public ActivityPieAdapter()
+    ActivityMonitor monitor;
+
+    public ActivityPieAdapter(ActivityMonitor monitor)
     {
-        activityTimes = new SparseArray<>();
-        activityTimes.append(DetectedActivity.WALKING, 0l);
-        activityTimes.append(DetectedActivity.RUNNING, 0l);
+        this.monitor = monitor;
     }
 
     @Override
@@ -49,20 +42,6 @@ public class ActivityPieAdapter extends VisualizationAdapter<PieChart, PieData>
 
         int last = data.size() - 1;
 
-        if(readFromRepository)
-        {
-            Log.d("Activities: ", "obtaining all data");
-
-            resetTimes();
-            for(SensorData activityList : data)
-                obtainTimes((ActivityRecognitionDataList)activityList);
-            readFromRepository = false;
-        }
-        else
-        {
-            obtainTimes((ActivityRecognitionDataList)data.get(last));
-            Log.d("Activities: ", "obtaining last data");
-        }
         return adaptOne();
     }
 
@@ -75,25 +54,27 @@ public class ActivityPieAdapter extends VisualizationAdapter<PieChart, PieData>
     @Override
     public PieData adaptOne(SensorData data)
     {
-        return null;
-    }
+        if(readFromRepository)
+        {
+            Log.d("Activities: ", "obtaining all data");
 
-    public void resetTimes()
-    {
-        activityTimes.put(DetectedActivity.WALKING, 0l);
-        activityTimes.put(DetectedActivity.RUNNING, 0l);
-        totalTime = 0;
-    }
+            monitor.resetTimes();
+            for(SensorData activityList : data)
+                monitor.obtainTimes((ActivityRecognitionDataList)activityList);
+            readFromRepository = false;
+        }
+        else
+        {
+            monitor.obtainTimes((ActivityRecognitionDataList)data.get(last));
+            Log.d("Activities: ", "obtaining last data");
+        }
 
-
-    public PieData adaptOne()
-    {
-        int runningTimeMin = (int)TimeUnit.MILLISECONDS.toMinutes(activityTimes.get(DetectedActivity.RUNNING));
-        int walkingTimeMin = (int)TimeUnit.MILLISECONDS.toMinutes(activityTimes.get(DetectedActivity.WALKING));
+        int runningTimeMin = monitor.getTimeMin(DetectedActivity.RUNNING);
+        int walkingTimeMin = monitor.getTimeMin(DetectedActivity.WALKING);
 
         List<PieEntry> entries = new ArrayList<>();
 
-        totalTime = runningTimeMin + walkingTimeMin;
+        int totalTime = monitor.getTotalTimes(DetectedActivity.RUNNING, DetectedActivity.WALKING);
         int restTime = activityGoal - totalTime;
 
         entries.add(new PieEntry(walkingTimeMin, "Walking"));
@@ -117,37 +98,10 @@ public class ActivityPieAdapter extends VisualizationAdapter<PieChart, PieData>
         return new PieData(dataSet);
     }
 
-    public int getTotalTime()
-    {
-        return totalTime;
-    }
-
     @Override
     public ArrayList<PieData> adaptAll(ArrayList<SensorData> data)
     {
         return null;
-    }
-
-    private ActivityRecognitionData getReliableData(ActivityRecognitionData a1, ActivityRecognitionData a2)
-    {
-        if(a1 != null && a2 != null)
-            return a1.getConfidence() > a2.getConfidence() ? a1 : a2;
-        if(a1 != null)
-            return a1;
-        if(a2 != null)
-            return a2;
-        return null;
-    }
-
-    private SparseArray<ActivityRecognitionData> getValidActivity(ActivityRecognitionDataList activityList)
-    {
-        SparseArray<ActivityRecognitionData> result = new SparseArray<>();
-
-        for(ActivityRecognitionData activity : activityList.getActivities())
-            if(activity.getConfidence() >= CONFIDENCE_THRESHOLD)
-                result.append(activity.getType(),activity);
-
-        return result;
     }
 
     @Override
@@ -165,9 +119,10 @@ public class ActivityPieAdapter extends VisualizationAdapter<PieChart, PieData>
         HashMap<String, ArrayList<SensorData>> dataByDay = partitionByDays(data);
         activityGoal *= dataByDay.size();
 
-        resetTimes();
+        monitor.resetTimes();
         for(SensorData activityList : data)
-            obtainTimes((ActivityRecognitionDataList)activityList);
+            monitor.obtainTimes((ActivityRecognitionDataList)activityList);
+
         readFromRepository = true;
         return adaptOne();
     }
@@ -181,7 +136,7 @@ public class ActivityPieAdapter extends VisualizationAdapter<PieChart, PieData>
     @Override
     public VisualizationAdapter<PieChart, PieData> newInstance()
     {
-        return new ActivityPieAdapter();
+        return new ActivityPieAdapter(monitor);
     }
 
     @Override
@@ -189,49 +144,4 @@ public class ActivityPieAdapter extends VisualizationAdapter<PieChart, PieData>
     {
         return true;
     }
-
-    private void obtainTimes(ActivityRecognitionDataList dataList)
-    {
-        final SparseArray<ActivityRecognitionData> valid = getValidActivity(dataList);
-
-        ActivityRecognitionData reliableData =
-                getReliableData(valid.get(DetectedActivity.WALKING), valid.get(DetectedActivity.RUNNING));
-
-        if(reliableData != null)
-        {
-            if(activityType == -1)
-            {
-                startTimestamp = reliableData.getTimestamp();
-                activityType = reliableData.getType();
-            }
-            else
-            {
-                if(reliableData.getType() != activityType)
-                {
-                    long time = reliableData.getTimestamp() - startTimestamp;
-                    activityTimes.put(activityType, activityTimes.get(activityType) + time);
-                    activityType = reliableData.getType();
-                    startTimestamp = reliableData.getTimestamp();
-                }
-                else
-                {
-                    long time = reliableData.getTimestamp() - startTimestamp;
-                    activityTimes.put(activityType, activityTimes.get(activityType) + time);
-                    startTimestamp = reliableData.getTimestamp();
-                }
-            }
-        }
-        else
-        {
-            if (activityType != -1)
-            {
-                long time = dataList.getActivities().get(0).getTimestamp() - startTimestamp;
-                activityTimes.put(activityType, activityTimes.get(activityType) + time);
-                activityType = -1;
-                startTimestamp = 0;
-            }
-        }
-    }
-
-
 }

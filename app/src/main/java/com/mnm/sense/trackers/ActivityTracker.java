@@ -2,9 +2,11 @@ package com.mnm.sense.trackers;
 
 import android.util.Log;
 
+import com.google.android.gms.location.DetectedActivity;
 import com.mnm.sense.NotificationCreator;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.adapters.ActivityMonitor;
 import com.mnm.sense.adapters.ActivityPieAdapter;
 import com.mnm.sense.adapters.ActivityTextAdapter;
 import com.mnm.sense.adapters.VisualizationAdapter;
@@ -19,6 +21,8 @@ public class ActivityTracker extends Tracker
     private static final String ATTRIBUTE_ACTIVITY = "Activity";
     private boolean first = true;
 
+    private ActivityMonitor monitor;
+
     public ActivityTracker() throws ESException
     {
         super(SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION);
@@ -31,7 +35,9 @@ public class ActivityTracker extends Tracker
 
         limit = new Limit("Daily goal", 45, 1, 500);
 
-        ActivityPieAdapter pieAdapter = new ActivityPieAdapter();
+        monitor = new ActivityMonitor();
+
+        ActivityPieAdapter pieAdapter = new ActivityPieAdapter(monitor);
         pieAdapter.setLimit(limit.value);
 
         build()
@@ -51,9 +57,7 @@ public class ActivityTracker extends Tracker
 
     private void checkGoal()
     {
-        ActivityPieAdapter pieAdapter = (ActivityPieAdapter)adapter(ATTRIBUTE_ACTIVITY, Visualization.PIE_CHART);
-
-        int totalTime = pieAdapter.getTotalTime();
+        int totalTime = monitor.getTotalTimes(DetectedActivity.RUNNING, DetectedActivity.WALKING);
 
         if (totalTime >= limit.value && first)
         {
@@ -66,8 +70,7 @@ public class ActivityTracker extends Tracker
     public void purge()
     {
         first = true;
-        ActivityPieAdapter pieAdapter = (ActivityPieAdapter)adapter(ATTRIBUTE_ACTIVITY, Visualization.PIE_CHART);
-        pieAdapter.resetTimes();
+        monitor.resetTimes();
 
         super.purge();
     }

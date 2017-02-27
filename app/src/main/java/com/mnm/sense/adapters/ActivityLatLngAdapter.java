@@ -3,26 +3,22 @@ package com.mnm.sense.adapters;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.ExifInterface;
-import android.os.Environment;
 import android.util.Pair;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.mnm.sense.R;
 import com.mnm.sense.Timestamp;
-import com.mnm.sense.Util;
 import com.mnm.sense.map.AttributedFeature;
 import com.ubhave.sensormanager.data.SensorData;
-import com.ubhave.sensormanager.data.pull.MicrophoneData;
 import com.ubhave.sensormanager.data.push.CameraData;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
-public class CameraLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<AttributedFeature>>
+public class ActivityLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<AttributedFeature>>
 {
+
     @Override
     public Object adapt(ArrayList<SensorData> data)
     {
@@ -58,7 +54,6 @@ public class CameraLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayLi
                 LatLng latLng = new LatLng(location.first, location.second);
 
                 File image = new File(cameraData.getImagePath());
-
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                 Bitmap icon = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
                 icon = Bitmap.createScaledBitmap(icon, 50, 50, true);

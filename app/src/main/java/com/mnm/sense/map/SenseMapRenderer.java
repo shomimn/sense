@@ -68,7 +68,8 @@ public class SenseMapRenderer
     private BitmapDescriptor makeIcon(ArrayList<AttributedFeature> features)
     {
         if (features.size() == 1)
-            return BitmapDescriptorFactory.fromBitmap(features.get(0).icon());
+            return BitmapDescriptorFactory.fromBitmap(
+                    Bitmap.createScaledBitmap(features.get(0).icon(), Util.dp(100) / 4, Util.dp(100) / 4, true));
 
         final int max = 3;
 

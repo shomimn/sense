@@ -27,7 +27,8 @@
         android:id="@+id/inner_layout"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="1dp">
 
     </LinearLayout>
 

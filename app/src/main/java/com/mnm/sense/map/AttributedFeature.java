@@ -1,6 +1,7 @@
 package com.mnm.sense.map;
 
 import android.graphics.Bitmap;
+import android.widget.ImageView;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
@@ -15,6 +16,7 @@ public class AttributedFeature
     private String text;
     private LatLng latLng;
     private LinkedHashMap<String, String> customAttributes = new LinkedHashMap<>();
+    private Bitmap image;
 
     public Bitmap icon()
     {
@@ -74,5 +76,22 @@ public class AttributedFeature
         customAttributes.put(key, value);
 
         return this;
+    }
+
+    public Bitmap image()
+    {
+        return image;
+    }
+
+    public AttributedFeature image(Bitmap image)
+    {
+        this.image = image;
+
+        return this;
+    }
+
+    public boolean hasImage()
+    {
+        return image != null;
     }
 }

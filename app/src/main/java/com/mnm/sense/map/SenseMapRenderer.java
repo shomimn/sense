@@ -2,6 +2,8 @@ package com.mnm.sense.map;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -10,6 +12,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.mnm.sense.R;
 import com.mnm.sense.SenseApp;
 import com.mnm.sense.Util;
@@ -21,11 +24,13 @@ import java.util.Map;
 public class SenseMapRenderer
 {
     private LatLngBounds.Builder boundsBuilder;
+    private HeatmapTileProvider.Builder heatmapProvider;
     private MarkerManager markerManager;
     private GoogleMap googleMap;
 
     public SenseMapRenderer(MarkerManager manager, GoogleMap map)
     {
+        heatmapProvider = new HeatmapTileProvider.Builder();
         boundsBuilder = new LatLngBounds.Builder();
         markerManager = manager;
         googleMap = map;
@@ -55,6 +60,7 @@ public class SenseMapRenderer
             googleMap.addMarker(new MarkerOptions()
                     .position(latLng)
                     .icon(icon)
+                    .anchor(0.5f, 0.5f)
             );
         }
     }

@@ -3,8 +3,11 @@ package com.mnm.sense.adapters;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
+import android.util.DisplayMetrics;
 import android.util.Pair;
+import android.view.KeyEvent;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -13,10 +16,10 @@ import com.mnm.sense.Timestamp;
 import com.mnm.sense.Util;
 import com.mnm.sense.map.AttributedFeature;
 import com.ubhave.sensormanager.data.SensorData;
-import com.ubhave.sensormanager.data.pull.MicrophoneData;
 import com.ubhave.sensormanager.data.push.CameraData;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class CameraLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<AttributedFeature>>
@@ -57,11 +60,19 @@ public class CameraLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayLi
 
                 File image = new File(cameraData.getImagePath());
                 BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                Bitmap icon = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
-                icon = Bitmap.createScaledBitmap(icon, 50, 50, true);
+                Matrix matrix = new Matrix();
+                matrix.postRotate(correctExifOrientation(cameraData.getImagePath()));
+
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+
+                Bitmap thumbnail = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+                thumbnail = Bitmap.createBitmap(thumbnail, 0, 0, thumbnail.getWidth(), thumbnail.getHeight(), matrix, true);
+                Bitmap icon = Bitmap.createScaledBitmap(thumbnail, Util.dp(50), Util.dp(50), true);
+
 
                 result.add(new AttributedFeature()
                         .origin(R.drawable.ic_camera_alt_black_48dp)
+                        .image(thumbnail)
                         .icon(icon)
                         .text("Image taken at")
                         .latLng(latLng)
@@ -77,14 +88,47 @@ public class CameraLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayLi
     }
 
     @Override
-    public VisualizationAdapter<GoogleMap, ArrayList<AttributedFeature>> newInstance()
+    public CameraLatLngAdapter newInstance()
     {
-        return null;
+        return new CameraLatLngAdapter();
     }
 
     @Override
     public Object aggregate(ArrayList<SensorData> data)
     {
         return null;
+    }
+
+    private int correctExifOrientation(String filePath)
+    {
+        int orientation = 0;
+
+        try
+        {
+            ExifInterface ei = new ExifInterface(filePath);
+
+            orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+        switch(orientation)
+        {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return 90;
+
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return 180;
+
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return 270;
+
+            case ExifInterface.ORIENTATION_NORMAL:
+            default:
+                return orientation;
+        }
     }
 }

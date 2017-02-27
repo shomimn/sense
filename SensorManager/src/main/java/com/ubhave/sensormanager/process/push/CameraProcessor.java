@@ -32,6 +32,7 @@ public class CameraProcessor extends AbstractProcessor
         catch(Exception e)
         {
             Log.d("CameraEventReceiver: ", "New Photo without image path");
+            e.printStackTrace();
         }
 
         return data;

@@ -27,6 +27,9 @@ import com.mnm.sense.models.ListViewModel;
 import com.mnm.sense.models.MapModel;
 import com.mnm.sense.models.PieChartModel;
 import com.mnm.sense.models.TextModel;
+import com.ubhave.datahandler.ESDataManager;
+import com.ubhave.datahandler.config.DataStorageConfig;
+import com.ubhave.datahandler.except.DataHandlerException;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.ESSensorManager;
 import com.ubhave.sensormanager.SensorDataListener;
@@ -100,6 +103,15 @@ public abstract class Tracker implements SensorDataListener
     public Tracker(int t) throws ESException
     {
         type = t;
+
+//        try
+//        {
+//            ESDataManager.getInstance(SenseApp.context(), DataStorageConfig.STORAGE_TYPE_DB, null).getRecentSensorData(type, Timestamp.startOfToday().millis());
+//        }
+//        catch (Exception e)
+//        {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -112,6 +124,7 @@ public abstract class Tracker implements SensorDataListener
 
         attachLocation(data);
         correctData(data);
+        monitorData(data);
 
         sensorData.add(data);
 
@@ -135,6 +148,8 @@ public abstract class Tracker implements SensorDataListener
     {
 
     }
+
+    protected void monitorData(SensorData data) {}
 
     protected boolean isNewData(SensorData data)
     {

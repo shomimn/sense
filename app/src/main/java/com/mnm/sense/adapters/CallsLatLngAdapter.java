@@ -30,7 +30,7 @@ public class CallsLatLngAdapter extends ContentLatLngAdapter
 
         attr.text("Calls")
             .origin(R.drawable.ic_phone_in_talk_black_48dp)
-            .icon(Util.bitmapFromResource(resource, R.color.greenColorAccent))
+            .icon(Util.bitmapFromResource(resource))
             .custom("Duration:", entry.get("duration") + " s");
     }
 

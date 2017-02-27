@@ -1,133 +1,144 @@
 package com.mnm.sense.adapters;
 
 
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.google.android.gms.location.DetectedActivity;
+import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.ActivityRecognitionData;
 import com.ubhave.sensormanager.data.pull.ActivityRecognitionDataList;
+import com.ubhave.sensormanager.data.pull.RunningApplicationData;
 
+import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.concurrent.TimeUnit;
 
 public class ActivityMonitor
 {
-    public class ActivityData
+    public class ActivityTimeTracker
     {
-        public long activityTime;
-        public long totalTime;
+        public long startTimestamp;
+        public int type;
+        public SparseArray<Long> activityTimes;
 
-        public ActivityData(long activityTime, long totalTime)
+        public ActivityTimeTracker()
         {
-            this.activityTime = activityTime;
-            this.totalTime = totalTime;
+            startTimestamp = 0;
+            type = -1;
+            activityTimes = new SparseArray<>();
+
+            activityTimes.append(DetectedActivity.WALKING, 0l);
+            activityTimes.append(DetectedActivity.RUNNING, 0l);
+            activityTimes.append(DetectedActivity.STILL, 0l);
+            activityTimes.append(DetectedActivity.IN_VEHICLE, 0l);
+            activityTimes.append(DetectedActivity.ON_BICYCLE, 0l);
+        }
+
+        public int getMinutes(int ... keys)
+        {
+            long res = 0;
+            for(int key : keys)
+                res += activityTimes.get(key);
+
+            return (int) TimeUnit.MILLISECONDS.toMinutes(res);
+        }
+        public void resetTimes()
+        {
+            for (int i = 0; i < activityTimes.size(); ++i)
+                activityTimes.put(activityTimes.keyAt(i), 0l);
+        }
+
+        public void obtainTimes(ActivityRecognitionDataList dataList)
+        {
+            ActivityRecognitionData reliableData = null;
+
+            ArrayList<ActivityRecognitionData> valid = getValidActivity(dataList);
+            if(valid.size() != 0)
+                reliableData = valid.get(0);
+
+            if(reliableData != null)
+            {
+                if(type == -1)
+                {
+                    startTimestamp = reliableData.getTimestamp();
+                    type = reliableData.getType();
+                }
+                else
+                {
+                    if(reliableData.getType() != type)
+                    {
+                        long time = reliableData.getTimestamp() - startTimestamp;
+                        activityTimes.put(type, activityTimes.get(type) + time);
+                        type = reliableData.getType();
+                        startTimestamp = reliableData.getTimestamp();
+                    }
+                    else
+                    {
+                        long time = reliableData.getTimestamp() - startTimestamp;
+                        activityTimes.put(type, activityTimes.get(type) + time);
+                        startTimestamp = reliableData.getTimestamp();
+                    }
+                }
+            }
+            else
+            {
+                if (type != -1)
+                {
+                    long time = dataList.getTimestamp() - startTimestamp;
+                    activityTimes.put(type, activityTimes.get(type) + time);
+                    type = -1;
+                    startTimestamp = 0l;
+                }
+            }
         }
     }
 
     private static final int CONFIDENCE_THRESHOLD = 30;
 
-    public SparseArray<ActivityData> activityTimes;
-
-    private long startTimestamp = 0;
-    private int activityType = -1;
+    private ActivityTimeTracker liveTimeTracker;
 
     public ActivityMonitor()
     {
-        activityTimes = new SparseArray<>();
-        activityTimes.append(DetectedActivity.WALKING, new ActivityData(0l, 0l));
-        activityTimes.append(DetectedActivity.RUNNING, new ActivityData(0l, 0l));
-        activityTimes.append(DetectedActivity.STILL, new ActivityData(0l, 0l));
-        activityTimes.append(DetectedActivity.IN_VEHICLE, new ActivityData(0l, 0l));
-        activityTimes.append(DetectedActivity.ON_BICYCLE, new ActivityData(0l, 0l));
+        liveTimeTracker = new ActivityTimeTracker();
     }
-
-    public void resetTimes()
+    
+    private ArrayList<ActivityRecognitionData> getValidActivity(ActivityRecognitionDataList activityList)
     {
-        for (int i = 0; i < activityTimes.size(); ++i)
-            activityTimes.put(activityTimes.keyAt(i), new ActivityData(0l, 0l));
-    }
-
-    private ActivityRecognitionData getReliableData(ActivityRecognitionData a1, ActivityRecognitionData a2)
-    {
-        if(a1 != null && a2 != null)
-            return a1.getConfidence() > a2.getConfidence() ? a1 : a2;
-        if(a1 != null)
-            return a1;
-        if(a2 != null)
-            return a2;
-        return null;
-    }
-
-    private SparseArray<ActivityRecognitionData> getValidActivity(ActivityRecognitionDataList activityList)
-    {
-        SparseArray<ActivityRecognitionData> result = new SparseArray<>();
+        ArrayList<ActivityRecognitionData> result = new ArrayList<>();
 
         for(ActivityRecognitionData activity : activityList.getActivities())
-            if(activity.getConfidence() >= CONFIDENCE_THRESHOLD)
-                result.append(activity.getType(),activity);
+            if(liveTimeTracker.activityTimes.get(activity.getType(), -1l) != -1 && activity.getConfidence() >= CONFIDENCE_THRESHOLD)
+                result.add(activity);
 
         return result;
     }
 
-    public int getTotalTimes(int... keys)
+    private boolean isValid(ActivityRecognitionData data)
     {
-        int res = 0;
-
-        for(int key : keys)
-            res += activityTimes.get(key).activityTime;
-        return res;
+        return data.getConfidence() >= CONFIDENCE_THRESHOLD;
     }
 
-    public void subscribe(int ... keys)
+    public void liveMonitoring(SensorData dataList)
     {
-
+        liveTimeTracker.obtainTimes((ActivityRecognitionDataList)dataList);
     }
 
-    public void obtainTimes(ActivityRecognitionDataList dataList)
+    public ActivityTimeTracker monitorPortion(ArrayList<SensorData> dataList)
     {
-        final SparseArray<ActivityRecognitionData> valid = getValidActivity(dataList);
+        ActivityTimeTracker timeTracker = new ActivityTimeTracker();
 
-        ActivityRecognitionData reliableData =
-                getReliableData(valid.get(DetectedActivity.WALKING), valid.get(DetectedActivity.RUNNING));
+        for(SensorData data: dataList)
+            liveTimeTracker.obtainTimes((ActivityRecognitionDataList)data);
 
-        if(reliableData != null)
-        {
-            if(activityType == -1)
-            {
-                startTimestamp = reliableData.getTimestamp();
-                activityType = reliableData.getType();
-            }
-            else
-            {
-                if(reliableData.getType() != activityType)
-                {
-                    long time = reliableData.getTimestamp() - startTimestamp;
-                    activityTimes.put(activityType, activityTimes.get(activityType).activityTime + time);
-                    activityType = reliableData.getType();
-                    startTimestamp = reliableData.getTimestamp();
-                }
-                else
-                {
-                    long time = reliableData.getTimestamp() - startTimestamp;
-                    activityTimes.put(activityType, activityTimes.get(activityType) + time);
-                    startTimestamp = reliableData.getTimestamp();
-                }
-            }
-        }
-        else
-        {
-            if (activityType != -1)
-            {
-                long time = dataList.getActivities().get(0).getTimestamp() - startTimestamp;
-                activityTimes.put(activityType, activityTimes.get(activityType) + time);
-                activityType = -1;
-                startTimestamp = 0;
-            }
-        }
+        return timeTracker;
     }
 
-    public int getTimeMin(int key)
+    public ActivityTimeTracker getLiveTracker()
     {
-        return (int) TimeUnit.MILLISECONDS.toMinutes(activityTimes.get(key));
+        return liveTimeTracker;
     }
+
 }

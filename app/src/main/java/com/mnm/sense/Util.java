@@ -61,6 +61,11 @@ public class Util
                 SenseApp.context().getResources().getColor(colorResource));
     }
 
+    public static Bitmap bitmapFromResource(int resource)
+    {
+        return BitmapFactory.decodeResource(SenseApp.context().getResources(), resource);
+    }
+
     public static Bitmap drawableToBitmap(Drawable drawable)
     {
         Bitmap bitmap = null;

@@ -1,7 +1,5 @@
 package com.mnm.sense.trackers;
 
-import android.util.Log;
-
 import com.google.android.gms.location.DetectedActivity;
 import com.mnm.sense.NotificationCreator;
 import com.mnm.sense.R;
@@ -9,12 +7,9 @@ import com.mnm.sense.Visualization;
 import com.mnm.sense.adapters.ActivityMonitor;
 import com.mnm.sense.adapters.ActivityPieAdapter;
 import com.mnm.sense.adapters.ActivityTextAdapter;
-import com.mnm.sense.adapters.VisualizationAdapter;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
-
-import java.util.HashMap;
 
 public class ActivityTracker extends Tracker
 {
@@ -49,6 +44,12 @@ public class ActivityTracker extends Tracker
     }
 
     @Override
+    protected void monitorData(SensorData data)
+    {
+        monitor.liveMonitoring(data);
+    }
+
+    @Override
     public void limitNotification(SensorData data)
     {
         checkGoal();
@@ -57,7 +58,7 @@ public class ActivityTracker extends Tracker
 
     private void checkGoal()
     {
-        int totalTime = monitor.getTotalTimes(DetectedActivity.RUNNING, DetectedActivity.WALKING);
+        int totalTime = monitor.getLiveTracker().getMinutes(DetectedActivity.RUNNING, DetectedActivity.WALKING);
 
         if (totalTime >= limit.value && first)
         {
@@ -70,7 +71,6 @@ public class ActivityTracker extends Tracker
     public void purge()
     {
         first = true;
-        monitor.resetTimes();
 
         super.purge();
     }

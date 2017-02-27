@@ -111,7 +111,8 @@ public class MainActivity extends AppCompatActivity
                         Manifest.permission.READ_PHONE_STATE,
                         Manifest.permission.PACKAGE_USAGE_STATS,
                         Manifest.permission.RECORD_AUDIO,
-                        Manifest.permission.CAMERA
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.READ_EXTERNAL_STORAGE
                 }, 1);
 
         checkRunningAppsPermission();

@@ -51,20 +51,7 @@ public class ActivityLatLngAdapter extends VisualizationAdapter<GoogleMap, Array
 
             if(location != null)
             {
-                LatLng latLng = new LatLng(location.first, location.second);
-
-                File image = new File(cameraData.getImagePath());
-                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                Bitmap icon = BitmapFactory.decodeFile(image.getAbsolutePath(),bmOptions);
-                icon = Bitmap.createScaledBitmap(icon, 50, 50, true);
-
-                result.add(new AttributedFeature()
-                        .origin(R.drawable.ic_camera_alt_black_48dp)
-                        .icon(icon)
-                        .text("Image taken at")
-                        .latLng(latLng)
-                        .custom("Date:", Timestamp.from(cameraData.getTimestamp()).date())
-                        .custom("Time:", Timestamp.from(cameraData.getTimestamp()).time()));
+                
             }
         }
 

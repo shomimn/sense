@@ -9,8 +9,10 @@ import com.ubhave.datahandler.except.DataHandlerException;
 import com.ubhave.datahandler.loggertypes.AbstractAsyncTransferLogger;
 import com.ubhave.datahandler.transfer.DataUploadCallback;
 import com.ubhave.sensormanager.ESException;
+import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import static com.ubhave.sensormanager.sensors.SensorUtils.getSensorName;

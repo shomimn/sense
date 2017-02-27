@@ -59,12 +59,12 @@ public class MarkerInfoAdapter extends PagerAdapter
 
     public void populateSubviews(View view, AttributedFeature attr)
     {
-        ImageView imageView = (ImageView) view.findViewById(R.id.marker_info_image);
+        ImageView origin = (ImageView) view.findViewById(R.id.marker_info_image);
         TextView textView = (TextView) view.findViewById(R.id.marker_info_text);
         LinearLayout innerLayout = (LinearLayout) view.findViewById(R.id.inner_layout);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT, 1);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 
-        imageView.setImageResource(attr.origin());
+        origin.setImageResource(attr.origin());
         textView.setText(attr.text());
 
         for (Map.Entry<String, String> entry : attr.custom().entrySet())
@@ -89,6 +89,14 @@ public class MarkerInfoAdapter extends PagerAdapter
             layout.addView(valueView, params);
 
             innerLayout.addView(layout);
+        }
+
+        if (attr.hasImage())
+        {
+            ImageView imageView = new ImageView(context);
+            imageView.setImageBitmap(attr.image());
+
+            innerLayout.addView(imageView, params);
         }
     }
 }

@@ -4,8 +4,10 @@ import android.util.Pair;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
+import com.mnm.sense.R;
 import com.mnm.sense.map.AttributedFeature;
 import com.mnm.sense.Timestamp;
+import com.mnm.sense.map.SensePoint;
 import com.ubhave.sensormanager.config.pull.ContentReaderConfig;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.AbstractContentReaderEntry;
@@ -43,7 +45,9 @@ public abstract class ContentLatLngAdapter extends VisualizationAdapter<GoogleMa
                 long date = Long.parseLong(entry.get(ContentReaderConfig.SMS_CONTENT_DATE_KEY));
 
                 AttributedFeature attr = new AttributedFeature()
-                        .latLng(latLng)
+//                        .latLng(latLng)
+                        .accent(R.color.greenColorAccent)
+                        .geometry(SensePoint.make(latLng))
                         .custom("Type:", type)
                         .custom("Contact:", entry.get("person"))
                         .custom("Date:", Timestamp.from(date).date())

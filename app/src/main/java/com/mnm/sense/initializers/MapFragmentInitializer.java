@@ -16,16 +16,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
+import com.mnm.sense.Util;
 import com.mnm.sense.map.AttributedFeature;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.map.LineManager;
 import com.mnm.sense.map.MarkerManager;
+import com.mnm.sense.map.Points;
 import com.mnm.sense.map.SenseMapRenderer;
+import com.mnm.sense.map.SensePolyline;
 import com.mnm.sense.models.MapModel;
 import com.mnm.sense.trackers.Tracker;
 import com.ubhave.sensormanager.data.SensorData;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, MapModel>
 {
@@ -57,7 +62,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                 final Tracker tracker = model.tracker;
 
                 final MarkerManager markerManager = new MarkerManager(context);
-                final SenseMapRenderer renderer = new SenseMapRenderer(markerManager, googleMap);
+                final SenseMapRenderer renderer = new SenseMapRenderer(markerManager, new LineManager(), googleMap);
                 final PolylineOptions polylineOptions = new PolylineOptions();
                 final LatLngBounds.Builder builder = new LatLngBounds.Builder();
                 final HeatmapTileProvider.Builder heatmapBuilder = new HeatmapTileProvider.Builder();
@@ -65,9 +70,31 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                 googleMap.clear();
 
                 for (AttributedFeature attr : model.data)
-                {
                     renderer.include(attr);
-                }
+
+//                ArrayList<AttributedFeature> lines = new ArrayList<>();
+//                Random random = new Random();
+//
+//                for (int i = 0; i < model.data.size(); ++i)
+//                {
+//                    LatLng start = model.data.get(i).geometry().points().get(0);
+//                    LatLng end = new LatLng(start.latitude + random.nextDouble() * 0.03, start.longitude + random.nextDouble() * 0.03);
+//
+//                    Points points = new Points();
+//                    points.add(start);
+//                    points.add(end);
+//
+//                    lines.add(new AttributedFeature()
+//                            .origin(R.drawable.ic_directions_walk)
+//                            .text("Line test")
+//                            .icon(Util.bitmapFromResource(R.drawable.ic_directions_walk))
+//                            .accent(R.color.colorAccent)
+//                            .geometry(SensePolyline.make(points))
+//                    );
+//                }
+//
+//                for (AttributedFeature attr : lines)
+//                    renderer.include(attr);
 
                 renderer.render();
 

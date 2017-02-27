@@ -59,16 +59,18 @@ public class CameraLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayLi
                 LatLng latLng = new LatLng(location.first, location.second);
 
                 File image = new File(cameraData.getImagePath());
-                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                 Matrix matrix = new Matrix();
                 matrix.postRotate(correctExifOrientation(cameraData.getImagePath()));
 
                 DisplayMetrics displayMetrics = new DisplayMetrics();
 
+                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                bmOptions.inScaled = true;
+                bmOptions.inSampleSize = 8;
+
                 Bitmap thumbnail = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
                 thumbnail = Bitmap.createBitmap(thumbnail, 0, 0, thumbnail.getWidth(), thumbnail.getHeight(), matrix, true);
                 Bitmap icon = Bitmap.createScaledBitmap(thumbnail, Util.dp(50), Util.dp(50), true);
-
 
                 result.add(new AttributedFeature()
                         .origin(R.drawable.ic_camera_alt_black_48dp)

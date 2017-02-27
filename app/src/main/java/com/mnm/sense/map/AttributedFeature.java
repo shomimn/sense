@@ -1,9 +1,7 @@
 package com.mnm.sense.map;
 
 import android.graphics.Bitmap;
-import android.widget.ImageView;
 
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.HashMap;
@@ -11,12 +9,71 @@ import java.util.LinkedHashMap;
 
 public class AttributedFeature
 {
+    public enum GeometryType
+    {
+        POINT,
+        POLYLINE,
+        POLYGON
+    }
+
+    public static abstract class Geometry
+    {
+        protected GeometryType type;
+        protected Points points;
+
+        public Geometry(GeometryType t, Points p)
+        {
+            type = t;
+            points = p;
+        }
+
+        public GeometryType type()
+        {
+            return type;
+        }
+
+        public Points points()
+        {
+            return points;
+        }
+    }
+
+    public static class SensePoint extends Geometry
+    {
+        private SensePoint(Points p)
+        {
+            super(GeometryType.POINT, p);
+        }
+
+        public SensePoint make(LatLng point)
+        {
+            Points points = new Points();
+            points.add(point);
+
+            return new SensePoint(points);
+        }
+    }
+
+    public static class SensePolyline extends Geometry
+    {
+        private SensePolyline(Points p)
+        {
+            super(GeometryType.POLYLINE, p);
+        }
+
+        public SensePolyline make(Points p)
+        {
+            return new SensePolyline(p);
+        }
+    }
+
     private int origin;
     private Bitmap icon;
     private String text;
     private LatLng latLng;
     private LinkedHashMap<String, String> customAttributes = new LinkedHashMap<>();
     private Bitmap image;
+    private Geometry geometry;
 
     public Bitmap icon()
     {
@@ -93,5 +150,17 @@ public class AttributedFeature
     public boolean hasImage()
     {
         return image != null;
+    }
+
+    public Geometry geometry()
+    {
+        return geometry;
+    }
+
+    public AttributedFeature geometry(Geometry geometry)
+    {
+        this.geometry = geometry;
+
+        return this;
     }
 }

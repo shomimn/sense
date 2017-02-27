@@ -73,9 +73,9 @@ public class MicrophoneLatLngAdapter extends VisualizationAdapter<GoogleMap, Arr
     }
 
     @Override
-    public VisualizationAdapter<GoogleMap, ArrayList<AttributedFeature>> newInstance()
+    public MicrophoneLatLngAdapter newInstance()
     {
-        return null;
+        return new MicrophoneLatLngAdapter();
     }
 
     @Override

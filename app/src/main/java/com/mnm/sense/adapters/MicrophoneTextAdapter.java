@@ -41,9 +41,9 @@ public class MicrophoneTextAdapter extends VisualizationAdapter<TextView, String
     }
 
     @Override
-    public VisualizationAdapter<TextView, String> newInstance()
+    public MicrophoneTextAdapter newInstance()
     {
-        return null;
+        return new MicrophoneTextAdapter();
     }
 
     @Override

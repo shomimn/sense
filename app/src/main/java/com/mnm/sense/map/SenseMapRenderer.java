@@ -4,7 +4,14 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -67,14 +74,15 @@ public class SenseMapRenderer
 
     private BitmapDescriptor makeIcon(ArrayList<AttributedFeature> features)
     {
-        if (features.size() == 1)
-            return BitmapDescriptorFactory.fromBitmap(
-                    Bitmap.createScaledBitmap(features.get(0).icon(), Util.dp(100) / 4, Util.dp(100) / 4, true));
-
         final int max = 3;
 
         int size = Util.dp(100);
         int segmentSize = size / 4;
+
+        if (features.size() == 1)
+            return BitmapDescriptorFactory.fromBitmap(
+                    roundedCornerBitmap(features.get(0).icon(), segmentSize, segmentSize, segmentSize / 5));
+
         Bitmap bitmap = Bitmap.createBitmap(size, segmentSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         boolean drawMore = features.size() > max;
@@ -85,17 +93,29 @@ public class SenseMapRenderer
                 break;
 
             AttributedFeature feature = features.get(i);
-            Bitmap icon = feature.icon();
+            Bitmap icon = roundedCornerBitmap(feature.icon(), segmentSize, segmentSize, segmentSize / 5);
 
+//            Paint white = new Paint();
+//            white.setColor(Color.WHITE);
+//            white.setStyle(Paint.Style.FILL);
+
+//            canvas.drawRoundRect(0, 0, segmentSize, segmentSize, segmentSize / 5, segmentSize / 5, white);
             drawTranslate(canvas, icon, segmentSize, segmentSize, 0);
         }
 
         if (drawMore)
         {
-            Bitmap more = Util.bitmapFromResource(SenseApp.context(), R.drawable.ic_more_horiz_black_48dp,
-                    SenseApp.context().getResources().getColor(android.R.color.black));
+            TextPaint textPaint = new TextPaint();
+            textPaint.setAntiAlias(true);
+            textPaint.setTextSize(10 * SenseApp.context().getResources().getDisplayMetrics().density);
+            textPaint.setColor(0xFF000000);
 
-            drawTranslate(canvas, more, segmentSize, segmentSize, 0);
+            String plus = "+" + String.valueOf(features.size() - max);
+
+            int width = (int) textPaint.measureText(plus);
+
+            StaticLayout staticLayout = new StaticLayout(plus, textPaint, width, Layout.Alignment.ALIGN_CENTER, 1.0f, 0, false);
+            staticLayout.draw(canvas);
         }
 
         return BitmapDescriptorFactory.fromBitmap(bitmap);
@@ -108,5 +128,26 @@ public class SenseMapRenderer
 
         canvas.drawBitmap(bitmap, src, dst, null);
         canvas.translate(dx, dy);
+    }
+
+    private Bitmap roundedCornerBitmap(Bitmap bitmap, int width, int height, int pixels)
+    {
+        Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color = 0xff424242;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        final RectF rectF = new RectF(0, 0, width, height);
+        final float roundPx = pixels;
+
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(color);
+        canvas.drawRoundRect(rectF, roundPx, roundPx, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, rect, rectF, paint);
+
+        return output;
     }
 }

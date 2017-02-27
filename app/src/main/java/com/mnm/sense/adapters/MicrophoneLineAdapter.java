@@ -77,9 +77,9 @@ public class MicrophoneLineAdapter extends VisualizationAdapter<LineChart, LineD
     }
 
     @Override
-    public VisualizationAdapter<LineChart, LineData> newInstance()
+    public MicrophoneLineAdapter newInstance()
     {
-        return null;
+        return new MicrophoneLineAdapter();
     }
 
     @Override

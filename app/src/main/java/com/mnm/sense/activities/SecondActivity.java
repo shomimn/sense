@@ -341,13 +341,12 @@ public class SecondActivity extends AppCompatActivity
 
                 String url = String.format("%s/%d/%d", baseUrl, begin, end);
 
-                TaskManager.instance().executeAndPost(new Task.Progress(SecondActivity.this, tracker.type, url, "Downloading data")
+                TaskManager.instance().executeAndPost(new Task.Progress(SecondActivity.this, url, "Downloading data")
                 {
                     @Override
-                    public void executeImpl(ArrayList<SensorData> data)
+                    public void executeImpl()
                     {
                         Log.d("Progress Task", "Data downloaded and displayed");
-                        tracker.remoteData = data;
 
                         int currentFragment = viewPager.getCurrentItem();
 

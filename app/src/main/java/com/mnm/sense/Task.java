@@ -20,6 +20,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -60,15 +61,12 @@ public abstract class Task
     public static abstract class Progress extends Ui
     {
         ProgressDialog dialog;
-        int trackerType;
         String url;
-        ArrayList<SensorData> sensorData = new ArrayList<>();
 
-        public Progress(Context context, int type, String _url, String message)
+        public Progress(Context context, String _url, String message)
         {
             super(SERVER);
 
-            trackerType = type;
             url = _url;
 
             dialog = new ProgressDialog(context);
@@ -107,20 +105,30 @@ public abstract class Task
 
                     inputStream.close();
 
+                    HashMap<Integer, ArrayList<SensorData>> dataByTracker = new HashMap<>();
                     JSONArray jsonArray = new JSONArray(builder.toString());
 
                     for (int i = 0; i < jsonArray.length(); ++i)
                     {
                         JSONObject object = jsonArray.getJSONObject(i);
-                        String json = object.toString();
+                        String type = object.getString("dataType");
+                        int tracker = SensorUtils.getSensorType(type);
+                        JSONFormatter formatter = DataFormatter.getJSONFormatter(dialog.getContext(), tracker);
 
-                        JSONFormatter formatter = DataFormatter.getJSONFormatter(dialog.getContext(), trackerType);
-
-                        SensorData data = formatter.toSensorData(json);
+                        SensorData data = formatter.toSensorData(object.toString());
 
                         Log.d("Progress Task", "Got sensor data");
 
-                        sensorData.add(data);
+                        if (dataByTracker.get(tracker) == null)
+                            dataByTracker.put(tracker, new ArrayList<SensorData>());
+
+                        dataByTracker.get(tracker).add(data);
+                    }
+
+                    for (Integer trackerType : dataByTracker.keySet())
+                    {
+                        Tracker tracker = SenseApp.instance().tracker(trackerType);
+                        tracker.remoteData = dataByTracker.get(trackerType);
                     }
                 }
             }
@@ -133,11 +141,11 @@ public abstract class Task
         @Override
         public void uiExecute()
         {
-            executeImpl(sensorData);
+            executeImpl();
 
             dialog.dismiss();
         }
 
-        public abstract void executeImpl(ArrayList<SensorData> data);
+        public abstract void executeImpl();
     }
 }

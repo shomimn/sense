@@ -109,23 +109,14 @@ public class MainActivity extends AppCompatActivity
 //                ArrayList<AttributedFeature> features = new ArrayList<>();
 
                 for (Tracker tracker : SenseApp.instance().trackers.values())
-                {
                     if (tracker.selected)
-                    {
-//                        MapModel model = (MapModel) tracker.getModel(Visualization.MAP);
-//                        features.addAll(model.data);
                         selected.add(tracker);
-                    }
-                }
-
-//                MapModel mergedModel = new MapModel(SenseApp.instance().tracker(SensorUtils.SENSOR_TYPE_LOCATION), features, "Everything.");
-//
-//                ((LocationTracker )(SenseApp.instance().tracker(SensorUtils.SENSOR_TYPE_LOCATION))).mergedModel = mergedModel;
 
                 try
                 {
                     MergedTracker mergedTracker = new MergedTracker(Visualization.MAP, selected);
                     mergedTracker.text = "God";
+                    mergedTracker.type = 123;
                     mergedTracker.attributes = new String[]{ "Everything." };
                     mergedTracker.accent = R.color.redColorAccent;
                     mergedTracker.theme = R.style.RedTheme;

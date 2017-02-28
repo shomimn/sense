@@ -3,6 +3,7 @@ package com.mnm.sense;
 import android.content.Context;
 import android.util.Log;
 
+import com.mnm.sense.trackers.MergedTracker;
 import com.mnm.sense.trackers.Tracker;
 import com.ubhave.datahandler.config.DataStorageConfig;
 import com.ubhave.datahandler.except.DataHandlerException;
@@ -19,7 +20,7 @@ import static com.ubhave.sensormanager.sensors.SensorUtils.getSensorName;
 
 public class Repository extends AbstractAsyncTransferLogger implements DataUploadCallback
 {
-    public static final String baseUrl = "http://192.168.0.102/api";
+    public static final String baseUrl = "http://192.168.0.10/api";
 
     private static Repository _instance;
 
@@ -146,12 +147,18 @@ public class Repository extends AbstractAsyncTransferLogger implements DataUploa
     public String getRemoteFor(int trackerType)
     {
         String remoteUrl = Repository.baseUrl;
+        MergedTracker mergedTracker = SenseApp.instance().mergedTracker(trackerType);
 
         try
         {
-            String sensorName = SensorUtils.getSensorName(trackerType);
+            String sensorNames;
 
-            remoteUrl += String.format("/history/%s/%s/%s", getUniqueUserId(), getDeviceId(), sensorName);
+            if (mergedTracker != null)
+                sensorNames = mergedTracker.buildRemote();
+            else
+                sensorNames = SensorUtils.getSensorName(trackerType);
+
+            remoteUrl += String.format("/history/%s/%s/%s", getUniqueUserId(), getDeviceId(), sensorNames);
         }
         catch (ESException e)
         {

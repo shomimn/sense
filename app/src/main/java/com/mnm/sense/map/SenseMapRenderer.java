@@ -117,7 +117,7 @@ public class SenseMapRenderer
 
         int segmentSize = Util.dp(100) / (max + 1);
 
-        int size = segmentSize * features.size();
+        int size = segmentSize * Math.min(features.size(), max + 1);
 
         Bitmap bitmap = Bitmap.createBitmap(size, segmentSize, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);

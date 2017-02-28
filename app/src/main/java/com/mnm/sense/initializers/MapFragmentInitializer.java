@@ -106,8 +106,7 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
                     @Override
                     public boolean onMarkerClick(final Marker marker)
                     {
-
-                        if (googleMap.getCameraPosition().zoom <= 15)
+                        if (googleMap.getCameraPosition().zoom >= 15)
                         {
                             markerManager.onMarkerClick(marker);
                             return true;

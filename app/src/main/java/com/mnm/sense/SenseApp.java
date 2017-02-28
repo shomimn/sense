@@ -160,6 +160,11 @@ public class SenseApp extends Application
         handler.postDelayed(purgeTask, then.millis() - now.millis());
     }
 
+    public MergedTracker mergedTracker(int key)
+    {
+        return mergedTrackers.get(key);
+    }
+
     public void addMergedTracker(int key, MergedTracker mergedTracker)
     {
         mergedTrackers.put(key, mergedTracker);

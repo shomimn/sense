@@ -27,8 +27,6 @@ public class MergedTracker extends Tracker
     public static final String ATTRIBUTE_CAMERA = "Camera";
 
     public ArrayList<Tracker> selectedTrackers;
-
-    private HashMap<Integer, String> trackerToAttribute = new HashMap<>();
     private String visualization;
 
     public MergedTracker(String v, ArrayList<Tracker> selection) throws ESException
@@ -59,13 +57,16 @@ public class MergedTracker extends Tracker
             .adapters(new CameraLatLngAdapter());
     }
 
-    public Object getModel()
+    public Object getModel(int mode)
     {
         ArrayList<AttributedFeature> features = new ArrayList<>();
 
         for (Tracker tracker : selectedTrackers)
         {
-            MapModel model = (MapModel) tracker.getModel(visualization);
+            if (tracker.visualizations.get(visualization) == null)
+                continue;
+
+            MapModel model = (MapModel) tracker.getModel(mode, tracker.attributes[0], visualization);
             features.addAll(model.data);
         }
 
@@ -75,6 +76,28 @@ public class MergedTracker extends Tracker
     @Override
     public Object getModel(String visualizationType)
     {
-        return new MapModel(SenseApp.instance().tracker(SensorUtils.SENSOR_TYPE_LOCATION), (ArrayList<AttributedFeature>) getModel(), "Everything.");
+        return new MapModel(this, (ArrayList<AttributedFeature>) getModel(MODE_LOCAL), "Everything.");
+    }
+
+    @Override
+    public Object getModel(int mode, String attribute, String visualizationType)
+    {
+        return new MapModel(this, (ArrayList<AttributedFeature>) getModel(mode), "Everything.");
+    }
+
+    public String buildRemote() throws ESException
+    {
+        if (selectedTrackers.size() == 0)
+            return null;
+
+        int size = selectedTrackers.size();
+        String remote = "";
+
+        for (int i = 0; i < size - 1; ++i)
+            remote += SensorUtils.getSensorName(selectedTrackers.get(i).type) + "&";
+
+        remote += SensorUtils.getSensorName(selectedTrackers.get(size - 1).type);
+
+        return remote;
     }
 }

@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
-    private Button mapButton;
 
     private long backTimestamp = 0;
 
@@ -76,66 +75,12 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        new Thread()
-        {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    ActivityRecognitionSensor ars = ActivityRecognitionSensor.getSensor(MainActivity.this);
-                } catch (ESException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
-
-
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.getRootView().setBackgroundColor(Color.parseColor("#EEEEEE"));
         setupViewPager(viewPager);
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
-
-        mapButton = (Button) findViewById(R.id.map_button);
-        mapButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                ArrayList<Tracker> selected = new ArrayList<>();
-//                ArrayList<AttributedFeature> features = new ArrayList<>();
-
-                for (Tracker tracker : SenseApp.instance().trackers.values())
-                    if (tracker.selected)
-                        selected.add(tracker);
-
-                try
-                {
-                    MergedTracker mergedTracker = new MergedTracker(Visualization.MAP, selected);
-                    mergedTracker.text = "God";
-                    mergedTracker.type = 123;
-                    mergedTracker.attributes = new String[]{ "Everything." };
-                    mergedTracker.accent = R.color.redColorAccent;
-                    mergedTracker.theme = R.style.RedTheme;
-
-                    SenseApp.instance().addMergedTracker(123, mergedTracker);
-
-                    Intent intent = new Intent(MainActivity.this, SecondActivity.class);
-                    intent.putExtra("tracker", 123);
-                    intent.putExtra("visualization", Visualization.MAP);
-                    intent.putExtra("merge", true);
-
-                    startActivity(intent);
-                }
-                catch (ESException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        });
 
         for (SensorEnum s : SensorEnum.values())
         {

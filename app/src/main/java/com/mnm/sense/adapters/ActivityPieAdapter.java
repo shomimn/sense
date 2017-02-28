@@ -86,7 +86,7 @@ public class ActivityPieAdapter extends VisualizationAdapter<PieChart, PieData>
     }
 
     @Override
-    public void setLimit(int limit)
+    public void setLimit(int limit  )
     {
         activityGoal = limit;
     }

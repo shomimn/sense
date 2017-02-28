@@ -5,6 +5,7 @@ import android.util.Log;
 import android.util.SparseArray;
 
 import com.google.android.gms.location.DetectedActivity;
+import com.google.android.gms.maps.model.LatLng;
 import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.ActivityRecognitionData;
 import com.ubhave.sensormanager.data.pull.ActivityRecognitionDataList;
@@ -18,24 +19,48 @@ import java.util.concurrent.TimeUnit;
 
 public class ActivityMonitor
 {
+    public class ActivityLocationTracker
+    {
+        public int type;
+        public LatLng startLocation;
+        public long timeMillis;
+        public long startTimestamp;
+    }
+
     public class ActivityTimeTracker
     {
         public long startTimestamp;
         public int type;
+
         public SparseArray<Long> activityTimes;
+        public ArrayList<LatLng> locations;
+        public ArrayList<Integer> types;
+
+        int counter;
 
         public ActivityTimeTracker()
         {
             startTimestamp = 0;
             type = -1;
             activityTimes = new SparseArray<>();
+            locations = new ArrayList<>();
+            types = new ArrayList<>();
+
+            counter = 0;
 
             activityTimes.append(DetectedActivity.WALKING, 0l);
             activityTimes.append(DetectedActivity.RUNNING, 0l);
             activityTimes.append(DetectedActivity.STILL, 0l);
             activityTimes.append(DetectedActivity.IN_VEHICLE, 0l);
             activityTimes.append(DetectedActivity.ON_BICYCLE, 0l);
+
+//            locations.append(DetectedActivity.WALKING, new ArrayList<SparseArray<LatLng>>());
+//            locations.append(DetectedActivity.RUNNING, new ArrayList<SparseArray<LatLng>>());
+//            locations.append(DetectedActivity.STILL, new ArrayList<SparseArray<LatLng>>());
+//            locations.append(DetectedActivity.IN_VEHICLE, new ArrayList<SparseArray<LatLng>>());
+//            locations.append(DetectedActivity.ON_BICYCLE, new ArrayList<SparseArray<LatLng>>());
         }
+
 
         public int getMinutes(int ... keys)
         {
@@ -45,6 +70,7 @@ public class ActivityMonitor
 
             return (int) TimeUnit.MILLISECONDS.toMinutes(res);
         }
+
         public void resetTimes()
         {
             for (int i = 0; i < activityTimes.size(); ++i)
@@ -63,23 +89,31 @@ public class ActivityMonitor
             {
                 if(type == -1)
                 {
-                    startTimestamp = reliableData.getTimestamp();
+                    startTimestamp = dataList.getTimestamp();
                     type = reliableData.getType();
+                    locations.add(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
+                    types.add(type);
+
                 }
                 else
                 {
                     if(reliableData.getType() != type)
                     {
-                        long time = reliableData.getTimestamp() - startTimestamp;
+                        long time = dataList.getTimestamp() - startTimestamp;
+
                         activityTimes.put(type, activityTimes.get(type) + time);
+                        locations.add(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
+
                         type = reliableData.getType();
-                        startTimestamp = reliableData.getTimestamp();
+                        types.add(type);
+
+                        startTimestamp = dataList.getTimestamp();
                     }
                     else
                     {
-                        long time = reliableData.getTimestamp() - startTimestamp;
+                        long time = dataList.getTimestamp() - startTimestamp;
                         activityTimes.put(type, activityTimes.get(type) + time);
-                        startTimestamp = reliableData.getTimestamp();
+                        startTimestamp = dataList.getTimestamp();
                     }
                 }
             }
@@ -88,7 +122,9 @@ public class ActivityMonitor
                 if (type != -1)
                 {
                     long time = dataList.getTimestamp() - startTimestamp;
+
                     activityTimes.put(type, activityTimes.get(type) + time);
+
                     type = -1;
                     startTimestamp = 0l;
                 }
@@ -123,7 +159,7 @@ public class ActivityMonitor
 
     public void liveMonitoring(SensorData dataList)
     {
-        liveTimeTracker.obtainTimes((ActivityRecognitionDataList)dataList);
+        liveTimeTracker.obtainTimes((ActivityRecognitionDataList) dataList);
     }
 
     public ActivityTimeTracker monitorPortion(ArrayList<SensorData> dataList)
@@ -131,7 +167,7 @@ public class ActivityMonitor
         ActivityTimeTracker timeTracker = new ActivityTimeTracker();
 
         for(SensorData data: dataList)
-            liveTimeTracker.obtainTimes((ActivityRecognitionDataList)data);
+            timeTracker.obtainTimes((ActivityRecognitionDataList)data);
 
         return timeTracker;
     }

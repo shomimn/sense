@@ -25,7 +25,6 @@ public class ActivityRecognitionFormatter extends PullSensorJSONFormatter
     private final static String ACTIVITY_RECOGNITION = "ActivityRecognition";
     private final static String TYPE = "type";
     private final static String CONFIDENCE = "confidence";
-    private final static String TIMESTAMP = "timestamp";
 
     public ActivityRecognitionFormatter(Context context)
     {
@@ -46,7 +45,6 @@ public class ActivityRecognitionFormatter extends PullSensorJSONFormatter
                 JSONObject activityJson = new JSONObject();
                 activityJson.put(TYPE, activity.getType());
                 activityJson.put(CONFIDENCE, activity.getConfidence());
-                activityJson.put(TIMESTAMP, activity.getTimestamp());
 
                 resultJson.put(activityJson);
             }
@@ -85,9 +83,8 @@ public class ActivityRecognitionFormatter extends PullSensorJSONFormatter
                     JSONObject entry = jsonArray.getJSONObject(i);
                     int type = entry.getInt(TYPE);
                     int confidence = entry.getInt(CONFIDENCE);
-                    long timestamp = entry.getLong(TIMESTAMP);
 
-                    dataList.add(new ActivityRecognitionData(type, confidence, timestamp));
+                    dataList.add(new ActivityRecognitionData(type, confidence));
                 }
 
                 ActivityRecognitionDataList activityRecognitionDataList = new ActivityRecognitionDataList(senseStartTimestamp, sensorConfig);

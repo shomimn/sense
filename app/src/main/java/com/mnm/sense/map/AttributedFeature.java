@@ -28,7 +28,6 @@ public class AttributedFeature
     public AttributedFeature icon(Bitmap icon)
     {
         this.icon = icon;
-
         return this;
     }
 

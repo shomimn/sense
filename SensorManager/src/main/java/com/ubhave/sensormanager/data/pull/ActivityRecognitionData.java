@@ -11,13 +11,12 @@ public class ActivityRecognitionData
 
     private int type;
     private int confidence;
-    private long timestamp;
 
-    public ActivityRecognitionData(int type, int confidence, long timestamp)
+    public ActivityRecognitionData(int type, int confidence)
     {
         this.type = type;
         this.confidence = confidence;
-        this.timestamp = timestamp;
+
         activityText = new SparseArray<>();
         activityText.append(DetectedActivity.IN_VEHICLE, "In vehicle");
         activityText.append(DetectedActivity.ON_BICYCLE, "On bicycle");
@@ -43,11 +42,6 @@ public class ActivityRecognitionData
     public int getConfidence()
     {
         return confidence;
-    }
-
-    public long getTimestamp()
-    {
-        return timestamp;
     }
 
     public String getActivityText()

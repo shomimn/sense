@@ -77,7 +77,7 @@ public class SenseMapRenderer
 
         for (AttributedFeature line : lines)
         {
-            markerManager.add(line);
+//            markerManager.add(line);
 
             googleMap.addPolyline(new PolylineOptions()
                     .addAll(line.geometry().points)

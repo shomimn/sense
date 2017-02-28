@@ -1,14 +1,20 @@
 package com.mnm.sense.trackers;
 
+import android.location.Location;
+import android.util.Pair;
+
 import com.google.android.gms.location.DetectedActivity;
+import com.mnm.sense.Locator;
 import com.mnm.sense.NotificationCreator;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.adapters.ActivityLatLngAdapter;
 import com.mnm.sense.adapters.ActivityMonitor;
 import com.mnm.sense.adapters.ActivityPieAdapter;
 import com.mnm.sense.adapters.ActivityTextAdapter;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.data.SensorData;
+import com.ubhave.sensormanager.data.pull.ActivityRecognitionDataList;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
 public class ActivityTracker extends Tracker
@@ -36,11 +42,14 @@ public class ActivityTracker extends Tracker
         pieAdapter.setLimit(limit.value);
 
         build()
-            .text(new Visualization(1, 3, false))
-            .pieChart(new Visualization(2, 3, false))
-            .attribute(ATTRIBUTE_ACTIVITY)
-            .adapters(new ActivityTextAdapter(),
-                    pieAdapter);
+                .map(new Visualization(2, 3, false))
+                .text(new Visualization(1, 3, false))
+                .pieChart(new Visualization(2, 3, false))
+                .attribute(ATTRIBUTE_ACTIVITY)
+                .adapters(
+                        new ActivityLatLngAdapter(monitor),
+                        new ActivityTextAdapter(),
+                        pieAdapter);
     }
 
     @Override
@@ -65,6 +74,31 @@ public class ActivityTracker extends Tracker
             first = false;
             NotificationCreator.create(resource, "Sense", "Congrats, you reached your daily goal!");
         }
+    }
+
+    @Override
+    protected void attachLocation(SensorData data)
+    {
+        Locator locator = Locator.instance();
+        Location location = locator.locateAt(data.getTimestamp());
+
+        if (location == null)
+        {
+            synchronized (locator)
+            {
+                try
+                {
+                    locator.wait();
+                    location = locator.lastLocation();
+                }
+                catch (InterruptedException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        ((ActivityRecognitionDataList)data).setLocation(Pair.create(location.getLatitude(), location.getLongitude()));
     }
 
     @Override

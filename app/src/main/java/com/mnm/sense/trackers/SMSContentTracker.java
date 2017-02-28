@@ -15,6 +15,8 @@ import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.AbstractContentReaderListData;
 import com.ubhave.sensormanager.sensors.SensorUtils;
 
+import java.util.ArrayList;
+
 public class SMSContentTracker extends Tracker
 {
     public static final String ATTRIBUTE_TYPE = "Type";
@@ -33,25 +35,25 @@ public class SMSContentTracker extends Tracker
         accent = R.color.greenColorAccent;
         theme = R.style.GreenTheme;
 
-        attributes = new String[]{ ATTRIBUTE_TYPE, ATTRIBUTE_PERSON };
+        attributes = new String[]{ATTRIBUTE_TYPE, ATTRIBUTE_PERSON};
 
         build()
-            .text(new Visualization(1, 1, false))
-            .barChart(new Visualization(2, 3, false))
-            .pieChart(new Visualization(2, 3, false))
-            .map(new Visualization(2, 3, false))
-            .attribute(ATTRIBUTE_TYPE)
-            .adapters(new SMSTypeTextAdapter(),
-                    new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
-                    new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
-                    new SMSLatLngAdapter()
-            )
-            .attribute(ATTRIBUTE_PERSON)
-            .adapters(new SMSPersonTextAdapter(),
-                    new SMSBarAdapter("person"),
-                    new SMSPieAdapter("person"),
-                    new SMSLatLngAdapter()
-            );
+                .text(new Visualization(1, 1, false))
+                .barChart(new Visualization(2, 3, false))
+                .pieChart(new Visualization(2, 3, false))
+                .map(new Visualization(0, 0, false))
+                .attribute(ATTRIBUTE_TYPE)
+                .adapters(new SMSTypeTextAdapter(),
+                        new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
+                        new SMSPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
+                        new SMSLatLngAdapter()
+                )
+                .attribute(ATTRIBUTE_PERSON)
+                .adapters(new SMSPersonTextAdapter(),
+                        new SMSBarAdapter("person"),
+                        new SMSPieAdapter("person"),
+                        new SMSLatLngAdapter()
+                );
     }
 
     @Override
@@ -83,4 +85,3 @@ public class SMSContentTracker extends Tracker
         return false;
     }
 }
-

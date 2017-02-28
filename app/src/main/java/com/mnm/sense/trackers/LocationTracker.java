@@ -1,6 +1,10 @@
 package com.mnm.sense.trackers;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mnm.sense.adapters.CallsLatLngAdapter;
+import com.mnm.sense.adapters.CameraLatLngAdapter;
+import com.mnm.sense.adapters.RunningAppsLatLngAdapter;
+import com.mnm.sense.adapters.SMSLatLngAdapter;
 import com.mnm.sense.adapters.VisualizationAdapter;
 import com.mnm.sense.models.MapModel;
 import com.mnm.sense.adapters.LocationLatLngAdapter;

@@ -41,7 +41,7 @@ public class RunningApplicationTracker extends Tracker
             .listView(new Visualization(2, 3))
             .barChart(new Visualization(2, 3))
             .pieChart(new Visualization(2, 3))
-            .map(new Visualization(2, 3))
+            .map(new Visualization(0, 0))
                 .attribute(ATTRIBUTE_TOTAL)
                     .adapters(new RunningApplicationTextAdapter(),
                             new RunningApplicationBarAdapter(),

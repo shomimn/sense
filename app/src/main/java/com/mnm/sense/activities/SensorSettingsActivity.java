@@ -105,6 +105,10 @@ public class SensorSettingsActivity extends AppCompatActivity
         {
             final String key = entry.getKey();
             final Visualization visualization = entry.getValue();
+
+            if (visualization.rows == 0 || visualization.cols == 0)
+                continue;
+
             final boolean isDisplayed = visualization.isDisplayed;
 
             BottomBorderedLinearLayout layout = new BottomBorderedLinearLayout(this);

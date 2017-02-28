@@ -12,7 +12,7 @@ public class Geometry
     protected Type type;
     protected Points points;
 
-    public Geometry(Type t, Points p)
+    Geometry(Type t, Points p)
     {
         type = t;
         points = p;

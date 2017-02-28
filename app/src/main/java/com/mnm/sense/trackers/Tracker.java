@@ -95,6 +95,7 @@ public abstract class Tracker implements SensorDataListener
     public ArrayList<SensorData> sensorData = new ArrayList<>();
     public ArrayList<SensorData> remoteData = new ArrayList<>();
     public String[] attributes = { };
+    public boolean selected = false;
 
     protected static Handler handler = new Handler();
 
@@ -106,7 +107,9 @@ public abstract class Tracker implements SensorDataListener
 
 //        try
 //        {
-//            ESDataManager.getInstance(SenseApp.context(), DataStorageConfig.STORAGE_TYPE_DB, null).getRecentSensorData(type, Timestamp.startOfToday().millis());
+//            sensorData.addAll(
+//                    ESDataManager.getInstance(SenseApp.context(), DataStorageConfig.STORAGE_TYPE_DB, null)
+//                            .getRecentSensorData(type, Timestamp.startOfToday().millis()));
 //        }
 //        catch (Exception e)
 //        {
@@ -163,18 +166,19 @@ public abstract class Tracker implements SensorDataListener
 
         if (location == null)
         {
-            synchronized (locator)
-            {
-                try
-                {
-                    locator.wait();
-                    location = locator.lastLocation();
-                }
-                catch (InterruptedException e)
-                {
-                    e.printStackTrace();
-                }
-            }
+            return;
+//            synchronized (locator)
+//            {
+//                try
+//                {
+//                    locator.wait();
+//                    location = locator.lastLocation();
+//                }
+//                catch (InterruptedException e)
+//                {
+//                    e.printStackTrace();
+//                }
+//            }
         }
 
         Log.d("onDataSensed", location.toString());
@@ -274,7 +278,7 @@ public abstract class Tracker implements SensorDataListener
         return createModel(MODE_LOCAL, attribute, visualizationType, sensorData);
     }
 
-    private Object createModel(int mode, String attribute, String visualizationType, ArrayList<SensorData> data)
+    protected Object createModel(int mode, String attribute, String visualizationType, ArrayList<SensorData> data)
     {
         VisualizationAdapter adapter = adapter(attribute, visualizationType);
 

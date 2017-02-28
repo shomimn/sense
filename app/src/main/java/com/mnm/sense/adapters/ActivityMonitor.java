@@ -19,14 +19,19 @@ import java.util.concurrent.TimeUnit;
 
 public class ActivityMonitor
 {
+    private static final int CONFIDENCE_THRESHOLD = 60;
+    private static final int CONFIDENCE_THRESHOLD_SENSING = 25;
+
     public class ActivityPath
     {
+        private String text;
         private int type;
         private LatLng origin;
         private ArrayList<LatLng> path;
 
-        public ActivityPath(int type, LatLng loc)
+        public ActivityPath(int type, String text, LatLng loc)
         {
+            this.text = text;
             this.type = type;
             origin = loc;
             path = new ArrayList<>();
@@ -55,6 +60,11 @@ public class ActivityMonitor
             if(type != DetectedActivity.STILL)
                 path.add(point);
         }
+
+        public String getText()
+        {
+            return text;
+        }
     }
 
     public class ActivityTimeTracker
@@ -80,6 +90,7 @@ public class ActivityMonitor
         }
 
 
+
         public int getMinutes(int ... keys)
         {
             long res = 0;
@@ -89,6 +100,13 @@ public class ActivityMonitor
             return (int) TimeUnit.MILLISECONDS.toMinutes(res);
         }
 
+        private boolean satisfies(ActivityRecognitionDataList list, int type)
+        {
+            for(ActivityRecognitionData data : list.getActivities())
+                if(data.getType() == type && data.getConfidence() >= CONFIDENCE_THRESHOLD_SENSING)
+                    return true;
+            return false;
+        }
 
         public void obtainTimes(ActivityRecognitionDataList dataList)
         {
@@ -105,12 +123,12 @@ public class ActivityMonitor
                     startTimestamp = dataList.getTimestamp();
                     type = reliableData.getType();
 
-                    activityPaths.add(new ActivityPath(type, new LatLng(dataList.getLocation().first, dataList.getLocation().second)));
+                    activityPaths.add(new ActivityPath(type, reliableData.getActivityText(), new LatLng(dataList.getLocation().first, dataList.getLocation().second)));
 
                 }
                 else
                 {
-                    if(reliableData.getType() != type)
+                    if(reliableData.getType() != type && !satisfies(dataList, type))
                     {
                         long time = dataList.getTimestamp() - startTimestamp;
 
@@ -120,7 +138,7 @@ public class ActivityMonitor
                         type = reliableData.getType();
                         startTimestamp = dataList.getTimestamp();
 
-                        activityPaths.add(new ActivityPath(type, new LatLng(dataList.getLocation().first, dataList.getLocation().second)));
+                        activityPaths.add(new ActivityPath(type, reliableData.getActivityText(), new LatLng(dataList.getLocation().first, dataList.getLocation().second)));
                     }
                     else
                     {
@@ -147,31 +165,24 @@ public class ActivityMonitor
             }
         }
 
-    }
+        private ArrayList<ActivityRecognitionData> getValidActivity(ActivityRecognitionDataList activityList)
+        {
+            ArrayList<ActivityRecognitionData> result = new ArrayList<>();
 
-    private static final int CONFIDENCE_THRESHOLD = 30;
+            for(ActivityRecognitionData activity : activityList.getActivities())
+                if(activityTimes.get(activity.getType(), -1l) != -1 && activity.getConfidence() >= CONFIDENCE_THRESHOLD)
+                    result.add(activity);
+
+            return result;
+        }
+
+    }
 
     private ActivityTimeTracker liveTimeTracker;
 
     public ActivityMonitor()
     {
         liveTimeTracker = new ActivityTimeTracker();
-    }
-    
-    private ArrayList<ActivityRecognitionData> getValidActivity(ActivityRecognitionDataList activityList)
-    {
-        ArrayList<ActivityRecognitionData> result = new ArrayList<>();
-
-        for(ActivityRecognitionData activity : activityList.getActivities())
-            if(liveTimeTracker.activityTimes.get(activity.getType(), -1l) != -1 && activity.getConfidence() >= CONFIDENCE_THRESHOLD)
-                result.add(activity);
-
-        return result;
-    }
-
-    private boolean isValid(ActivityRecognitionData data)
-    {
-        return data.getConfidence() >= CONFIDENCE_THRESHOLD;
     }
 
     public void liveMonitoring(SensorData dataList)

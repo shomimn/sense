@@ -1,12 +1,10 @@
 package com.mnm.sense;
 
 
-import android.app.ActionBar;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayout;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.mnm.sense.initializers.Initializer;
 import com.mnm.sense.initializers.ViewInitializer;
@@ -16,11 +14,15 @@ import java.util.HashMap;
 
 public class DynamicGrid
 {
-    static final int MARGIN = Util.dp(5);
 
     GridLayout layout;
     public ArrayList<GridItem> items = new ArrayList<>();
     HashMap<GridItem, View> displayedItems = new HashMap<>();
+    public int rowHeight = Util.dp(150);
+    private int topMargin = Util.dp(5);
+    private int bottomMargin = Util.dp(5);
+    private int leftMargin = Util.dp(5);
+    private int rightMargin = Util.dp(5);
 
     public DynamicGrid(GridLayout grid)
     {
@@ -30,6 +32,14 @@ public class DynamicGrid
     public void addItem(GridItem item)
     {
         items.add(item);
+    }
+
+    public void setMargins(int left, int top, int right, int bottom)
+    {
+        leftMargin = left;
+        topMargin = top;
+        rightMargin = right;
+        bottomMargin = bottom;
     }
 
     public void layoutItems(LayoutInflater inflater)
@@ -69,8 +79,8 @@ public class DynamicGrid
     {
         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
 
-        params.height = item.rowSpan * Util.dp(150);
-        params.setMargins(MARGIN, MARGIN, MARGIN, MARGIN);
+        params.height = item.rowSpan * rowHeight;
+        params.setMargins(leftMargin, topMargin, rightMargin, bottomMargin);
         GridLayout.Spec rowSpec = GridLayout.spec(GridLayout.UNDEFINED, item.rowSpan, 1);
         GridLayout.Spec columnSpec = GridLayout.spec(GridLayout.UNDEFINED, item.columnSpan, 1);
         params.rowSpec = rowSpec;

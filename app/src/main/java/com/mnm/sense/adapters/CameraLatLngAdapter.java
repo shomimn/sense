@@ -22,19 +22,19 @@ import com.ubhave.sensormanager.data.push.CameraData;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CameraLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<AttributedFeature>>
 {
     @Override
-    public Object adapt(ArrayList<SensorData> data)
+    public ArrayList<AttributedFeature> adapt(ArrayList<SensorData> data)
     {
         if(data.size() == 0)
             return null;
 
         ArrayList<ArrayList<AttributedFeature>> result = adaptAll(data);
 
-        if(result.size() == 0)
-            return 0;
         return result.get(0);
     }
 
@@ -60,8 +60,6 @@ public class CameraLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayLi
                 LatLng latLng = new LatLng(location.first, location.second);
 
                 File image = new File(cameraData.getImagePath());
-                Matrix matrix = new Matrix();
-                matrix.postRotate(correctExifOrientation(cameraData.getImagePath()));
 
                 DisplayMetrics displayMetrics = new DisplayMetrics();
 
@@ -70,6 +68,11 @@ public class CameraLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayLi
                 bmOptions.inSampleSize = 8;
 
                 Bitmap thumbnail = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+
+                Matrix matrix = new Matrix();
+                matrix.postTranslate(thumbnail.getWidth() / 2, thumbnail.getHeight() / 2);
+                matrix.postRotate(correctExifOrientation(cameraData.getImagePath()));
+
                 thumbnail = Bitmap.createBitmap(thumbnail, 0, 0, thumbnail.getWidth(), thumbnail.getHeight(), matrix, true);
                 Bitmap icon = Bitmap.createScaledBitmap(thumbnail, Util.dp(50), Util.dp(50), true);
 
@@ -97,9 +100,21 @@ public class CameraLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayLi
     }
 
     @Override
+    public boolean isAggregating()
+    {
+        return true;
+    }
+
+    @Override
     public Object aggregate(ArrayList<SensorData> data)
     {
-        return null;
+        ArrayList<AttributedFeature> result = new ArrayList<>();
+        HashMap<String, ArrayList<SensorData>> dataByDays = partitionByDays(data);
+
+        for (ArrayList<SensorData> dailyData : dataByDays.values())
+            result.addAll(adapt(dailyData));
+
+        return result;
     }
 
     private int correctExifOrientation(String filePath)

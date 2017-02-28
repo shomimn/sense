@@ -100,12 +100,13 @@ public class Util
     {
         int color = view.getResources().getColor(accent);
 
-        int states[][] = { { android.R.attr.state_pressed, android.R.attr.state_focused, android.R.attr.state_long_pressable } };
-        int colors[] = { color };
+        int states[][] = { { android.R.attr.state_pressed }, { -android.R.attr.state_pressed } };
+        int colors[] = { color, Color.WHITE  };
 
         view.setBackgroundTintList(new ColorStateList(states, colors));
-        view.setForegroundTintList(new ColorStateList(states, colors));
-        view.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+//        view.setForegroundTintList(new ColorStateList(states, colors));
+//        view.getBackground().setColorFilter(color, PorterDuff.Mode.SRC_IN);
+        view.getBackground().setColorFilter(Color.TRANSPARENT, PorterDuff.Mode.SRC_IN);
         view.setTextColor(color);
     }
 

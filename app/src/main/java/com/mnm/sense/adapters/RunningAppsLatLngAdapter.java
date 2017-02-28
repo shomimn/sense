@@ -67,9 +67,9 @@ public class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, Ar
     }
 
     @Override
-    public VisualizationAdapter<GoogleMap, ArrayList<AttributedFeature>> newInstance()
+    public RunningAppsLatLngAdapter newInstance()
     {
-        return null;
+        return new RunningAppsLatLngAdapter();
     }
 
     @Override

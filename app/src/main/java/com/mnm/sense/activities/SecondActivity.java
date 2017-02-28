@@ -71,7 +71,10 @@ public class SecondActivity extends AppCompatActivity
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        tracker = SenseApp.instance().tracker(extras.getInt("tracker"));
+        boolean isMerged = extras.getBoolean("merge", false);
+        int trackerId = extras.getInt("tracker");
+
+        tracker = !isMerged ? SenseApp.instance().tracker(trackerId) : SenseApp.instance().mergedTrackers.get(trackerId);
         String visualization = extras.getString("visualization");
 
         setTheme(tracker.theme);
@@ -338,13 +341,12 @@ public class SecondActivity extends AppCompatActivity
 
                 String url = String.format("%s/%d/%d", baseUrl, begin, end);
 
-                TaskManager.instance().executeAndPost(new Task.Progress(SecondActivity.this, tracker.type, url, "Downloading data")
+                TaskManager.instance().executeAndPost(new Task.Progress(SecondActivity.this, url, "Downloading data")
                 {
                     @Override
-                    public void executeImpl(ArrayList<SensorData> data)
+                    public void executeImpl()
                     {
                         Log.d("Progress Task", "Data downloaded and displayed");
-                        tracker.remoteData = data;
 
                         int currentFragment = viewPager.getCurrentItem();
 

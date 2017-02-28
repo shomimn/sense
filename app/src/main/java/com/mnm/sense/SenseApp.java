@@ -21,6 +21,7 @@ import com.mnm.sense.trackers.CallLogTracker;
 import com.mnm.sense.trackers.CameraTracker;
 import com.mnm.sense.trackers.LightTracker;
 import com.mnm.sense.trackers.LocationTracker;
+import com.mnm.sense.trackers.MergedTracker;
 import com.mnm.sense.trackers.MicrophoneTracker;
 import com.mnm.sense.trackers.ProximityTracker;
 import com.mnm.sense.trackers.RunningApplicationTracker;
@@ -52,6 +53,7 @@ public class SenseApp extends Application
 
     private static SenseApp instance_;
     public LinkedHashMap<Integer, Tracker> trackers = new LinkedHashMap<>();
+    public LinkedHashMap<Integer, MergedTracker> mergedTrackers = new LinkedHashMap<>();
     private static Handler handler = new Handler();
 
     Runnable purgeTask = new Runnable()
@@ -76,7 +78,8 @@ public class SenseApp extends Application
         {
             trackers.put(SensorUtils.SENSOR_TYPE_STEP_COUNTER, new StepsTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_ACTIVITY_RECOGNITION, new ActivityTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_LOCATION, new LocationTracker());
+            trackers.put(SensorUtils.SENSOR_TYPE_CAMERA, new CameraTracker());
+//            trackers.put(SensorUtils.SENSOR_TYPE_LOCATION, new LocationTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_SMS_CONTENT_READER, new SMSContentTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_CALL_CONTENT_READER, new CallLogTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_RUNNING_APP, new RunningApplicationTracker());
@@ -84,7 +87,6 @@ public class SenseApp extends Application
             trackers.put(SensorUtils.SENSOR_TYPE_SCREEN, new ScreenTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_WIFI, new WifiTracker());
             trackers.put(SensorUtils.SENSOR_TYPE_MICROPHONE, new MicrophoneTracker());
-            trackers.put(SensorUtils.SENSOR_TYPE_CAMERA, new CameraTracker());
 //            trackers.put(SensorUtils.SENSOR_TYPE_BLUETOOTH, new BluetoothTracker());
 //            trackers.put(SensorUtils.SENSOR_TYPE_LIGHT, new LightTracker());
 //            trackers.put(SensorUtils.SENSOR_TYPE_PROXIMITY, new ProximityTracker());
@@ -156,5 +158,20 @@ public class SenseApp extends Application
         Log.d("Purge", "Purging data at " + then.date() + " " + then.time());
 
         handler.postDelayed(purgeTask, then.millis() - now.millis());
+    }
+
+    public MergedTracker mergedTracker(int key)
+    {
+        return mergedTrackers.get(key);
+    }
+
+    public void addMergedTracker(int key, MergedTracker mergedTracker)
+    {
+        mergedTrackers.put(key, mergedTracker);
+    }
+
+    public void removeMergedTracker(int key)
+    {
+        mergedTrackers.remove(key);
     }
 }

@@ -67,7 +67,7 @@ public class ActivityLatLngAdapter extends VisualizationAdapter<GoogleMap, Array
 
             lines.add(new AttributedFeature()
                     .origin(R.drawable.ic_directions_run_black_48dp)
-                    .text("test")
+                    .text(path.getText())
                     .icon(Util.bitmapFromResource(getResource(path.getType())))
                     .accent(getColor(path.getType()))
                     .geometry(SensePoint.make(path.getLocation()))
@@ -128,7 +128,7 @@ public class ActivityLatLngAdapter extends VisualizationAdapter<GoogleMap, Array
             case DetectedActivity.RUNNING:
                 return R.color.yellowColorAccent;
             default:
-                return R.color.greenColorAccent;
+                return R.color.colorAccent;
         }
     }
     @Override

@@ -14,6 +14,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 import com.mnm.sense.Util;
@@ -77,19 +78,19 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
 //
 //                for (int i = 0; i < model.data.size(); ++i)
 //                {
-//                    LatLng start = model.data.get(i).geometry().points().get(0);
+//                    LatLng start = model.data.get(i).geometry().features().get(0);
 //                    LatLng end = new LatLng(start.latitude + random.nextDouble() * 0.03, start.longitude + random.nextDouble() * 0.03);
 //
-//                    Points points = new Points();
-//                    points.add(start);
-//                    points.add(end);
+//                    Points features = new Points();
+//                    features.add(start);
+//                    features.add(end);
 //
 //                    lines.add(new AttributedFeature()
 //                            .origin(R.drawable.ic_directions_walk)
 //                            .text("Line test")
 //                            .icon(Util.bitmapFromResource(R.drawable.ic_directions_walk))
 //                            .accent(R.color.colorAccent)
-//                            .geometry(SensePolyline.make(points))
+//                            .geometry(SensePolyline.make(features))
 //                    );
 //                }
 //
@@ -98,7 +99,37 @@ public class MapFragmentInitializer extends ViewInitializer<SupportMapFragment, 
 
                 renderer.render();
 
-                googleMap.setOnMarkerClickListener(markerManager);
+//                googleMap.setOnMarkerClickListener(markerManager);
+
+                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+                {
+                    @Override
+                    public boolean onMarkerClick(final Marker marker)
+                    {
+                        if (googleMap.getCameraPosition().zoom >= 15)
+                        {
+                            markerManager.onMarkerClick(marker);
+                            return true;
+                        }
+
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 15), new GoogleMap.CancelableCallback()
+                        {
+                            @Override
+                            public void onFinish()
+                            {
+                                markerManager.onMarkerClick(marker);
+                            }
+
+                            @Override
+                            public void onCancel()
+                            {
+
+                            }
+                        });
+
+                        return true;
+                    }
+                });
 
                 if (model.data.size() > 0)
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(renderer.envelope(), 15));

@@ -36,7 +36,7 @@ public class MicrophoneTracker extends Tracker
 
         build()
                 .lineChart(new Visualization(2, 3, false))
-                .map(new Visualization(2, 3, false))
+                .map(new Visualization(0, 0, false))
                 .attribute(ATTRIBUTE_NOISE)
                 .adapters(
                         new MicrophoneLineAdapter(),

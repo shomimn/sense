@@ -3,6 +3,7 @@ package com.mnm.sense;
 import android.content.Context;
 import android.util.Log;
 
+import com.mnm.sense.trackers.MergedTracker;
 import com.mnm.sense.trackers.Tracker;
 import com.ubhave.datahandler.config.DataStorageConfig;
 import com.ubhave.datahandler.except.DataHandlerException;
@@ -146,12 +147,18 @@ public class Repository extends AbstractAsyncTransferLogger implements DataUploa
     public String getRemoteFor(int trackerType)
     {
         String remoteUrl = Repository.baseUrl;
+        MergedTracker mergedTracker = SenseApp.instance().mergedTracker(trackerType);
 
         try
         {
-            String sensorName = SensorUtils.getSensorName(trackerType);
+            String sensorNames;
 
-            remoteUrl += String.format("/history/%s/%s/%s", getUniqueUserId(), getDeviceId(), sensorName);
+            if (mergedTracker != null)
+                sensorNames = mergedTracker.buildRemote();
+            else
+                sensorNames = SensorUtils.getSensorName(trackerType);
+
+            remoteUrl += String.format("/history/%s/%s/%s", getUniqueUserId(), getDeviceId(), sensorNames);
         }
         catch (ESException e)
         {

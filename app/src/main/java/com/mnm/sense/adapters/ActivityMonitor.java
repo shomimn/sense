@@ -123,7 +123,8 @@ public class ActivityMonitor
                     startTimestamp = dataList.getTimestamp();
                     type = reliableData.getType();
 
-                    activityPaths.add(new ActivityPath(type, reliableData.getActivityText(), new LatLng(dataList.getLocation().first, dataList.getLocation().second)));
+                    if(dataList.getLocation() != null)
+                        activityPaths.add(new ActivityPath(type, reliableData.getActivityText(), new LatLng(dataList.getLocation().first, dataList.getLocation().second)));
 
                 }
                 else
@@ -138,7 +139,8 @@ public class ActivityMonitor
                         type = reliableData.getType();
                         startTimestamp = dataList.getTimestamp();
 
-                        activityPaths.add(new ActivityPath(type, reliableData.getActivityText(), new LatLng(dataList.getLocation().first, dataList.getLocation().second)));
+                        if(dataList.getLocation() != null)
+                            activityPaths.add(new ActivityPath(type, reliableData.getActivityText(), new LatLng(dataList.getLocation().first, dataList.getLocation().second)));
                     }
                     else
                     {
@@ -146,7 +148,8 @@ public class ActivityMonitor
                         activityTimes.put(type, activityTimes.get(type) + time);
                         startTimestamp = dataList.getTimestamp();
 
-                        activityPaths.get(activityPaths.size() - 1).setPoint(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
+                        if(dataList.getLocation() != null)
+                            activityPaths.get(activityPaths.size() - 1).setPoint(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
                     }
                 }
             }
@@ -157,7 +160,9 @@ public class ActivityMonitor
                     long time = dataList.getTimestamp() - startTimestamp;
 
                     activityTimes.put(type, activityTimes.get(type) + time);
-                    activityPaths.get(activityPaths.size() - 1).setPoint(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
+
+                    if(dataList.getLocation() != null)
+                        activityPaths.get(activityPaths.size() - 1).setPoint(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
 
                     type = -1;
                     startTimestamp = 0l;

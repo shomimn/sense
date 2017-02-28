@@ -98,6 +98,7 @@ public abstract class Tracker implements SensorDataListener
     public boolean selected = false;
 
     protected static Handler handler = new Handler();
+
 //    public Object lock = new Object();
 
     public Tracker(int t) throws ESException
@@ -126,6 +127,7 @@ public abstract class Tracker implements SensorDataListener
 
         attachLocation(data);
         correctData(data);
+        monitorData(data);
 
         sensorData.add(data);
 
@@ -149,6 +151,8 @@ public abstract class Tracker implements SensorDataListener
     {
 
     }
+
+    protected void monitorData(SensorData data) {}
 
     protected boolean isNewData(SensorData data)
     {

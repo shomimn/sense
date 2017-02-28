@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.drawable.Drawable;
+import android.util.Pair;
 
 import com.ubhave.sensormanager.ESSensorManager;
 import com.ubhave.sensormanager.R;

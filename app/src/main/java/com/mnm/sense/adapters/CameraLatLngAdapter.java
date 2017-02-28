@@ -3,11 +3,11 @@ package com.mnm.sense.adapters;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.util.DisplayMetrics;
 import android.util.Pair;
-import android.view.KeyEvent;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -81,7 +81,6 @@ public class CameraLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayLi
                         .image(thumbnail)
                         .icon(icon)
                         .text("Image taken at")
-//                        .latLng(latLng)
                         .geometry(SensePoint.make(latLng))
                         .custom("Date:", Timestamp.from(cameraData.getTimestamp()).date())
                         .custom("Time:", Timestamp.from(cameraData.getTimestamp()).time()));

@@ -26,9 +26,8 @@ public class ActivityRecognitionProcessor extends AbstractProcessor
         {
             int type = activity.getType();
             int conf = activity.getConfidence();
-            long timestamp = System.currentTimeMillis();
 
-            ActivityRecognitionData data = new ActivityRecognitionData(type, conf, timestamp);
+            ActivityRecognitionData data = new ActivityRecognitionData(type, conf);
             activities.addActivity(data);
         }
 

@@ -87,7 +87,7 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle)
+    public synchronized void onConnected(@Nullable Bundle bundle)
     {
         Log.d("Connection success", "onConnected called");
     }
@@ -96,7 +96,6 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
     public void onConnectionSuspended(int i)
     {
         Log.d("Connection suspend", String.valueOf(i));
-
     }
 
     @Override
@@ -107,7 +106,7 @@ public class ActivityRecognitionSensor extends AbstractPullSensor implements Goo
 
 
     @Override
-    public boolean startSensing()
+    public synchronized boolean startSensing()
     {
         if (mApiClient != null)
         {

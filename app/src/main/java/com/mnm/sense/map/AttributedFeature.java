@@ -18,6 +18,7 @@ public class AttributedFeature
     private LinkedHashMap<String, String> customAttributes = new LinkedHashMap<>();
     private Bitmap image;
     private Geometry geometry;
+    private SenseOverlay.Type overlay= SenseOverlay.Type.NONE;
     private int accent;
 
     public Bitmap icon()
@@ -112,5 +113,10 @@ public class AttributedFeature
     public boolean hasAccent()
     {
         return accent != 0;
+    }
+
+    public SenseOverlay.Type overlay()
+    {
+        return overlay;
     }
 }

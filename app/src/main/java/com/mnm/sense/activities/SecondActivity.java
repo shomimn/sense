@@ -71,7 +71,10 @@ public class SecondActivity extends AppCompatActivity
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
 
-        tracker = SenseApp.instance().tracker(extras.getInt("tracker"));
+        boolean isMerged = extras.getBoolean("merge", false);
+        int trackerId = extras.getInt("tracker");
+
+        tracker = !isMerged ? SenseApp.instance().tracker(trackerId) : SenseApp.instance().mergedTrackers.get(trackerId);
         String visualization = extras.getString("visualization");
 
         setTheme(tracker.theme);

@@ -16,7 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.utils.Utils;
@@ -27,10 +29,14 @@ import com.mnm.sense.R;
 import com.mnm.sense.SenseApp;
 import com.mnm.sense.ViewPagerAdapter;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.map.AttributedFeature;
 import com.mnm.sense.models.DashboardModel;
 import com.mnm.sense.fragments.DashboardFragment;
 import com.mnm.sense.fragments.TrackersFragment;
 import com.mnm.sense.initializers.TrackerViewInitializer;
+import com.mnm.sense.models.MapModel;
+import com.mnm.sense.trackers.LocationTracker;
+import com.mnm.sense.trackers.MergedTracker;
 import com.mnm.sense.trackers.Tracker;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.sensors.*;
@@ -49,6 +55,7 @@ public class MainActivity extends AppCompatActivity
     private Toolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private Button mapButton;
 
     private long backTimestamp = 0;
 
@@ -91,6 +98,53 @@ public class MainActivity extends AppCompatActivity
 
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
+
+        mapButton = (Button) findViewById(R.id.map_button);
+        mapButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                ArrayList<Tracker> selected = new ArrayList<>();
+//                ArrayList<AttributedFeature> features = new ArrayList<>();
+
+                for (Tracker tracker : SenseApp.instance().trackers.values())
+                {
+                    if (tracker.selected)
+                    {
+//                        MapModel model = (MapModel) tracker.getModel(Visualization.MAP);
+//                        features.addAll(model.data);
+                        selected.add(tracker);
+                    }
+                }
+
+//                MapModel mergedModel = new MapModel(SenseApp.instance().tracker(SensorUtils.SENSOR_TYPE_LOCATION), features, "Everything.");
+//
+//                ((LocationTracker )(SenseApp.instance().tracker(SensorUtils.SENSOR_TYPE_LOCATION))).mergedModel = mergedModel;
+
+                try
+                {
+                    MergedTracker mergedTracker = new MergedTracker(Visualization.MAP, selected);
+                    mergedTracker.text = "God";
+                    mergedTracker.attributes = new String[]{ "Everything." };
+                    mergedTracker.accent = R.color.redColorAccent;
+                    mergedTracker.theme = R.style.RedTheme;
+
+                    SenseApp.instance().addMergedTracker(123, mergedTracker);
+
+                    Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+                    intent.putExtra("tracker", 123);
+                    intent.putExtra("visualization", Visualization.MAP);
+                    intent.putExtra("merge", true);
+
+                    startActivity(intent);
+                }
+                catch (ESException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         for (SensorEnum s : SensorEnum.values())
         {

@@ -1,16 +1,20 @@
 package com.mnm.sense.initializers;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.graphics.ColorUtils;
 import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.CompoundButton;
 
 import com.mnm.sense.R;
+import com.mnm.sense.SenseApp;
 import com.mnm.sense.Util;
 import com.mnm.sense.Visualization;
 import com.mnm.sense.activities.MainActivity;
@@ -105,6 +109,23 @@ public class TrackerViewInitializer extends ViewInitializer<TrackerView, Tracker
                 i.putExtra("tracker", model.type);
 
                 ActivityCompat.startActivityForResult(activity, i, REQUEST_CODE, options.toBundle());
+            }
+        });
+
+        view.setOnLongClickListener(new View.OnLongClickListener()
+        {
+            @Override
+            public boolean onLongClick(View view)
+            {
+                view.setSelected(!view.isSelected());
+
+                int accent = ColorUtils.setAlphaComponent(SenseApp.context().getResources().getColor(model.accent), 70);
+
+                model.selected = view.isSelected();
+
+                view.setBackgroundColor(model.selected ? accent : Color.WHITE);
+
+                return true;
             }
         });
     }

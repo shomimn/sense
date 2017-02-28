@@ -29,6 +29,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static com.mnm.sense.map.SenseOverlay.Type.HEATMAP;
+
 public class SenseMapRenderer
 {
     private LatLngBounds.Builder boundsBuilder;
@@ -56,6 +58,14 @@ public class SenseMapRenderer
         for (LatLng point : attr.geometry().points)
             boundsBuilder.include(point);
 
+        switch (attr.overlay())
+        {
+            case HEATMAP:
+                heatmapProvider.data(attr.geometry().points);
+
+                return;
+        }
+
         switch (attr.geometry().type())
         {
             case POINT:
@@ -77,7 +87,7 @@ public class SenseMapRenderer
 
         for (AttributedFeature line : lines)
         {
-            markerManager.add(line);
+//            markerManager.add(line);
 
             googleMap.addPolyline(new PolylineOptions()
                     .addAll(line.geometry().points)
@@ -97,6 +107,7 @@ public class SenseMapRenderer
                     .icon(icon)
                     .anchor(0.5f, 0.5f)
             );
+
         }
     }
 

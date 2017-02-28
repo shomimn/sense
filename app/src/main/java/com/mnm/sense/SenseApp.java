@@ -21,6 +21,7 @@ import com.mnm.sense.trackers.CallLogTracker;
 import com.mnm.sense.trackers.CameraTracker;
 import com.mnm.sense.trackers.LightTracker;
 import com.mnm.sense.trackers.LocationTracker;
+import com.mnm.sense.trackers.MergedTracker;
 import com.mnm.sense.trackers.MicrophoneTracker;
 import com.mnm.sense.trackers.ProximityTracker;
 import com.mnm.sense.trackers.RunningApplicationTracker;
@@ -52,6 +53,7 @@ public class SenseApp extends Application
 
     private static SenseApp instance_;
     public LinkedHashMap<Integer, Tracker> trackers = new LinkedHashMap<>();
+    public LinkedHashMap<Integer, MergedTracker> mergedTrackers = new LinkedHashMap<>();
     private static Handler handler = new Handler();
 
     Runnable purgeTask = new Runnable()
@@ -156,5 +158,15 @@ public class SenseApp extends Application
         Log.d("Purge", "Purging data at " + then.date() + " " + then.time());
 
         handler.postDelayed(purgeTask, then.millis() - now.millis());
+    }
+
+    public void addMergedTracker(int key, MergedTracker mergedTracker)
+    {
+        mergedTrackers.put(key, mergedTracker);
+    }
+
+    public void removeMergedTracker(int key)
+    {
+        mergedTrackers.remove(key);
     }
 }

@@ -1,6 +1,10 @@
 package com.mnm.sense.trackers;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.mnm.sense.adapters.CallsLatLngAdapter;
+import com.mnm.sense.adapters.CameraLatLngAdapter;
+import com.mnm.sense.adapters.RunningAppsLatLngAdapter;
+import com.mnm.sense.adapters.SMSLatLngAdapter;
 import com.mnm.sense.adapters.VisualizationAdapter;
 import com.mnm.sense.models.MapModel;
 import com.mnm.sense.adapters.LocationLatLngAdapter;
@@ -20,6 +24,8 @@ public class LocationTracker extends Tracker
     public static final String ATTRIBUTE_PATH = "Path";
     public static final String ATTRIBUTE_HEATMAP = "Heat map";
 
+    public MapModel mergedModel = null;
+
     public LocationTracker() throws ESException
     {
         super(SensorUtils.SENSOR_TYPE_LOCATION);
@@ -38,5 +44,11 @@ public class LocationTracker extends Tracker
             .adapters(new LocationLatLngAdapter())
             .attribute(ATTRIBUTE_HEATMAP)
             .adapters(new LocationLatLngAdapter());
+    }
+
+    @Override
+    public MapModel getModel(String visualizationType)
+    {
+        return mergedModel;
     }
 }

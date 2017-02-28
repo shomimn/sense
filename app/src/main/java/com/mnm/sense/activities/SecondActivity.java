@@ -30,6 +30,7 @@ import com.mnm.sense.Task;
 import com.mnm.sense.TaskManager;
 import com.mnm.sense.Timestamp;
 import com.mnm.sense.ViewPagerAdapter;
+import com.mnm.sense.Visualization;
 import com.mnm.sense.ZoomOutPageTransformer;
 import com.mnm.sense.fragments.VisualizationFragment;
 import com.mnm.sense.initializers.Initializer;
@@ -94,7 +95,12 @@ public class SecondActivity extends AppCompatActivity
         tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(viewPager);
 
-        if (tracker.visualizations.size() == 1)
+        int visualizationCount = 0;
+        for (Visualization v : tracker.visualizations.values())
+            if (v.rows != 0 && v.cols != 0)
+                ++visualizationCount;
+
+        if (visualizationCount == 1)
             tabLayout.setSelectedTabIndicatorColor(Color.WHITE);
 
         slidingLayout = (SlidingUpPanelLayout) findViewById(R.id.sliding_layout);
@@ -131,16 +137,21 @@ public class SecondActivity extends AppCompatActivity
         int pageToDisplay = 0;
         int page = 0;
 
-        for (String visualization : tracker.visualizations.keySet())
+        for (String visualizationKey : tracker.visualizations.keySet())
         {
+            Visualization visualization = tracker.visualizations.get(visualizationKey);
+
+            if (visualization.rows == 0 || visualization.cols == 0)
+                continue;
+
             VisualizationFragment fragment = new VisualizationFragment();
             fragment.tracker = tracker;
-            fragment.visualization = visualization;
+            fragment.visualization = visualizationKey;
 
-            adapter.addFragment(fragment, visualization);
+            adapter.addFragment(fragment, visualizationKey);
             fragments.add(fragment);
 
-            if (visualization.equals(defaultVisualization))
+            if (visualizationKey.equals(defaultVisualization))
                 pageToDisplay = page;
 
             ++page;

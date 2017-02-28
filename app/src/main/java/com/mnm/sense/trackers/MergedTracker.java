@@ -43,18 +43,7 @@ public class MergedTracker extends Tracker
         attributes = new String[] { "Everything." };
 
         build()
-            .map(new Visualization(0, 0, false))
-            .map(new Visualization(0, 0, false))
-            .map(new Visualization(0, 0, false))
-            .map(new Visualization(0, 0, false))
-            .attribute(ATTRIBUTE_CALLS)
-            .adapters(new CallsLatLngAdapter())
-            .attribute(ATTRIBUTE_SMS)
-            .adapters(new SMSLatLngAdapter())
-            .attribute(ATTRIBUTE_RUNNING_APPS)
-            .adapters(new RunningAppsLatLngAdapter())
-            .attribute(ATTRIBUTE_CAMERA)
-            .adapters(new CameraLatLngAdapter());
+            .map(new Visualization(1, 1, false));
     }
 
     public Object getModel(int mode)

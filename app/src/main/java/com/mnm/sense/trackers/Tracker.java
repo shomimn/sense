@@ -104,16 +104,16 @@ public abstract class Tracker implements SensorDataListener
     {
         type = t;
 
-//        try
-//        {
-//            sensorData.addAll(
-//                    ESDataManager.getInstance(SenseApp.context(), DataStorageConfig.STORAGE_TYPE_DB, null)
-//                            .getRecentSensorData(type, Timestamp.startOfToday().millis()));
-//        }
-//        catch (Exception e)
-//        {
-//            e.printStackTrace();
-//        }
+        try
+        {
+            sensorData.addAll(
+                    ESDataManager.getInstance(SenseApp.context(), DataStorageConfig.STORAGE_TYPE_DB, null)
+                            .getRecentSensorData(type, Timestamp.startOfToday().millis()));
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override

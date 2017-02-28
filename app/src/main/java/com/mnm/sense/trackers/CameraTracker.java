@@ -6,6 +6,7 @@ import android.util.Pair;
 import com.mnm.sense.Locator;
 import com.mnm.sense.R;
 import com.mnm.sense.Visualization;
+import com.mnm.sense.adapters.CameraBarAdapter;
 import com.mnm.sense.adapters.CameraLatLngAdapter;
 import com.ubhave.sensormanager.ESException;
 import com.ubhave.sensormanager.data.SensorData;
@@ -28,9 +29,12 @@ public class CameraTracker extends Tracker
 
         build()
                 .map(new Visualization(0, 0, false))
+                .barChart(new Visualization(1, 3, false))
                 .attribute(ATTRIBUTE_IMAGE)
                 .adapters(
-                        new CameraLatLngAdapter());
+                        new CameraLatLngAdapter(),
+                        new CameraBarAdapter()
+                );
     }
 
     @Override
@@ -59,3 +63,4 @@ public class CameraTracker extends Tracker
         cameraData.setLocation(Pair.create(location.getLatitude(), location.getLongitude()));
     }
 }
+

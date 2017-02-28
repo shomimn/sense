@@ -21,13 +21,11 @@ public class Locator implements LocationListener
     private LocationManager locationManager = (LocationManager) SenseApp.context().getSystemService(LOCATION_SERVICE);
     private TreeMap<Long, Location> locationMap;
     private long lastCleanup;
-    private boolean waitingForLocation;
 
     private Locator()
     {
         locationMap = new TreeMap<>();
         lastCleanup = System.currentTimeMillis();
-        waitingForLocation = false;
     }
 
     public static synchronized Locator instance()
@@ -51,11 +49,6 @@ public class Locator implements LocationListener
         long match = locationMap.floorKey(now);
 
         return locationMap.get(match);
-    }
-
-    public synchronized void acquireNewLocation()
-    {
-        waitingForLocation = true;
     }
 
     private synchronized Long bestMatch(long timestamp)
@@ -106,6 +99,7 @@ public class Locator implements LocationListener
         {
 //            locationManager.requestLocationUpdates(provider, 5000, 0, this);
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, this);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, this);
         }
         catch (SecurityException e)
         {

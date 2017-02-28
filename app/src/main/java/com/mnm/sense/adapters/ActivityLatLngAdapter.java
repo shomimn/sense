@@ -60,38 +60,23 @@ public class ActivityLatLngAdapter extends VisualizationAdapter<GoogleMap, Array
         ArrayList<AttributedFeature> lines = new ArrayList<>();
 
         ActivityMonitor.ActivityTimeTracker tracker = monitor.monitorPortion(dataList);
-        int locationCounter = 0;
+        Bitmap icon = Util.bitmapFromResource(R.drawable.ic_directions_run_black_48dp);
 
-        ArrayList<LatLng> markerLocations = tracker.locations;
-        for(int i = 0; i  < markerLocations.size(); ++i)
+        for(ActivityMonitor.ActivityPath path : tracker.activityPaths)
         {
-            int type = tracker.types.get(locationCounter);
-            LatLng start = tracker.locations.get(locationCounter);
-
-            Bitmap icon = Util.bitmapFromResource(getResource(type));
 
             lines.add(new AttributedFeature()
-                    .origin(getResource(type))
+                    .origin(R.drawable.ic_directions_run_black_48dp)
                     .text("test")
-                    .icon(icon)
-                    .accent(R.color.colorAccent)
-                    .geometry(SensePoint.make(start))
+                    .icon(Util.bitmapFromResource(getResource(path.getType())))
+                    .accent(getColor(path.getType()))
+                    .geometry(SensePoint.make(path.getLocation()))
             );
-        }
 
-
-        for (int i = 0; i < dataList.size() - 1; ++i)
-        {
-            ActivityRecognitionDataList activityList = (ActivityRecognitionDataList) dataList.get(i);
-            LatLng location = new LatLng(activityList.getLocation().first, activityList.getLocation().second);
-
-            if (location != tracker.locations.get(locationCounter) && locationCounter < tracker.locations.size() - 1)
+            for(int i = 0; i < path.getPath().size() - 1; ++i)
             {
-                int type = tracker.types.get(locationCounter);
-                LatLng start = tracker.locations.get(locationCounter);
-                LatLng end = tracker.locations.get(locationCounter + 1);
-
-                Bitmap icon = Util.bitmapFromResource(getResource(type));
+                LatLng start = path.getPath().get(i);
+                LatLng end = path.getPath().get(i + 1);
 
                 Points points = new Points();
                 points.add(start);
@@ -100,16 +85,15 @@ public class ActivityLatLngAdapter extends VisualizationAdapter<GoogleMap, Array
                 lines.add(new AttributedFeature()
                         .text("test")
                         .icon(icon)
-                        .accent(R.color.colorAccent)
+                        .accent(getColor(path.getType()))
                         .geometry(SensePolyline.make(points))
                 );
-
-                locationCounter++;
             }
         }
 
         ArrayList<ArrayList<AttributedFeature>> finalResult = new ArrayList<>();
         finalResult.add(lines);
+
 
         return finalResult;
     }
@@ -128,6 +112,23 @@ public class ActivityLatLngAdapter extends VisualizationAdapter<GoogleMap, Array
                 return R.drawable.ic_directions_run_black_48dp;
             default:
                 return R.drawable.ic_android_black_48dp;
+        }
+    }
+
+    private int getColor(int type)
+    {
+        switch (type)
+        {
+            case DetectedActivity.IN_VEHICLE:
+                return R.color.redColorAccent;
+            case DetectedActivity.ON_BICYCLE:
+                return R.color.greenColorAccent;
+            case DetectedActivity.WALKING:
+                return R.color.colorAccent;
+            case DetectedActivity.RUNNING:
+                return R.color.yellowColorAccent;
+            default:
+                return R.color.greenColorAccent;
         }
     }
     @Override

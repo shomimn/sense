@@ -9,5 +9,6 @@
     <color name="redColorAccent">#E67557</color>
 
     <color name="black_overlay">#66000000</color>
+    <color name="yellowColorAccent">#f1c40f</color>
     <!--66BB6A-->
 </resources>

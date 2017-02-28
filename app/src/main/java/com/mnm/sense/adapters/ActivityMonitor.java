@@ -19,12 +19,42 @@ import java.util.concurrent.TimeUnit;
 
 public class ActivityMonitor
 {
-    public class ActivityLocationTracker
+    public class ActivityPath
     {
-        public int type;
-        public LatLng startLocation;
-        public long timeMillis;
-        public long startTimestamp;
+        private int type;
+        private LatLng origin;
+        private ArrayList<LatLng> path;
+
+        public ActivityPath(int type, LatLng loc)
+        {
+            this.type = type;
+            origin = loc;
+            path = new ArrayList<>();
+
+            if(type != DetectedActivity.STILL)
+                path.add(loc);
+        }
+
+        public int getType()
+        {
+            return type;
+        }
+
+        public LatLng getLocation()
+        {
+            return origin;
+        }
+
+        public ArrayList<LatLng> getPath()
+        {
+            return path;
+        }
+
+        public void setPoint(LatLng point)
+        {
+            if(type != DetectedActivity.STILL)
+                path.add(point);
+        }
     }
 
     public class ActivityTimeTracker
@@ -33,32 +63,20 @@ public class ActivityMonitor
         public int type;
 
         public SparseArray<Long> activityTimes;
-        public ArrayList<LatLng> locations;
-        public ArrayList<Integer> types;
-
-        int counter;
+        public ArrayList<ActivityPath> activityPaths;
 
         public ActivityTimeTracker()
         {
             startTimestamp = 0;
             type = -1;
             activityTimes = new SparseArray<>();
-            locations = new ArrayList<>();
-            types = new ArrayList<>();
-
-            counter = 0;
+            activityPaths = new ArrayList<>();
 
             activityTimes.append(DetectedActivity.WALKING, 0l);
             activityTimes.append(DetectedActivity.RUNNING, 0l);
             activityTimes.append(DetectedActivity.STILL, 0l);
             activityTimes.append(DetectedActivity.IN_VEHICLE, 0l);
             activityTimes.append(DetectedActivity.ON_BICYCLE, 0l);
-
-//            locations.append(DetectedActivity.WALKING, new ArrayList<SparseArray<LatLng>>());
-//            locations.append(DetectedActivity.RUNNING, new ArrayList<SparseArray<LatLng>>());
-//            locations.append(DetectedActivity.STILL, new ArrayList<SparseArray<LatLng>>());
-//            locations.append(DetectedActivity.IN_VEHICLE, new ArrayList<SparseArray<LatLng>>());
-//            locations.append(DetectedActivity.ON_BICYCLE, new ArrayList<SparseArray<LatLng>>());
         }
 
 
@@ -71,11 +89,6 @@ public class ActivityMonitor
             return (int) TimeUnit.MILLISECONDS.toMinutes(res);
         }
 
-        public void resetTimes()
-        {
-            for (int i = 0; i < activityTimes.size(); ++i)
-                activityTimes.put(activityTimes.keyAt(i), 0l);
-        }
 
         public void obtainTimes(ActivityRecognitionDataList dataList)
         {
@@ -91,8 +104,8 @@ public class ActivityMonitor
                 {
                     startTimestamp = dataList.getTimestamp();
                     type = reliableData.getType();
-                    locations.add(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
-                    types.add(type);
+
+                    activityPaths.add(new ActivityPath(type, new LatLng(dataList.getLocation().first, dataList.getLocation().second)));
 
                 }
                 else
@@ -102,18 +115,20 @@ public class ActivityMonitor
                         long time = dataList.getTimestamp() - startTimestamp;
 
                         activityTimes.put(type, activityTimes.get(type) + time);
-                        locations.add(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
+                        activityPaths.get(activityPaths.size() - 1).setPoint(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
 
                         type = reliableData.getType();
-                        types.add(type);
-
                         startTimestamp = dataList.getTimestamp();
+
+                        activityPaths.add(new ActivityPath(type, new LatLng(dataList.getLocation().first, dataList.getLocation().second)));
                     }
                     else
                     {
                         long time = dataList.getTimestamp() - startTimestamp;
                         activityTimes.put(type, activityTimes.get(type) + time);
                         startTimestamp = dataList.getTimestamp();
+
+                        activityPaths.get(activityPaths.size() - 1).setPoint(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
                     }
                 }
             }
@@ -124,12 +139,14 @@ public class ActivityMonitor
                     long time = dataList.getTimestamp() - startTimestamp;
 
                     activityTimes.put(type, activityTimes.get(type) + time);
+                    activityPaths.get(activityPaths.size() - 1).setPoint(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
 
                     type = -1;
                     startTimestamp = 0l;
                 }
             }
         }
+
     }
 
     private static final int CONFIDENCE_THRESHOLD = 30;

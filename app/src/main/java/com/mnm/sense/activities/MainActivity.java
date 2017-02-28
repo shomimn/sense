@@ -75,6 +75,22 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        new Thread()
+        {
+            @Override
+            public void run()
+            {
+                try
+                {
+                    ActivityRecognitionSensor ars = ActivityRecognitionSensor.getSensor(MainActivity.this);
+                } catch (ESException e)
+                {
+                    e.printStackTrace();
+                }
+            }
+        }.start();
+
+
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.getRootView().setBackgroundColor(Color.parseColor("#EEEEEE"));
         setupViewPager(viewPager);

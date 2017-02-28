@@ -42,7 +42,7 @@ public class ActivityTracker extends Tracker
         pieAdapter.setLimit(limit.value);
 
         build()
-                .map(new Visualization(2, 3, false))
+                .map(new Visualization(0, 0, false))
                 .text(new Visualization(1, 3, false))
                 .pieChart(new Visualization(2, 3, false))
                 .attribute(ATTRIBUTE_ACTIVITY)

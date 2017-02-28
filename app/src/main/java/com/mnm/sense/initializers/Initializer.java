@@ -1,6 +1,7 @@
 package com.mnm.sense.initializers;
 
 import com.mnm.sense.Visualization;
+import com.mnm.sense.models.ButtonModel;
 import com.mnm.sense.models.BarChartModel;
 import com.mnm.sense.models.DashboardModel;
 import com.mnm.sense.models.LineChartModel;
@@ -31,6 +32,7 @@ public class Initializer
         byData.put(PieChartModel.class, new PieChartInitializer());
         byData.put(LineChartModel.class, new LineChartInitializer());
         byData.put(ListViewModel.class, new ListViewInitializer());
+        byData.put(ButtonModel.class, new ButtonInitializer());
 
         byVisualization.put(Visualization.BAR_CHART, byData.get(BarChartModel.class));
         byVisualization.put(Visualization.TEXT, byData.get(TextModel.class));

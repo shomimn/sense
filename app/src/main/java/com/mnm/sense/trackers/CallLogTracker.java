@@ -41,7 +41,7 @@ public class CallLogTracker extends Tracker
             .text(new Visualization(1, 1, false))
             .pieChart(new Visualization(2, 3, false))
             .barChart(new Visualization(1, 3, false))
-            .map(new Visualization(2, 3, false))
+            .map(new Visualization(0, 0, false))
             .attribute(ATTRIBUTE_TYPE)
             .adapters(new CallsTypeTextAdapter(),
                     new CallsPieAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),

@@ -27,7 +27,7 @@ public class CameraTracker extends Tracker
         attributes = new String[]{ATTRIBUTE_IMAGE};
 
         build()
-                .map(new Visualization(2, 3, false))
+                .map(new Visualization(0, 0, false))
                 .attribute(ATTRIBUTE_IMAGE)
                 .adapters(
                         new CameraLatLngAdapter());

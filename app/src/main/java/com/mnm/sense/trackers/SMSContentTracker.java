@@ -41,7 +41,7 @@ public class SMSContentTracker extends Tracker
                 .text(new Visualization(1, 1, false))
                 .barChart(new Visualization(2, 3, false))
                 .pieChart(new Visualization(2, 3, false))
-                .map(new Visualization(2, 3, false))
+                .map(new Visualization(0, 0, false))
                 .attribute(ATTRIBUTE_TYPE)
                 .adapters(new SMSTypeTextAdapter(),
                         new SMSBarAdapter(ContentReaderConfig.SMS_CONTENT_TYPE_KEY),
@@ -84,6 +84,4 @@ public class SMSContentTracker extends Tracker
 
         return false;
     }
-
-
 }

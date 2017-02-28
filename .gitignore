@@ -3,6 +3,7 @@
 
 # User-specific stuff:
 .idea/
+*.db
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids

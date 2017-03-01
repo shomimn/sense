@@ -28,13 +28,18 @@ public class ActivityMonitor
         private int type;
         private LatLng origin;
         private ArrayList<LatLng> path;
+        private long startTimestamp;
+        private long totalTime;
 
-        public ActivityPath(int type, String text, LatLng loc)
+        public ActivityPath(int type, String text, long timestamp, LatLng loc)
         {
+            path = new ArrayList<>();
+            totalTime = 0;
+
             this.text = text;
             this.type = type;
+            startTimestamp = timestamp;
             origin = loc;
-            path = new ArrayList<>();
 
             if(type != DetectedActivity.STILL)
                 path.add(loc);
@@ -64,6 +69,21 @@ public class ActivityMonitor
         public String getText()
         {
             return text;
+        }
+
+        public long getStartTimestamp()
+        {
+            return startTimestamp;
+        }
+
+        public void setTotalTime(long endTime)
+        {
+            totalTime = endTime - startTimestamp;
+        }
+
+        public long getTotalTime()
+        {
+            return totalTime;
         }
     }
 
@@ -111,8 +131,14 @@ public class ActivityMonitor
         public void obtainTimes(ActivityRecognitionDataList dataList)
         {
             ActivityRecognitionData reliableData = null;
+            LatLng latLng = null;
+            int pathsLastIndex = activityPaths.size() - 1;
+
+            if(dataList.getLocation() != null)
+                latLng = new LatLng(dataList.getLocation().first, dataList.getLocation().second);
 
             ArrayList<ActivityRecognitionData> valid = getValidActivity(dataList);
+
             if(valid.size() != 0)
                 reliableData = valid.get(0);
 
@@ -123,9 +149,8 @@ public class ActivityMonitor
                     startTimestamp = dataList.getTimestamp();
                     type = reliableData.getType();
 
-                    if(dataList.getLocation() != null)
-                        activityPaths.add(new ActivityPath(type, reliableData.getActivityText(), new LatLng(dataList.getLocation().first, dataList.getLocation().second)));
-
+                    if(latLng != null)
+                        activityPaths.add(new ActivityPath(type, reliableData.getActivityText(), startTimestamp, latLng));
                 }
                 else
                 {
@@ -134,14 +159,16 @@ public class ActivityMonitor
                         long time = dataList.getTimestamp() - startTimestamp;
 
                         activityTimes.put(type, activityTimes.get(type) + time);
-                        if(dataList.getLocation() != null)
-                            activityPaths.get(activityPaths.size() - 1).setPoint(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
+                        activityPaths.get(pathsLastIndex).setTotalTime(dataList.getTimestamp());
+
+                        if(latLng != null)
+                            activityPaths.get(pathsLastIndex).setPoint(latLng);
 
                         type = reliableData.getType();
                         startTimestamp = dataList.getTimestamp();
 
-                        if(dataList.getLocation() != null)
-                            activityPaths.add(new ActivityPath(type, reliableData.getActivityText(), new LatLng(dataList.getLocation().first, dataList.getLocation().second)));
+                        if(latLng != null)
+                            activityPaths.add(new ActivityPath(type, reliableData.getActivityText(), startTimestamp, latLng));
                     }
                     else
                     {
@@ -149,21 +176,23 @@ public class ActivityMonitor
                         activityTimes.put(type, activityTimes.get(type) + time);
                         startTimestamp = dataList.getTimestamp();
 
-                        if(dataList.getLocation() != null)
-                            activityPaths.get(activityPaths.size() - 1).setPoint(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
+                        activityPaths.get(pathsLastIndex).setTotalTime(dataList.getTimestamp());
+                        if(latLng != null)
+                            activityPaths.get(pathsLastIndex).setPoint(latLng);
                     }
                 }
             }
             else
             {
-                if (type != -1)
+                if (type != -1 && !satisfies(dataList, type))
                 {
                     long time = dataList.getTimestamp() - startTimestamp;
 
                     activityTimes.put(type, activityTimes.get(type) + time);
+                    activityPaths.get(pathsLastIndex).setTotalTime(dataList.getTimestamp());
 
                     if(dataList.getLocation() != null)
-                        activityPaths.get(activityPaths.size() - 1).setPoint(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
+                        activityPaths.get(pathsLastIndex).setPoint(latLng);
 
                     type = -1;
                     startTimestamp = 0l;

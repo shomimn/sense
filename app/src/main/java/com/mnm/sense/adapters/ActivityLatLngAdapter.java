@@ -25,6 +25,7 @@ import com.ubhave.sensormanager.data.push.CameraData;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class ActivityLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<AttributedFeature>>
 {
@@ -60,17 +61,20 @@ public class ActivityLatLngAdapter extends VisualizationAdapter<GoogleMap, Array
         ArrayList<AttributedFeature> lines = new ArrayList<>();
 
         ActivityMonitor.ActivityTimeTracker tracker = monitor.monitorPortion(dataList);
-        Bitmap icon = Util.bitmapFromResource(R.drawable.ic_directions_run_black_48dp);
 
         for(ActivityMonitor.ActivityPath path : tracker.activityPaths)
         {
+            Bitmap icon = Util.bitmapFromResource(getResource(path.getType()));
 
             lines.add(new AttributedFeature()
-                    .origin(R.drawable.ic_directions_run_black_48dp)
+                    .origin(getResource(path.getType()))
                     .text(path.getText())
-                    .icon(Util.bitmapFromResource(getResource(path.getType())))
+                    .icon(icon)
                     .accent(getColor(path.getType()))
                     .geometry(SensePoint.make(path.getLocation()))
+                    .custom("Date:", Timestamp.from(path.getStartTimestamp()).date())
+                    .custom("Time:", Timestamp.from(path.getStartTimestamp()).time())
+                    .custom("Duration:", String.valueOf(TimeUnit.MILLISECONDS.toMinutes(path.getTotalTime())) + " min")
             );
 
             for(int i = 0; i < path.getPath().size() - 1; ++i)
@@ -83,8 +87,6 @@ public class ActivityLatLngAdapter extends VisualizationAdapter<GoogleMap, Array
                 points.add(end);
 
                 lines.add(new AttributedFeature()
-                        .text("test")
-                        .icon(icon)
                         .accent(getColor(path.getType()))
                         .geometry(SensePolyline.make(points))
                 );

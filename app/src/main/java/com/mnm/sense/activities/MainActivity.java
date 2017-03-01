@@ -84,7 +84,6 @@ public class MainActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         viewPager.getRootView().setBackgroundColor(Color.parseColor("#EEEEEE"));
         setupViewPager(viewPager);

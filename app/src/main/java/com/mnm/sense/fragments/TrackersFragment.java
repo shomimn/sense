@@ -67,9 +67,9 @@ public class TrackersFragment extends Fragment
                 try
                 {
                     MergedTracker mergedTracker = new MergedTracker(Visualization.MAP, selected);
-                    mergedTracker.text = "God";
+                    mergedTracker.text = "Location";
                     mergedTracker.type = 123;
-                    mergedTracker.attributes = new String[]{ "Everything." };
+                    mergedTracker.attributes = new String[]{ "" };
                     mergedTracker.accent = R.color.redColorAccent;
                     mergedTracker.theme = R.style.RedTheme;
 

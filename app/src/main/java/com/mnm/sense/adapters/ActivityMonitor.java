@@ -134,7 +134,8 @@ public class ActivityMonitor
                         long time = dataList.getTimestamp() - startTimestamp;
 
                         activityTimes.put(type, activityTimes.get(type) + time);
-                        activityPaths.get(activityPaths.size() - 1).setPoint(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
+                        if(dataList.getLocation() != null)
+                            activityPaths.get(activityPaths.size() - 1).setPoint(new LatLng(dataList.getLocation().first, dataList.getLocation().second));
 
                         type = reliableData.getType();
                         startTimestamp = dataList.getTimestamp();

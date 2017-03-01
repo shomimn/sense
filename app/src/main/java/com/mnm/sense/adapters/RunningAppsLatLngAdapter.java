@@ -1,5 +1,6 @@
 package com.mnm.sense.adapters;
 
+import android.hardware.Sensor;
 import android.util.Pair;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -14,17 +15,22 @@ import com.ubhave.sensormanager.data.SensorData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationData;
 import com.ubhave.sensormanager.data.pull.RunningApplicationDataList;
 
+import org.w3c.dom.Attr;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, ArrayList<AttributedFeature>>
 {
     @Override
-    public Object adapt(ArrayList<SensorData> data)
+    public ArrayList<AttributedFeature> adapt(ArrayList<SensorData> data)
     {
         if (data.size() == 0)
             return null;
 
-        return adaptOne(data.get(data.size() - 1));
+        return adaptAll(data).get(0);
+//        return adaptOne(data.get(data.size() - 1));
     }
 
     @Override
@@ -46,7 +52,6 @@ public class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, Ar
                         .origin(R.drawable.ic_dashboard_black_48dp)
                         .icon(Util.drawableToBitmap(appData.getIcon()))
                         .text("Running Apps")
-//                        .latLng(latLng)
                         .geometry(SensePoint.make(latLng))
                         .custom("Name:", appData.getName())
                         .custom("Date:", Timestamp.from(appData.getLastTimeUsed()).date())
@@ -54,7 +59,46 @@ public class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, Ar
                         .custom("Foreground time:", String.valueOf(appData.getForegroundTimeMins()))
                 );
             }
+        }
 
+        return result;
+    }
+
+    public ArrayList<AttributedFeature> adaptUnvisited(SensorData data, HashMap<String, HashSet<Long>> visited)
+    {
+        ArrayList<AttributedFeature> result = new ArrayList<>();
+        RunningApplicationDataList listData = (RunningApplicationDataList) data;
+
+        for (RunningApplicationData appData : listData.getRunningApplications())
+        {
+            Pair<Double, Double> location = appData.getLocation();
+
+            if (location != null)
+            {
+                long lastTimeUsed = appData.getLastTimeUsed();
+                String packageName = appData.getPackageName();
+
+                if (visited.get(packageName) == null)
+                    visited.put(packageName, new HashSet<Long>());
+
+                if (visited.get(packageName).contains(lastTimeUsed))
+                    continue;
+
+                LatLng latLng = new LatLng(location.first, location.second);
+
+                result.add(new AttributedFeature()
+                        .origin(R.drawable.ic_dashboard_black_48dp)
+                        .icon(Util.drawableToBitmap(appData.getIcon()))
+                        .text("Running Apps")
+                        .geometry(SensePoint.make(latLng))
+                        .custom("Name:", appData.getName())
+                        .custom("Date:", Timestamp.from(lastTimeUsed).date())
+                        .custom("Time:", Timestamp.from(lastTimeUsed).time())
+                        .custom("Foreground time:", String.valueOf(appData.getForegroundTimeMins()))
+                );
+
+                visited.get(packageName).add(lastTimeUsed);
+            }
         }
 
         return result;
@@ -63,7 +107,16 @@ public class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, Ar
     @Override
     public ArrayList<ArrayList<AttributedFeature>> adaptAll(ArrayList<SensorData> data)
     {
-        return null;
+        ArrayList<ArrayList<AttributedFeature>> result = new ArrayList<>();
+        ArrayList<AttributedFeature> features = new ArrayList<>();
+        HashMap<String, HashSet<Long>> visited = new HashMap<>();
+
+        for (SensorData sensorData : data)
+            features.addAll(adaptUnvisited(sensorData, visited));
+
+        result.add(features);
+
+        return result;
     }
 
     @Override
@@ -73,8 +126,20 @@ public class RunningAppsLatLngAdapter extends VisualizationAdapter<GoogleMap, Ar
     }
 
     @Override
+    public boolean isAggregating()
+    {
+        return true;
+    }
+
+    @Override
     public Object aggregate(ArrayList<SensorData> data)
     {
-        return null;
+        HashMap<String, ArrayList<SensorData>> dataByDays = partitionByDays(data);
+        ArrayList<AttributedFeature> features = new ArrayList<>();
+
+        for (ArrayList<SensorData> dailyData : dataByDays.values())
+            features.addAll(adapt(dailyData));
+
+        return features;
     }
 }

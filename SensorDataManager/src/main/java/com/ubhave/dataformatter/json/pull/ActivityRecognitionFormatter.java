@@ -3,6 +3,7 @@ package com.ubhave.dataformatter.json.pull;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.Pair;
 
 import com.ubhave.dataformatter.json.PullSensorJSONFormatter;
 import com.ubhave.datahandler.except.DataHandlerException;
@@ -34,7 +35,8 @@ public class ActivityRecognitionFormatter extends PullSensorJSONFormatter
     @Override
     protected void addSensorSpecificData(JSONObject json, SensorData data) throws JSONException, DataHandlerException
     {
-        ArrayList<ActivityRecognitionData> results = ((ActivityRecognitionDataList) data).getActivities();
+        ActivityRecognitionDataList activityList = (ActivityRecognitionDataList) data;
+        ArrayList<ActivityRecognitionData> results = activityList.getActivities();
 
         JSONArray resultJson = new JSONArray();
 
@@ -55,6 +57,13 @@ public class ActivityRecognitionFormatter extends PullSensorJSONFormatter
         }
         Log.d("activity: ", resultJson.toString(2));
         json.put(ACTIVITY_RECOGNITION, resultJson);
+
+        Pair<Double, Double> location = activityList.getLocation();
+        if (location != null)
+        {
+            json.put("latitude", location.first);
+            json.put("longitude", location.second);
+        }
     }
 
     @Override
@@ -84,11 +93,18 @@ public class ActivityRecognitionFormatter extends PullSensorJSONFormatter
                     int type = entry.getInt(TYPE);
                     int confidence = entry.getInt(CONFIDENCE);
 
-                    dataList.add(new ActivityRecognitionData(type, confidence));
+                    ActivityRecognitionData activityData = new ActivityRecognitionData(type, confidence);
+
+                    dataList.add(activityData);
                 }
 
                 ActivityRecognitionDataList activityRecognitionDataList = new ActivityRecognitionDataList(senseStartTimestamp, sensorConfig);
                 activityRecognitionDataList.setActivities(dataList);
+
+                if (jsonData.has("latitude") && jsonData.has("longitude"))
+                    activityRecognitionDataList.setLocation(
+                            Pair.create(jsonData.getDouble("latitude"), jsonData.getDouble("longitude")));
+
                 return activityRecognitionDataList;
             }
             catch (Exception e)

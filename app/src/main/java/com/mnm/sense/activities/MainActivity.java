@@ -75,20 +75,14 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        new Thread()
+        try
         {
-            @Override
-            public void run()
-            {
-                try
-                {
-                    ActivityRecognitionSensor ars = ActivityRecognitionSensor.getSensor(MainActivity.this);
-                } catch (ESException e)
-                {
-                    e.printStackTrace();
-                }
-            }
-        }.start();
+            ActivityRecognitionSensor ars = ActivityRecognitionSensor.getSensor(this);
+        }
+        catch (ESException e)
+        {
+            e.printStackTrace();
+        }
 
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);

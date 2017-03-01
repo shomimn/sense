@@ -10,6 +10,7 @@ import android.graphics.drawable.VectorDrawable;
 import android.hardware.Sensor;
 import android.util.Base64;
 import android.util.Log;
+import android.util.Pair;
 
 import com.ubhave.dataformatter.json.PullSensorJSONFormatter;
 import com.ubhave.datahandler.except.DataHandlerException;
@@ -43,6 +44,8 @@ public class RunningApplicationFormatter extends PullSensorJSONFormatter
     private final static String LAST_TIME_USED = "lastTimeUsed";
     private final static String BEGINNING_TIME_RANGE = "beginningTimeRange";
     private final static String END_TIME_RANGE = "endTimeRange";
+    private final static String LATITUDE = "latitude";
+    private final static String LONGITUDE = "longitude";
 
     private final static String UNAVAILABLE = "unavailable";
 
@@ -70,6 +73,15 @@ public class RunningApplicationFormatter extends PullSensorJSONFormatter
                 appInfo.put(NAME, result.getName());
                 appInfo.put(FOREGROUND_TIME, result.getForegroundTime());
                 appInfo.put(LAST_TIME_USED, result.getLastTimeUsed());
+
+                Pair<Double, Double> location = result.getLocation();
+
+                if (location != null)
+                {
+                    appInfo.put(LATITUDE, location.first);
+                    appInfo.put(LONGITUDE, location.second);
+                }
+
                 resultJSON.put(appInfo);
             }
         }
@@ -116,8 +128,16 @@ public class RunningApplicationFormatter extends PullSensorJSONFormatter
                     String name = entry.getString(NAME);
                     long ft = entry.getLong(FOREGROUND_TIME);
                     long ltu = entry.getLong(LAST_TIME_USED);
-                    dataList.add(new RunningApplicationData(packageName, name, ft, null, ltu));
+
+                    RunningApplicationData appInfo = new RunningApplicationData(packageName, name, ft, null, ltu);
+
+                    if (entry.has(LATITUDE) && entry.has(LONGITUDE))
+                        appInfo.setLocation(
+                                Pair.create(entry.getDouble(LATITUDE), entry.getDouble(LONGITUDE)));
+
+                    dataList.add(appInfo);
                 }
+
                 RunningApplicationProcessor processor = (RunningApplicationProcessor) AbstractProcessor.getProcessor(applicationContext, sensorType, setRawData, setProcessedData);
                 return processor.process(senseStartTimestamp, dataList, sensorConfig);
             }

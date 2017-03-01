@@ -28,5 +28,4 @@ public class MicrophoneProcessor extends AbstractProcessor
 		return micData;
 
 	}
-
 }

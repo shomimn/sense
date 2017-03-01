@@ -28,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.util.Pair;
 
 import com.ubhave.dataformatter.json.PullSensorJSONFormatter;
 import com.ubhave.sensormanager.ESException;
@@ -45,7 +46,9 @@ public class MicrophoneFormatter extends PullSensorJSONFormatter
 	private final static String AMPLITUDE = "amplitude";
 	private final static String MEDIA_FILE_PATH = "media_file";
 	private final static String READING_TIMESTAMPS = "sensorTimeStamps";
-	
+	private final static String LATITUDE = "latitude";
+	private final static String LONGITUDE = "longitude";
+
 	public MicrophoneFormatter(final Context context)
 	{
 		super(context, SensorUtils.SENSOR_TYPE_MICROPHONE);
@@ -57,14 +60,25 @@ public class MicrophoneFormatter extends PullSensorJSONFormatter
 		MicrophoneData micData = (MicrophoneData) data;
 		int[] values = micData.getAmplitudeArray();
 		JSONArray valueArray = new JSONArray();
+
+		Pair<Double, Double> location = micData.getLocation();
+
+		if(location != null)
+		{
+			json.put(LATITUDE, location.first);
+			json.put(LONGITUDE, location.second);
+		}
+
 		for (int i=0; i<values.length; i++)
 		{
 			valueArray.put(values[i]);
 		}
+
 		json.put(AMPLITUDE, valueArray);
 		
 		long[] tsValues = micData.getTimestampArray();
 		JSONArray tsArray = new JSONArray();
+
 		for (int i=0; i<values.length; i++)
 		{
 			tsArray.put(tsValues[i]);
@@ -97,7 +111,8 @@ public class MicrophoneFormatter extends PullSensorJSONFormatter
 		int[] ampValues = null;
 		long[] tsValues = null;
 		String mediaFilePath = null;
-		
+		Pair<Double, Double> location = null;
+
 		try
 		{
 			ArrayList<Integer> amplitudes = getJSONArray(jsonData, AMPLITUDE, Integer.class);
@@ -111,7 +126,15 @@ public class MicrophoneFormatter extends PullSensorJSONFormatter
 				ampValues[i] = Long.valueOf(amplitudes.get(i)).intValue();
 				tsValues[i] = timestamps.get(i);
 			}
-			
+
+			if (jsonData.has(LATITUDE) && jsonData.has(LONGITUDE))
+			{
+				location = Pair.create(
+						jsonData.getDouble(LATITUDE),
+						jsonData.getDouble(LONGITUDE));
+
+			}
+
 			if (jsonData.has(MEDIA_FILE_PATH))
 			{
 				mediaFilePath = jsonData.getString(MEDIA_FILE_PATH);
@@ -125,7 +148,11 @@ public class MicrophoneFormatter extends PullSensorJSONFormatter
 		try
 		{
 			MicrophoneProcessor processor = (MicrophoneProcessor) AbstractProcessor.getProcessor(applicationContext, sensorType, setRawData, setProcessedData);
-			return processor.process(senseStartTimestamp, ampValues, tsValues, mediaFilePath, sensorConfig);
+			MicrophoneData micData = processor.process(senseStartTimestamp, ampValues, tsValues, mediaFilePath, sensorConfig);
+
+			if(location != null)
+				micData.setLocation(location);
+			return micData;
 		}
 		catch (ESException e)
 		{

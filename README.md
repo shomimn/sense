@@ -43,7 +43,7 @@ Shows available visualizations as tabs, and attributes which can be visualized a
 Trackers activity shows the available trackers and if they're turned on or off. There's also a **update interval** setting, which defines how often collected data will be sent to the remote server.
 Clicking on a tracker card opens up a settings activity for the given tracker. Long click on a tracker card selects it for visualizing data on the map.
 
-![Trackers](http://i.imgur.com/JfwoCTr.png?1) ![Trackers](http://i.imgur.com/XQg14XV.png?1)
+![Trackers](http://i.imgur.com/aog64qi.png?1) ![Trackers](http://i.imgur.com/5aWWmJl.png?1)
 
 ### Tracker settings
 All trackers have a set of settings that can be tuned further. These settings are separated in 3 sections:

@@ -110,5 +110,6 @@ From that point on, **views** can be modified only through callbacks mentioned i
 This means that any part of the application can request the correct **view initializer** only by knowing which data should be displayed, or how it should be displayed (visualization type).
 
 ## Libs
-[Emotion sense](http://emotionsense.org/)
+[Emotion Sense](http://emotionsense.org/)
+
 [MPAndroidChart](https://github.com/PhilJay/MPAndroidChart)

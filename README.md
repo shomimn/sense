@@ -109,6 +109,40 @@ From that point on, **views** can be modified only through callbacks mentioned i
 
 This means that any part of the application can request the correct **view initializer** only by knowing which data should be displayed, or how it should be displayed (visualization type).
 
+## Emotion Sense
+
+Another big part of Sense is [Emotion Sense](http://emotionsense.github.io/index.html) library. This is an open-source library developed as a part of the EPSRC Ubhave project licensed with the [BSD License](https://en.wikipedia.org/wiki/BSD_licenses). 
+
+Emotion sense consists of:
+
+1. Sensor Manager
+    The ESSensorManager library provides a uniform and easily configurable access to sensor data, supporting both one-off and continuous sensing scenarios.
+
+2. Sensor Data Manager
+    The ESSensorDataManager library allows you to format, store and transfer data to your server.
+    
+### Sensor Data
+
+Emotion Sense defines "sensor" as any signal that can be unobtrusively captured from the smartphone device. Sense app follows the same convention and principles for adding and managing sensors data. 
+In SensorManager library you can find two types of sensors:
+
+**Pull Sensors**
+All sensors that the Android OS does not capture data from until requested to do so by an application. 
+
+**Push Sensors**
+The Android OS publishes data about particular events that applications can receive, this set of sensors receives this information on behalf of an application.
+    
+### Adding a Sensor
+
+To add a new sensor, you need to edit the SensorManager and SensorDataManager libraries. To implement your sensor, you'll need to:
+
+1. Decide whether your sensor is best implemented as a push (AbstractPushSensor), pull (AbstractPullSensor), or environment (AbstractEnvironmentSensor) sensor. This will determine where your code will be implemented and what AbstractSensor type it will inherit from.
+2. Implement the data structure that will store your sensor's data, in the data package. Implement a processor that creates an instance of your sensor's data in the process package.
+3. Implement a default configuration for your sensor in the config package. You will also need to add an entry to getDefaultConfig() in SensorConfig.
+4. The ES Sensor Manager needs to be able to find your sensor. Add an int SENSOR_TYPE and String SENSOR_NAME to SensorUtils. Add an entry for your sensor in SensorEnum.
+5. Add a data formatter to convert your sensor data instance into JSON in the data manager data formatter package.
+6. The data formatter needs to be able to find your formatter. Add an entry in getJSONFormatter() in DataFormatter.java.
+
 ## Libs
 [Emotion Sense](http://emotionsense.org/)
 

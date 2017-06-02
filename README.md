@@ -116,9 +116,11 @@ Another big part of Sense is [Emotion Sense](http://emotionsense.github.io/index
 Emotion sense consists of:
 
 1. Sensor Manager
+
     The ESSensorManager library provides a uniform and easily configurable access to sensor data, supporting both one-off and continuous sensing scenarios.
 
 2. Sensor Data Manager
+
     The ESSensorDataManager library allows you to format, store and transfer data to your server.
     
 ### Sensor Data
@@ -127,9 +129,11 @@ Emotion Sense defines "sensor" as any signal that can be unobtrusively captured 
 In SensorManager library you can find two types of sensors:
 
 **Pull Sensors**
+
 All sensors that the Android OS does not capture data from until requested to do so by an application. 
 
 **Push Sensors**
+
 The Android OS publishes data about particular events that applications can receive, this set of sensors receives this information on behalf of an application.
     
 ### Adding a Sensor

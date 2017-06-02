@@ -143,6 +143,8 @@ To add a new sensor, you need to edit the SensorManager and SensorDataManager li
 5. Add a data formatter to convert your sensor data instance into JSON in the data manager data formatter package.
 6. The data formatter needs to be able to find your formatter. Add an entry in getJSONFormatter() in DataFormatter.java.
 
+For more information on how to use and contribute to EmotionSense library, please visit [Emotion Sense](http://emotionsense.github.io/index.html).
+
 ## Libs
 [Emotion Sense](http://emotionsense.org/)
 
